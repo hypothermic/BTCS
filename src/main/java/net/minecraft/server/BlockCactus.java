@@ -1,0 +1,105 @@
+package net.minecraft.server;
+
+import java.util.Random;
+import org.bukkit.event.entity.EntityDamageByBlockEvent;
+
+public class BlockCactus extends Block
+{
+  protected BlockCactus(int i, int j)
+  {
+    super(i, j, Material.CACTUS);
+    a(true);
+  }
+  
+  public void a(World world, int i, int j, int k, Random random) {
+    if (world.isEmpty(i, j + 1, k))
+    {
+    	
+      int l; // BTCS: added
+
+      for (l = 1; world.getTypeId(i, j - l, k) == this.id; l++) {} // BTCS: rm 'int'
+      
+
+
+      if (l < 3) {
+        int i1 = world.getData(i, j, k);
+        
+        if (i1 == 15) {
+          org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockGrowEvent(world, i, j + 1, k, this.id, 0);
+          world.setData(i, j, k, 0);
+        } else {
+          world.setData(i, j, k, i1 + 1);
+        }
+      }
+    }
+  }
+  
+  public AxisAlignedBB e(World world, int i, int j, int k) {
+    float f = 0.0625F;
+    
+    return AxisAlignedBB.b(i + f, j, k + f, i + 1 - f, j + 1 - f, k + 1 - f);
+  }
+  
+  public int a(int i) {
+    return i == 0 ? this.textureId + 1 : i == 1 ? this.textureId - 1 : this.textureId;
+  }
+  
+  public boolean b() {
+    return false;
+  }
+  
+  public boolean a() {
+    return false;
+  }
+  
+  public int c() {
+    return 13;
+  }
+  
+  public boolean canPlace(World world, int i, int j, int k) {
+    return !super.canPlace(world, i, j, k) ? false : f(world, i, j, k);
+  }
+  
+  public void doPhysics(World world, int i, int j, int k, int l) {
+    if (!f(world, i, j, k)) {
+      b(world, i, j, k, world.getData(i, j, k), 0);
+      world.setTypeId(i, j, k, 0);
+    }
+  }
+  
+  public boolean f(World world, int i, int j, int k) {
+    if (world.getMaterial(i - 1, j, k).isBuildable())
+      return false;
+    if (world.getMaterial(i + 1, j, k).isBuildable())
+      return false;
+    if (world.getMaterial(i, j, k - 1).isBuildable())
+      return false;
+    if (world.getMaterial(i, j, k + 1).isBuildable()) {
+      return false;
+    }
+    int l = world.getTypeId(i, j - 1, k);
+    
+    return (l == Block.CACTUS.id) || (l == Block.SAND.id);
+  }
+  
+
+  public void a(World world, int i, int j, int k, Entity entity)
+  {
+    if ((entity instanceof EntityLiving)) {
+      org.bukkit.block.Block damager = world.getWorld().getBlockAt(i, j, k);
+      org.bukkit.entity.Entity damagee = entity == null ? null : entity.getBukkitEntity();
+      
+      EntityDamageByBlockEvent event = new EntityDamageByBlockEvent(damager, damagee, org.bukkit.event.entity.EntityDamageEvent.DamageCause.CONTACT, 1);
+      world.getServer().getPluginManager().callEvent(event);
+      
+      if (!event.isCancelled()) {
+        damagee.setLastDamageCause(event);
+        entity.damageEntity(DamageSource.CACTUS, event.getDamage());
+      }
+      return;
+    }
+    
+
+    entity.damageEntity(DamageSource.CACTUS, 1);
+  }
+}
