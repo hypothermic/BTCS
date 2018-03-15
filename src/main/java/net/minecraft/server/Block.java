@@ -188,7 +188,7 @@ public class Block
     lightBlock[i] = (a() ? 'ÿ' : 0);
     // BTCS start
     /*p[i] = (!material.blocksLight() ? 1 : false);*/
-    p[i] = (Boolean) (!material.blocksLight() ? 1 : false);
+    p[i] = (!material.blocksLight() ? 1 : false) != null;
     // BTCS end
   }
   

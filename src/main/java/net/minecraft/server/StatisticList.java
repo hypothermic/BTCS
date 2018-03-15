@@ -177,7 +177,9 @@ public class StatisticList
   }
   
 
-  static { AchievementList.a(); }
+  static { 
+	  AchievementList.a(); 
+  }
   private static boolean G = false;
   private static boolean H = false;
 }

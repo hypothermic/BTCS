@@ -95,7 +95,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
       try {
         System.setProperty("jline.terminal", "jline.UnsupportedTerminal");
         System.setProperty("user.language", "en");
-        org.bukkit.craftbukkit.Main.useJline = false;
+        nl.hypothermic.btcs.Launcher.useJline = false; // BTCS: 'org.bukkit.craftbukkit.Main' --> 'Launcher'
         this.reader = new ConsoleReader(System.in, System.out);
         this.reader.setExpandEvents(false);
       } catch (IOException ex) {

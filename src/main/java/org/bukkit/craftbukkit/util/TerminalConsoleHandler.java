@@ -5,7 +5,6 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jline.console.ConsoleReader;
-import org.bukkit.craftbukkit.Main;
 
 public class TerminalConsoleHandler extends ConsoleHandler {
     private final ConsoleReader reader;
@@ -18,7 +17,7 @@ public class TerminalConsoleHandler extends ConsoleHandler {
     @Override
     public synchronized void flush() {
         try {
-            if (Main.useJline) {
+            if (nl.hypothermic.btcs.Launcher.useJline) { // BTCS: 'Main' --> 'Launcher'
                 reader.print(ConsoleReader.RESET_LINE + "");
                 reader.flush();
                 super.flush();

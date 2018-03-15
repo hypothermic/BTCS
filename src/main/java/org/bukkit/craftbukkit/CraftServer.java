@@ -175,7 +175,7 @@ public final class CraftServer implements Server
     PotionEffectType.stopAcceptingRegistrations();
     
 
-    if (!Main.useConsole) {
+    if (!nl.hypothermic.btcs.Launcher.useConsole) { // BTCS: 'Main' --> 'Launcher'
       getLogger().info("Console input is disabled due to --noconsole command argument");
     }
     

@@ -3,7 +3,7 @@ package net.minecraft.server;
 import java.io.IOException;
 import java.util.logging.Logger;
 import jline.console.ConsoleReader;
-import org.bukkit.craftbukkit.Main;
+//import org.bukkit.craftbukkit.Main; // BTCS
 
 public class ThreadCommandReader extends Thread
 {
@@ -16,7 +16,7 @@ public class ThreadCommandReader extends Thread
   
   public void run()
   {
-    if (!Main.useConsole) {
+    if (!nl.hypothermic.btcs.Launcher.useConsole) { // BTCS: 'Main' --> 'Launcher'
       return;
     }
     
@@ -27,7 +27,7 @@ public class ThreadCommandReader extends Thread
     try
     {
       while ((!this.server.isStopped) && (MinecraftServer.isRunning(this.server))) {
-        if (Main.useJline) {
+        if (nl.hypothermic.btcs.Launcher.useJline) { // BTCS: 'Main' --> 'Launcher'
           s = bufferedreader.readLine(">", null);
         } else {
           s = bufferedreader.readLine();
