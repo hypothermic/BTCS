@@ -18,6 +18,9 @@ import org.bukkit.craftbukkit.CraftServer;
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
+import net.minecraft.server.Achievement;
+import net.minecraft.server.Block;
+import net.minecraft.server.Item;
 import net.minecraft.server.MinecraftServer;
 
 public class Launcher {
@@ -82,7 +85,13 @@ public class Launcher {
 			          useConsole = false;
 			        }
 			        
-			        net.minecraft.server.MinecraftServer.main(options);
+			        Block block = Block.BRICK;
+			        System.out.println(block.id);
+			        
+			        Item test = Item.BOOK;
+			        System.out.println(test.id);
+			        
+			        //net.minecraft.server.MinecraftServer.main(options);
 			      } catch (Throwable t) {
 			        t.printStackTrace();
 			      }

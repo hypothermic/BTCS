@@ -9,7 +9,9 @@ public final class ItemStack implements net.minecraft.src.ItemStack {
   public NBTTagCompound tag;
   private int damage;
   
-  public ItemStack(Block block) { this(block, 1); }
+  public ItemStack(Block block) { 
+	  this(block, 1); 
+  }
   
   public ItemStack(Block block, int i)
   {
@@ -150,7 +152,10 @@ public final class ItemStack implements net.minecraft.src.ItemStack {
   }
   
   public void setData(int i) {
-    this.damage = ((this.id > 0) && (this.id < 256) ? Item.byId[this.id].filterData(i) : i);
+	// BTCS start
+    //this.damage = ((this.id > 0) && (this.id < 256) ? Item.byId[this.id].filterData(i) : i);
+	this.damage = i;
+    // BTCS end
   }
   
   public int i() {

@@ -20,15 +20,15 @@ public class Block
   public static final StepSound j = new StepSoundStone("stone", 1.0F, 1.0F);
   public static final StepSound k = new StepSound("cloth", 1.0F, 1.0F);
   public static final StepSound l = new StepSoundSand("sand", 1.0F, 1.0F);
-  public static final Block[] byId = new Block['က'];
-  public static final boolean[] n = new boolean['က'];
-  public static final int[] lightBlock = new int['က'];
-  public static final boolean[] p = new boolean['က'];
-  public static final int[] lightEmission = new int['က'];
-  public static final boolean[] r = new boolean['က'];
-  public static boolean[] s = new boolean['က'];
+  public static final Block[] byId = new Block[4096];
+  public static final boolean[] n = new boolean[4096];
+  public static final int[] lightBlock = new int[4096];
+  public static final boolean[] p = new boolean[4096];
+  public static final int[] lightEmission = new int[4096];
+  public static final boolean[] r = new boolean[4096];
+  public static boolean[] s = new boolean[4096];
   public static final Block STONE = new BlockStone(1, 1).c(1.5F).b(10.0F).a(h).a("stone");
-  public static final BlockGrass GRASS = (BlockGrass)new BlockGrass(2).c(0.6F).a(g).a("grass");
+  public static final BlockGrass GRASS = (BlockGrass) new BlockGrass(2).c(0.6F).a(g).a("grass");
   public static final Block DIRT = new BlockDirt(3, 2).c(0.5F).a(f).a("dirt");
   public static final Block COBBLESTONE = new Block(4, 16, Material.STONE).c(2.0F).b(10.0F).a(h).a("stonebrick");
   public static final Block WOOD = new BlockWood(5).c(2.0F).b(5.0F).a(e).a("wood").j();
@@ -185,7 +185,7 @@ public class Block
     this.id = i;
     a(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
     n[i] = a();
-    lightBlock[i] = (a() ? 'ÿ' : 0);
+    lightBlock[i] = (a() ? 255 : 0);
     // BTCS start
     /*p[i] = (!material.blocksLight() ? 1 : false);*/
     p[i] = (!material.blocksLight() ? 1 : false) != null;
@@ -1140,14 +1140,6 @@ public class Block
   {
     return isLeaves(BukkitForgeHooks.unwrapBlockChangeDelegate(world), x, y, z);
   }
-  
-
-
-
-
-
-
-
 
   public boolean canBeReplacedByLeaves(World world, int x, int y, int z)
   {
@@ -1160,13 +1152,6 @@ public class Block
   public final boolean canBeReplacedByLeaves(BlockChangeDelegate world, int x, int y, int z) {
     return canBeReplacedByLeaves(BukkitForgeHooks.unwrapBlockChangeDelegate(world), x, y, z);
   }
-  
-
-
-
-
-
-
 
   public boolean isWood(World world, int x, int y, int z)
   {
@@ -1177,34 +1162,16 @@ public class Block
   {
     return isWood(BukkitForgeHooks.unwrapBlockChangeDelegate(world), x, y, z);
   }
-  
-
-
-
-
-
-
-
 
   public boolean isGenMineableReplaceable(World world, int x, int y, int z)
   {
     return this.id == STONE.id;
   }
-  
-
-
-
 
   public String getTextureFile()
   {
     return this.currentTexture;
   }
-  
-
-
-
-
-
 
   public void setTextureFile(String texture)
   {
@@ -1214,6 +1181,8 @@ public class Block
   
   static
   {
+	  System.out.println("Hello Mate!");
+	  Item.byId[250] = new ItemCloth(250).a("testitem");
     Item.byId[WOOL.id] = new ItemCloth(WOOL.id - 256).a("cloth");
     Item.byId[LOG.id] = new ItemWithAuxData(LOG.id - 256, LOG).a("log");
     Item.byId[WOOD.id] = new ItemWithAuxData(WOOD.id - 256, WOOD).a("wood");

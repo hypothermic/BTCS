@@ -39,63 +39,14 @@ public class Statistic
     
     return this;
   }
-  
-
-
-
-
-
-
-
 
   private static NumberFormat c = NumberFormat.getIntegerInstance(java.util.Locale.US);
   public static Counter h = new UnknownCounter();
-  
-
-
-
 
   private static DecimalFormat d = new DecimalFormat("########0.00");
   public static Counter i = new TimeCounter();
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   public static Counter j = new DistancesCounter();
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   public String toString()
   {

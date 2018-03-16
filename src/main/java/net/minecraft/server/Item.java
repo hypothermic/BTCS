@@ -162,12 +162,12 @@ public class Item implements ITextureProvider
   protected boolean canRepair = true;
   
   protected Item(int i) {
-    this.id = (256 + i);
-    if (byId[(256 + i)] != null) {
+    this.id = 256 + i;
+    if (byId[256 + i] != null) {
       System.out.println("CONFLICT @ " + i + " item slot already occupied by " + byId[(256 + i)] + " while adding " + this);
     }
     
-    byId[(256 + i)] = this;
+    byId[256 + i] = this;
     org.bukkit.Material.addMaterial(256 + i);
   }
   
@@ -363,13 +363,6 @@ public class Item implements ITextureProvider
   
   public boolean isDefaultTexture = true;
   private String currentTexture = "/gui/items.png";
-  
-
-
-
-
-
-
 
   public void addCreativeItems(ArrayList itemList)
   {
@@ -378,144 +371,52 @@ public class Item implements ITextureProvider
       itemList.add(new ItemStack(this, 1));
     }
   }
-  
-
-
-
-
-
-
-
 
   public boolean onDroppedByPlayer(ItemStack item, EntityHuman entityHuman)
   {
     return true;
   }
-  
-
-
-
-
-
-
-
-
-
 
   public boolean onItemUseFirst(ItemStack stack, EntityHuman entityhuman, World world, int X, int Y, int Z, int side)
   {
     return false;
   }
-  
-
-
-
-
-
 
   public float getStrVsBlock(ItemStack itemstack, Block block, int metadata)
   {
     return getDestroySpeed(itemstack, block);
   }
-  
-
-
 
   public boolean isRepairable()
   {
     return (this.canRepair) && (g());
   }
-  
-
-
 
   public Item setNoRepair()
   {
     this.canRepair = false;
     return this;
   }
-  
-
-
-
-
-
-
-
-
-
-
 
   public boolean onBlockStartBreak(ItemStack itemstack, int X, int Y, int Z, EntityHuman player)
   {
     return false;
   }
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   public boolean onLeftClickEntity(ItemStack stack, EntityHuman entityHuman, Entity entity)
   {
     return false;
   }
   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   public int getIconIndex(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining)
   {
     return 0;
   }
-  
-
-
-
-
-
-
-
-
-
 
   public int getRenderPasses(int metadata)
   {
     return 1;
   }
-  
-
-
-
 
   public String getTextureFile()
   {
@@ -526,12 +427,6 @@ public class Item implements ITextureProvider
     return this.currentTexture;
   }
   
-
-
-
-
-
-
   public void setTextureFile(String texture)
   {
     this.currentTexture = texture;

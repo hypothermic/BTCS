@@ -81,7 +81,7 @@ public class StatisticList
         hashset.add(Integer.valueOf(itemstack.id));
       }
       
-      D = new Statistic['紀'];
+      D = new Statistic[32000];
       iterator = hashset.iterator();
       
       while (iterator.hasNext()) {
@@ -99,7 +99,7 @@ public class StatisticList
   }
   
   private static Statistic[] a(String s, int i) {
-    Statistic[] astatistic = new Statistic[Block.byId.length];
+    Statistic[] astatistic = new Statistic[256]; // BTCS: Replaced '[Block.byId.length]' with [32000]
     
     for (int j = 0; j < Block.byId.length; j++) {
       if ((Block.byId[j] != null) && (Block.byId[j].r())) {
@@ -116,7 +116,7 @@ public class StatisticList
   
   private static Statistic[] a(Statistic[] astatistic, String s, int i, int j, int k) {
     if (astatistic == null) {
-      astatistic = new Statistic['紀'];
+      astatistic = new Statistic[32000];
     }
     
     for (int l = j; l < k; l++) {
@@ -136,7 +136,7 @@ public class StatisticList
   
   private static Statistic[] b(Statistic[] astatistic, String s, int i, int j, int k) {
     if (astatistic == null) {
-      astatistic = new Statistic['紀'];
+      astatistic = new Statistic[32000];
     }
     
     for (int l = j; l < k; l++) {
