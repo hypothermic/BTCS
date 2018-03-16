@@ -99,9 +99,9 @@ public class StatisticList
   }
   
   private static Statistic[] a(String s, int i) {
-    Statistic[] astatistic = new Statistic[256]; // BTCS: Replaced '[Block.byId.length]' with [32000]
+    Statistic[] astatistic = new Statistic[256]; // BTCS: Replaced '[Block.byId.length]' with [256]
     
-    for (int j = 0; j < Block.byId.length; j++) {
+    for (int j = 0; j < 256; j++) { // BTCS: replaced 'Block.byId.length' with '256'
       if ((Block.byId[j] != null) && (Block.byId[j].r())) {
         String s1 = LocaleI18n.get(s, new Object[] { Block.byId[j].getName() });
         
@@ -178,7 +178,9 @@ public class StatisticList
   
 
   static { 
-	  AchievementList.a(); 
+	  AchievementList.a();
+	  G = false;
+	  H = false;
   }
   private static boolean G = false;
   private static boolean H = false;

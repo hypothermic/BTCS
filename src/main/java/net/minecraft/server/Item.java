@@ -150,7 +150,7 @@ public class Item implements ITextureProvider
   public static Item RECORD_9 = new ItemRecord(2008, "strad").a(8, 15).a("record");
   public static Item RECORD_10 = new ItemRecord(2009, "ward").a(9, 15).a("record");
   public static Item RECORD_11 = new ItemRecord(2010, "11").a(10, 15).a("record");
-  public final int id;
+  public final int id; // ID is always shifted by 256!!
   protected int maxStackSize = 64;
   private int durability = 0;
   protected int textureId;
@@ -161,10 +161,11 @@ public class Item implements ITextureProvider
   private String name;
   protected boolean canRepair = true;
   
-  protected Item(int i) {
-    this.id = 256 + i;
+  public Item(Integer i) { // BTCS: protected --> public (just for testing, so we can instantiate from nl.hypothermic.btcs package.)
+    id = 256 + i;
+    System.out.println("id=" + id);
     if (byId[256 + i] != null) {
-      System.out.println("CONFLICT @ " + i + " item slot already occupied by " + byId[(256 + i)] + " while adding " + this);
+      System.out.println("CONFLICT @ " + i + " item slot already occupied by " + byId[256 + i] + " while adding " + this);
     }
     
     byId[256 + i] = this;

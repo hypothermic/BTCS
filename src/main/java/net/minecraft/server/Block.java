@@ -8,9 +8,7 @@ import java.util.Random;
 import org.bukkit.BlockChangeDelegate;
 
 
-public class Block
-  implements net.minecraft.src.Block, ITextureProvider
-{
+public class Block implements net.minecraft.src.Block, ITextureProvider {
   public static final StepSound d = new StepSound("stone", 1.0F, 1.0F);
   public static final StepSound e = new StepSound("wood", 1.0F, 1.0F);
   public static final StepSound f = new StepSound("gravel", 1.0F, 1.0F);
@@ -43,7 +41,7 @@ public class Block
   public static final Block GOLD_ORE = new BlockOre(14, 32).c(3.0F).b(5.0F).a(h).a("oreGold");
   public static final Block IRON_ORE = new BlockOre(15, 33).c(3.0F).b(5.0F).a(h).a("oreIron");
   public static final Block COAL_ORE = new BlockOre(16, 34).c(3.0F).b(5.0F).a(h).a("oreCoal");
-  public static final Block LOG = new BlockLog(17).c(2.0F).a(e).a("log").j();
+  public static final Block LOG = new BlockLog(17).c(2.0F).a(e).a("log").j(); // TODO
   public static final BlockLeaves LEAVES = (BlockLeaves)new BlockLeaves(18, 52).c(0.2F).f(1).a(g).a("leaves").j();
   public static final Block SPONGE = new BlockSponge(19).c(0.6F).a(g).a("sponge");
   public static final Block GLASS = new BlockGlass(20, 49, Material.SHATTERABLE, false).c(0.3F).a(j).a("glass");
@@ -811,81 +809,21 @@ public class Block
   {
     return world.setTypeId(x, y, z, 0);
   }
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   public int getFlammability(IBlockAccess world, int x, int y, int z, int metadata, int face)
   {
     return blockFlammability[this.id];
   }
-  
-
-
-
-
-
-
-
-
-
-
-
 
   public boolean isFlammable(IBlockAccess world, int x, int y, int z, int metadata, int face)
   {
     return getFlammability(world, x, y, z, metadata, face) > 0;
   }
-  
-
-
-
-
-
-
-
-
-
-
-
 
   public int getFireSpreadSpeed(World world, int x, int y, int z, int metadata, int face)
   {
     return blockFireSpreadSpeed[this.id];
   }
-  
-
-
-
-
-
-
-
-
-
-
-
-
 
   public boolean isFireSource(World world, int x, int y, int z, int metadata, int face)
   {
@@ -899,41 +837,17 @@ public class Block
     }
     return false;
   }
-  
-
-
-
-
-
 
   public static void setBurnProperties(int id, int encouragement, int flammability)
   {
     blockFireSpreadSpeed[id] = encouragement;
     blockFlammability[id] = flammability;
   }
-  
-
-
-
-
-
-
-
-
-
 
   public boolean hasTileEntity(int metadata)
   {
     return this.isTileEntity;
   }
-  
-
-
-
-
-
-
-
 
   public TileEntity getTileEntity(int metadata)
   {
@@ -943,31 +857,12 @@ public class Block
     }
     return null;
   }
-  
-
-
-
-
-
-
-
 
 
   public int quantityDropped(int meta, int fortune, Random random)
   {
     return getDropCount(fortune, random);
   }
-  
-
-
-
-
-
-
-
-
-
-
 
   public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int metadata, int fortune)
   {
@@ -984,16 +879,6 @@ public class Block
     }
     return ret;
   }
-  
-
-
-
-
-
-
-
-
-
 
   public boolean canCreatureSpawn(EnumCreatureType type, World world, int x, int y, int z)
   {
@@ -1023,32 +908,11 @@ public class Block
     return isBlockSolidOnSide(world, x, y, z, 1);
   }
   
-
-
-
-
-
-
-
-
-
-
-
   public boolean isBed(World world, int x, int y, int z, EntityLiving player)
   {
     return this.id == BED.id;
   }
   
-
-
-
-
-
-
-
-
-
-
   public ChunkCoordinates getBedSpawnPosition(World world, int x, int y, int z, EntityHuman entityHuman)
   {
     return BlockBed.f(world, x, y, z, 0);

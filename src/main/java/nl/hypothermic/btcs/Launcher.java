@@ -84,7 +84,19 @@ public class Launcher {
 			        if (options.has("noconsole")) {
 			          useConsole = false;
 			        }
-			        
+			        /*try {
+			        	System.out.println("Launching tests..");
+			        	System.out.println("Initializing Item");
+			        	Item test = Item.APPLE;
+			        	System.out.println(test.id);
+			        	Item testitem = Item.BOOK;
+			        	System.out.println(testitem.id);
+			        	System.out.println("Doing tests");
+			        	Achievement testobject = new Achievement(0, "openInventory", 0, 0, Item.BOOK, null).a().c();
+			        } catch (Exception x) {
+			        	System.err.println("Error");
+			        	x.printStackTrace();
+			        }*/
 			        net.minecraft.server.MinecraftServer.main(options);
 			      } catch (Throwable t) {
 			        t.printStackTrace();

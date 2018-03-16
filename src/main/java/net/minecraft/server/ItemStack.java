@@ -23,7 +23,8 @@ public final class ItemStack implements net.minecraft.src.ItemStack {
   }
   
   public ItemStack(Item item) {
-    this(item.id, 1, 0);
+	// BTCS debug: item.id = null
+	this(item.id, 1, 0);
   }
   
   public ItemStack(Item item, int i) {
