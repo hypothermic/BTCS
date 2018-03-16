@@ -1181,8 +1181,6 @@ public class Block
   
   static
   {
-	  System.out.println("Hello Mate!");
-	  Item.byId[250] = new ItemCloth(250).a("testitem");
     Item.byId[WOOL.id] = new ItemCloth(WOOL.id - 256).a("cloth");
     Item.byId[LOG.id] = new ItemWithAuxData(LOG.id - 256, LOG).a("log");
     Item.byId[WOOD.id] = new ItemWithAuxData(WOOD.id - 256, WOOD).a("wood");

@@ -85,13 +85,7 @@ public class Launcher {
 			          useConsole = false;
 			        }
 			        
-			        Block block = Block.BRICK;
-			        System.out.println(block.id);
-			        
-			        Item test = Item.BOOK;
-			        System.out.println(test.id);
-			        
-			        //net.minecraft.server.MinecraftServer.main(options);
+			        net.minecraft.server.MinecraftServer.main(options);
 			      } catch (Throwable t) {
 			        t.printStackTrace();
 			      }
