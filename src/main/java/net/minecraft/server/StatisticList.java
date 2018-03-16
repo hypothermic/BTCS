@@ -49,15 +49,15 @@ public class StatisticList
   
   public static void b()
   {
-    E = a(E, "stat.useItem", 16908288, 0, 256);
-    F = b(F, "stat.breakItem", 16973824, 0, 256);
+    E = a(E, "stat.useItem", 0x1020000, 0, 256);
+    F = b(F, "stat.breakItem", 0x1030000, 0, 256);
     G = true;
     d();
   }
   
   public static void c() {
-    E = a(E, "stat.useItem", 16908288, 256, 32000);
-    F = b(F, "stat.breakItem", 16973824, 256, 32000);
+    E = a(E, "stat.useItem", 0x1020000, 256, 32000);
+    F = b(F, "stat.breakItem", 0x1030000, 256, 32000);
     H = true;
     d();
   }

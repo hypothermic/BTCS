@@ -19,6 +19,7 @@ import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import net.minecraft.server.Achievement;
+import net.minecraft.server.AchievementList;
 import net.minecraft.server.Block;
 import net.minecraft.server.Item;
 import net.minecraft.server.MinecraftServer;
@@ -30,27 +31,33 @@ public class Launcher {
     public static String LS;
 	private static double VERSION;
 	private static String VTAG;
-	private static Boolean FIRSTRUN = true;
-	private static HashMap<String, Boolean> OPTIONS = new HashMap();
 	private static String PROPS_HEADER = " BTCS Configuration File." + LS + " https://github.com/hypothermic/BTCS";
 	private static String CFG_NAME = "btcs.cfg";
 	// I wish Properties files could store booleans .-.
 	// I guess we'll have to store them as Strings for now and Boolean.parseBoolean() when we load them
 	private static HashMap<String, String> DEFOPTIONS = new HashMap() {{ put("force-jline", "false");
 																		 put("deploy-resources", "true"); }};
+																		 
+	private static ConfigurationManager c = new ConfigurationManager(DEFOPTIONS);
+	private static ResourceManager r = new ResourceManager();
 
+																		 
 	public static void main(final String[] args) {
 		LS = System.getProperty("line.separator");
 		// TODO: include these in config file. Hardcoded for now since it's not high priority.
-		VERSION = 1.22;
+		VERSION = 1.25;
 		VTAG = "ALPHA";
 		
-		System.out.println(LS + " << BTCS v" + VERSION + "-" + VTAG + " >>" + LS);
-		initConfig();
+		System.out.println(LS + "  << BTCS v" + VERSION + "-" + VTAG + " >>" + LS);
+		System.out.println(" <<  Load Configuration >>");
+		final HashMap config = initConfig();
+		System.out.println("           Done." + LS);
 		// TODO: check if resources exist and deploy them, for now, we let the user choose.
-		if (OPTIONS.get("deploy-resources")) {
+		if ((Boolean) config.get("deploy-resources")) {
+			System.out.println(" << Deploying Resources >>");
 			initRsc();
-			updateProperty("deploy-resources", "false");
+			c.updateProperty("deploy-resources", "false");
+			System.out.println("           Done." + LS);
 		}
 		new Thread() {
 			public void run() {
@@ -72,7 +79,7 @@ public class Launcher {
 			      System.out.println(CraftServer.class.getPackage().getImplementationVersion());
 			    } else {
 			      try {
-			    	  if (!(boolean) OPTIONS.get("force-jline")) {
+			    	  if (!(Boolean) config.get("force-jline")) {
 			        useJline = !"jline.UnsupportedTerminal".equals(System.getProperty("jline.terminal"));
 			        
 			        if (options.has("nojline")) {
@@ -84,22 +91,19 @@ public class Launcher {
 			        if (options.has("noconsole")) {
 			          useConsole = false;
 			        }
-			        /*try {
+			        try {
 			        	System.out.println("Launching tests..");
 			        	System.out.println("Initializing Item");
-			        	Item test = Item.APPLE;
-			        	System.out.println(test.id);
-			        	Item testitem = Item.BOOK;
-			        	System.out.println(testitem.id);
 			        	System.out.println("Doing tests");
-			        	Achievement testobject = new Achievement(0, "openInventory", 0, 0, Item.BOOK, null).a().c();
+			        	//nl.hypothermic.btcs.sandbox.AchievementList.a();
+			        	//nl.hypothermic.btcs.sandbox.Item test = nl.hypothermic.btcs.sandbox.Item.BOOK;
+			        	net.minecraft.server.MinecraftServer.main(options);
 			        } catch (Exception x) {
 			        	System.err.println("Error");
 			        	x.printStackTrace();
-			        }*/
-			        net.minecraft.server.MinecraftServer.main(options);
-			      } catch (Throwable t) {
-			        t.printStackTrace();
+			        }
+			      } catch (Exception x) {
+			        x.printStackTrace();
 			      }
 			    }
 			}
@@ -111,7 +115,6 @@ public class Launcher {
 	}
 	
 	private static void initRsc() {
-		ResourceManager r = new ResourceManager();
 		File destination = new File("resources.dat");
 		r.extract("/resources.dat", destination);
 		try {
@@ -126,59 +129,7 @@ public class Launcher {
 		destination.delete();
 	}
 	
-	private static void initConfig(){
-    	File propsExist = new File(CFG_NAME);
-    	while (FIRSTRUN) {
-    	if (propsExist.exists() && !propsExist.isDirectory()) {
-    		FIRSTRUN = false;
-    		try {
-    			FileReader reader = new FileReader(CFG_NAME);
-    			Properties props = new Properties();
-    			props.load(reader);
-    			for (String key : DEFOPTIONS.keySet()) {
-    				OPTIONS.put(key, Boolean.parseBoolean((String) props.getOrDefault(key, DEFOPTIONS.get(key))));
-    			}
-    		} catch (Exception x3) {
-    			x3.printStackTrace();
-    		}
-    	} else {
-    		FileWriter propwrite = null;
-    		Properties props = new Properties();
-    		for (String key : DEFOPTIONS.keySet()) {
-    			props.setProperty(key, (String) DEFOPTIONS.get(key));
-    		}
-    		try {
-    			propwrite = new FileWriter(CFG_NAME);
-    			props.store(propwrite, PROPS_HEADER);
-    			propwrite.close();
-    		} catch (IOException x1) {
-    			x1.printStackTrace();
-    			System.out.println("BTCS: Exception X300 happened in Launcher: " + x1);
-    		} finally {
-    			if (propwrite != null) {
-    				try {
-    					propwrite.close();
-    				} catch (Exception x2) {
-    					x2.printStackTrace();
-    				}
-    			}
-    		}
-    	}
-    }}
-	
-	private static void updateProperty(String property, String state) {
-		try {
-			FileInputStream in = new FileInputStream(CFG_NAME);
-			Properties props = new Properties();
-			props.load(in);
-			in.close();
-
-			FileOutputStream out = new FileOutputStream(CFG_NAME);
-			props.setProperty(property, state);
-			props.store(out, PROPS_HEADER);
-			out.close();
-		} catch (Exception x) {
-			x.printStackTrace();
-		}
-	}
+	private static HashMap<String, Object> initConfig(){
+    	return c.execute();
+    }
 }

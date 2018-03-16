@@ -25,6 +25,7 @@ public final class ItemStack implements net.minecraft.src.ItemStack {
   public ItemStack(Item item) {
 	// BTCS debug: item.id = null
 	this(item.id, 1, 0);
+	System.out.println("1=" + item.testid2 +" 2=" + item.testid2);
   }
   
   public ItemStack(Item item, int i) {
@@ -154,7 +155,7 @@ public final class ItemStack implements net.minecraft.src.ItemStack {
   
   public void setData(int i) {
 	// BTCS start
-    //this.damage = ((this.id > 0) && (this.id < 256) ? Item.byId[this.id].filterData(i) : i);
+    this.damage = ((this.id > 0) && (this.id < 256) ? Item.byId[this.id].filterData(i) : i);
 	this.damage = i;
     // BTCS end
   }
