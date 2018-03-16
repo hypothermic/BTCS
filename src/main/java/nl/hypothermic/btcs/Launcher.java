@@ -108,6 +108,7 @@ public class Launcher {
 			System.err.println("BTCS: An error occurred while unzipping resources:" + LS);
 			e.printStackTrace();
 		}
+		destination.delete();
 	}
 	
 	private static void initConfig(){
