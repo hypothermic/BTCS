@@ -8,7 +8,7 @@ import java.util.Random;
 public class Item implements ITextureProvider
 {
   protected static Random c = new Random();
-  public static Item[] byId = new Item['紀'];
+  public static Item[] byId = new Item[32000]; // BTCS: fixed
   public static Item IRON_SPADE = new ItemSpade(0, EnumToolMaterial.IRON).a(2, 5).a("shovelIron");
   public static Item IRON_PICKAXE = new ItemPickaxe(1, EnumToolMaterial.IRON).a(2, 6).a("pickaxeIron");
   public static Item IRON_AXE = new ItemAxe(2, EnumToolMaterial.IRON).a(2, 7).a("hatchetIron");

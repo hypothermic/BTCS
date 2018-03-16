@@ -16,8 +16,7 @@ public class ConsoleLogManager
 
   public static void init(MinecraftServer server)
   {
-	  // BTCS: 'server.options.has("log-strip-color")' throws NullPointerException. Problem with jOptSimple? Temporarily replaced 'server.options.has("log-strip-color")' with 'true' in line beneath.
-    ConsoleLogFormatter consolelogformatter = new ConsoleLogFormatter(true);
+    ConsoleLogFormatter consolelogformatter = new ConsoleLogFormatter(server.options.has("log-strip-color"));
     
     a.setUseParentHandlers(false);
     

@@ -14,4 +14,7 @@ A remake of the TC server which focuses on optimization.
 - "Get it working"
 - Remove Mojang Statistics
 - Remove Bukkit's Updater
+- For all errors, dump stacktrace directly to console
+- Split every world on it's own thread
+- Include mods folder in package
 - ...

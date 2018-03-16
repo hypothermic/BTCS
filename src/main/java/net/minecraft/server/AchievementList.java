@@ -4,10 +4,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-public class AchievementList
-{
+public class AchievementList {
   public static int a;
   public static int b;
   public static int c;
