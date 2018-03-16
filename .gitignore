@@ -1,3 +1,9 @@
 /target/
 /.settings/
 /btcs.cfg
+/mods/
+/config/
+/buildcraft/
+/redpower/
+/resources.dat
+/mod_EE.props
