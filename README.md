@@ -11,10 +11,29 @@ A remake of the TC server which focuses on optimization.
         * After: `// BTCS end`
 
 ### TODO:
-- "Get it working"
+- ~~"Get it working"~~
+- Get Forge Mods working (this happens for all mods)
 - Remove Mojang Statistics
 - Remove Bukkit's Updater
 - For all errors, dump stacktrace directly to console
 - Split every world on it's own thread
 - Include mods folder in package
 - ...
+
+### Changelog
+- v1.27
+    - Fixed mod loading issue with Balkon's Weapon Mod.
+- v1.26
+    - Fixed item init issues (see comment @ ItemStack.java:27).
+    - Added ForgeExchanger.
+    - Fixed issues with Forge not being able to load the core MC classes.
+- v1.25
+    - Added ConfigurationManager and moved the config stuff into there.
+    - Updated Launcher to delete the temporary file after deploying the resources.
+    - Fixed bug in ItemStack.setData()
+- v1.24
+    - Added ResourceManager and moved resource unpacking stuff to there.
+- v1.21
+    - Integrated CB's Main class into the Launcher
+    - Fixed some JOptSimple stuff.
+    
