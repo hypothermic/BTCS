@@ -160,16 +160,12 @@ public class Item implements ITextureProvider
   private String bU = null;
   private String name;
   protected boolean canRepair = true;
-  public Integer testid1 = 60; // BTCS: testing only
-  public Integer testid2; // BTCS: testing only
   
-  public Item(Integer i) { // BTCS: protected --> public (just for testing, so we can instantiate from nl.hypothermic.btcs package.)
+  public Item(Integer i) { // BTCS: protected --> public 
     id = 256 + i;
-    System.out.println("id=" + id);
     if (byId[256 + i] != null) {
       System.out.println("CONFLICT @ " + i + " item slot already occupied by " + byId[256 + i] + " while adding " + this);
     }
-    this.testid2 = 70;
     byId[256 + i] = this;
     org.bukkit.Material.addMaterial(256 + i);
   }

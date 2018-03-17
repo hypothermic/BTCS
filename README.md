@@ -1,6 +1,8 @@
 ### Better Tekkit Classic Server
 A remake of the TC server which focuses on optimization.
 
+__Current status:__ BTCS, including Forge and CraftBukkit, is fully working except for loading Forge mods. See issue [#1](/../../issues/1)
+
 ### Pull Request conventions
 * No trailing whitespaces.
 * Follow the [Oracle Code Conventions](http://www.oracle.com/technetwork/java/codeconvtoc-136057.html)
@@ -12,7 +14,7 @@ A remake of the TC server which focuses on optimization.
 
 ### TODO:
 - ~~"Get it working"~~
-- Get Forge Mods working (this happens for all mods)
+- Get Forge Mods working (see [this](https://github.com/hypothermic/BTCS/issues/1))
 - Remove Mojang Statistics
 - Remove Bukkit's Updater
 - For all errors, dump stacktrace directly to console
@@ -37,3 +39,14 @@ A remake of the TC server which focuses on optimization.
     - Integrated CB's Main class into the Launcher
     - Fixed some JOptSimple stuff.
     
+### Credits
+__BTCS uses__
+- Bukkit API by the Bukkit Team
+- Forge by LexManos, Eloraam, SpaceToad, FlowerChild, Hawkye, MALfunction84, Scokeev9
+- ForgeModLoader by cpw
+
+__BTCS contains the following mods:__
+- Balkon's Weapon mod by BalkondeurAlpha  
+- Equivalent Exchange 2 by x3n0ph0b3, MidnightLightning and maintainer Pahimar
+
+Special thanks to LexManos for ignoring all my questions on the Forge forums. /s
