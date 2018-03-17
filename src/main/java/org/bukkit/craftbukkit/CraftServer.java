@@ -202,7 +202,10 @@ public final class CraftServer implements Server
   }
   
   private File getConfigFile() {
-    return (File)this.console.options.valueOf("bukkit-settings");
+	// BTCS start
+    //return (File)this.console.options.valueOf("bukkit-settings");
+	return nl.hypothermic.btcs.Launcher.BUKKIT_CFG_FILE;
+	// BTCS end
   }
   
   private void saveConfig() {
@@ -216,7 +219,10 @@ public final class CraftServer implements Server
   public void loadPlugins() {
     this.pluginManager.registerInterface(JavaPluginLoader.class);
     
-    File pluginFolder = (File)this.console.options.valueOf("plugins");
+    // BTCS start
+    //File pluginFolder = (File)this.console.options.valueOf("plugins");
+    File pluginFolder = nl.hypothermic.btcs.Launcher.BUKKIT_PLUGIN_FOLDER;
+    // BTCS end
     
     if (pluginFolder.exists()) {
       Plugin[] plugins = this.pluginManager.loadPlugins(pluginFolder);

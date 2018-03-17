@@ -4,13 +4,14 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public abstract class NBTBase
-{
+import nl.hypothermic.btcs.NBTReadLimiter;
+
+public abstract class NBTBase {
   private String name;
   
   abstract void write(DataOutput paramDataOutput);
   
-  abstract void load(DataInput paramDataInput);
+  abstract void load(DataInput paramDataInput, int depth); // BTCS
   
   public abstract byte getTypeId();
   
@@ -38,7 +39,7 @@ public abstract class NBTBase
     return this.name;
   }
   
-  public static NBTBase b(DataInput paramDataInput) {
+  public static NBTBase b(DataInput paramDataInput, int depth) {
     byte b;
 	try { // BTCS: try-catch
 		b = paramDataInput.readByte();
@@ -46,7 +47,7 @@ public abstract class NBTBase
 		if (b == 0) { return new NBTTagEnd();
 	    }
 	    NBTBase localNBTBase = createTag(b, str);
-	    localNBTBase.load(paramDataInput);
+	    localNBTBase.load(paramDataInput, depth);
 	    return localNBTBase;
 	} catch (IOException e) {
 		System.out.println("BTCS: Exception X9 happened in NBTBase");

@@ -34,6 +34,10 @@ public class NBTTagString extends NBTBase {
 	}
   }
   
+  void load(java.io.DataInput x1, int x2) { // BTCS: we don't need this in the byte tag, empty method.
+	  System.out.println("BTCS DEBUG-X12: wrong load method got used, report this error to devs.");
+  }
+  
   public byte getTypeId() {
     return 8;
   }

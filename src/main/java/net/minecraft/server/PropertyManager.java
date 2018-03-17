@@ -9,14 +9,14 @@ import java.util.logging.Logger;
 import joptsimple.OptionSet;
 
 
-public class PropertyManager
-{
+public class PropertyManager {
   public static Logger a = Logger.getLogger("Minecraft");
   public Properties properties = new Properties();
   private File c;
   
   public PropertyManager(File file1) {
     this.c = file1;
+    try { // BTCS: added try-catch
     if (file1.exists()) {
       try {
         this.properties.load(new FileInputStream(file1));
@@ -27,6 +27,12 @@ public class PropertyManager
     } else {
       a.log(Level.WARNING, file1 + " does not exist");
       a();
+    }} catch (NullPointerException npe) {
+    	try {
+    		a();
+    	} catch (Exception x) {
+    		nl.hypothermic.btcs.XLogger.generic("Properties file does not exist and can not be created!");
+    	}
     }
   }
   
@@ -34,7 +40,10 @@ public class PropertyManager
   private OptionSet options = null;
   
   public PropertyManager(OptionSet options) {
-    this((File)options.valueOf("config"));
+	// BTCS start
+    //this((File)options.valueOf("config"));
+	this(nl.hypothermic.btcs.Launcher.MC_CFG_FILE);
+	// BTCS end
     
     this.options = options;
   }
@@ -58,7 +67,7 @@ public class PropertyManager
       this.properties.store(new FileOutputStream(this.c), "Minecraft server properties");
     } catch (Exception exception) {
       a.log(Level.WARNING, "Failed to save " + this.c, exception);
-      a();
+      nl.hypothermic.btcs.Launcher.forcestop();
     }
   }
   

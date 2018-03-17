@@ -1,7 +1,11 @@
 package net.minecraft.server;
 
+import java.io.DataInput;
 import java.io.IOException;
 import java.util.List;
+
+import nl.hypothermic.btcs.Launcher;
+import nl.hypothermic.btcs.NBTReadLimiter;
 
 public class NBTTagList extends NBTBase
 {
@@ -32,14 +36,18 @@ public class NBTTagList extends NBTBase
 	}
   }
   
-  void load(java.io.DataInput paramDataInput) {
+  void load(java.io.DataInput paramDataInput, int depth) { // BTCS: added depth, see https://hub.spigotmc.org/stash/projects/SPIGOT/repos/Spigot/commits/52df9dd70f0#CraftBukkit-Patches/0139-Apply-NBTReadLimiter-to-more-things.patch, except we didn't implement a limiter yet
     try {
+    	if (depth > 512) { // BTCS TODO: figure out best value for maxdepth, this value may interfere with mods
+    		throw new IOException("BTCS: Exception X310 happened in NBT: tag is too complex.");
+    	}
 		this.type = paramDataInput.readByte();
 		int i = paramDataInput.readInt();
 		this.list = new java.util.ArrayList();
 	    for (int j = 0; j < i; j++) {
 	      NBTBase localNBTBase = NBTBase.createTag(this.type, null);
-	      localNBTBase.load(paramDataInput);
+	      // BTCS TODO: implement NBTReadLimiter and streamlimiter for large tags with low depth
+	      localNBTBase.load(paramDataInput, depth + 1);
 	      this.list.add(localNBTBase);
 	    }
 	} catch (IOException e) {

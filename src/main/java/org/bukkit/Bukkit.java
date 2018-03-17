@@ -24,19 +24,6 @@ import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.scheduler.BukkitScheduler;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 public final class Bukkit
 {
   private static Server server;
@@ -45,20 +32,14 @@ public final class Bukkit
   {
     return server;
   }
-  
-
-
-
-
-
 
   public static void setServer(Server server)
   {
-    if (server != null) {
+    if (Bukkit.server != null) {
       throw new UnsupportedOperationException("Cannot redefine singleton Server");
     }
     
-    server = server;
+    Bukkit.server = server;
     server.getLogger().info("This server is running " + getName() + " version " + getVersion() + " (Implementing API version " + getBukkitVersion() + ")");
   }
   

@@ -7,8 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-public class NBTTagCompound extends NBTBase
-{
+public class NBTTagCompound extends NBTBase {
   private Map map = new java.util.HashMap();
   
   public NBTTagCompound() {
@@ -46,10 +45,13 @@ public class NBTTagCompound extends NBTBase
     this.map.clear();
     
     NBTBase nbtbase;
-    
-    while ((nbtbase = NBTBase.b(datainput)).getTypeId() != 0) {
+    while ((nbtbase = NBTBase.b(datainput, 0)).getTypeId() != 0) { // BTCS TODO: limit this
       this.map.put(nbtbase.getName(), nbtbase);
     }
+  }
+  
+  void load(java.io.DataInput x1, int x2) { // BTCS: we don't need this in the byte tag, empty method.
+	  System.out.println("BTCS DEBUG-X4: wrong load method got used, report this error to devs.");
   }
   
   public Collection d() {

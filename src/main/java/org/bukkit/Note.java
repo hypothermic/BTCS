@@ -4,11 +4,6 @@ import com.google.common.collect.Maps;
 import java.util.Map;
 import org.apache.commons.lang3.Validate;
 
-
-
-
-
-
 public class Note
 {
   private final byte note;
@@ -43,13 +38,6 @@ public class Note
     {
       return getId(false);
     }
-    
-
-
-
-
-
-
 
     public byte getId(boolean sharped)
     {
@@ -57,21 +45,11 @@ public class Note
       
       return (byte)(id % 12);
     }
-    
-
-
-
 
     public boolean isSharpable()
     {
       return this.sharpable;
     }
-    
-
-
-
-
-
 
     public boolean isSharped(byte id)
     {
@@ -83,12 +61,6 @@ public class Note
       
       throw new IllegalArgumentException("The id isn't matching to the tone.");
     }
-    
-
-
-
-
-
 
     public static Tone getById(byte id)
     {
@@ -98,75 +70,6 @@ public class Note
     static
     {
       BY_DATA = Maps.newHashMap();
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       for (Tone tone : values()) {
         int id = tone.id % 12;
         BY_DATA.put(Byte.valueOf((byte)id), tone);
@@ -178,13 +81,6 @@ public class Note
       }
     }
   }
-  
-
-
-
-
-
-
 
   public Note(int note)
   {
@@ -192,12 +88,6 @@ public class Note
     
     this.note = ((byte)note);
   }
-  
-
-
-
-
-
 
   public Note(int octave, Tone tone, boolean sharped)
   {
@@ -211,12 +101,6 @@ public class Note
     
     this.note = ((byte)(octave * 12 + tone.getId(sharped)));
   }
-  
-
-
-
-
-
 
   public static Note flat(int octave, Tone tone)
   {
@@ -224,58 +108,34 @@ public class Note
     tone = tone == Tone.G ? Tone.F : Tone.values()[(tone.ordinal() - 1)];
     return new Note(octave, tone, tone.isSharpable());
   }
-  
-
-
-
-
-
 
   public static Note sharp(int octave, Tone tone)
   {
     return new Note(octave, tone, true);
   }
-  
-
-
-
-
-
 
   public static Note natural(int octave, Tone tone)
   {
     Validate.isTrue(octave != 2, "Octave cannot be 2 for naturals");
     return new Note(octave, tone, false);
   }
-  
-
 
   public Note sharped()
   {
     Validate.isTrue(this.note < 24, "This note cannot be sharped because it is the highest known note!");
     return new Note(this.note + 1);
   }
-  
-
 
   public Note flattened()
   {
     Validate.isTrue(this.note > 0, "This note cannot be flattened because it is the lowest known note!");
     return new Note(this.note - 1);
   }
-  
-
-
-
 
   public byte getId()
   {
     return this.note;
   }
-  
-
-
-
 
   public int getOctave()
   {
@@ -285,19 +145,11 @@ public class Note
   private byte getToneByte() {
     return (byte)(this.note % 12);
   }
-  
-
-
-
 
   public Tone getTone()
   {
     return Tone.getById(getToneByte());
   }
-  
-
-
-
 
   public boolean isSharped()
   {

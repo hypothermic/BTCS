@@ -24,6 +24,10 @@ public class NBTTagByte extends NBTBase {
 	}
   }
   
+  void load(java.io.DataInput x1, int x2) { // BTCS: we don't need this in the byte tag, empty method.
+	  System.out.println("BTCS DEBUG-X1: wrong load method got used, report this error to devs.");
+  }
+  
   void load(DataInput paramDataInput) {
     try {
 		this.data = paramDataInput.readByte();

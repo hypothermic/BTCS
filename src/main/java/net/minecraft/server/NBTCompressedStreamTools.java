@@ -3,6 +3,8 @@ package net.minecraft.server;
 import java.io.DataInputStream;
 import java.io.IOException;
 
+import nl.hypothermic.btcs.NBTReadLimiter;
+
 public class NBTCompressedStreamTools
 {
   public static NBTTagCompound a(java.io.InputStream paramInputStream) throws IOException
@@ -44,9 +46,8 @@ public class NBTCompressedStreamTools
     return localByteArrayOutputStream.toByteArray();
   }
 
-  public static NBTTagCompound a(java.io.DataInput paramDataInput, boolean x) throws IOException
-  {
-    NBTBase localNBTBase = NBTBase.b(paramDataInput);
+  public static NBTTagCompound a(java.io.DataInput paramDataInput, boolean x) throws IOException { // BTCS
+    NBTBase localNBTBase = NBTBase.b(paramDataInput, 0);
     if ((localNBTBase instanceof NBTTagCompound)) return (NBTTagCompound)localNBTBase;
     throw new java.io.IOException("Root tag must be a named compound tag");
   }

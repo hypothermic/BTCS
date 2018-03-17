@@ -3,8 +3,7 @@ package net.minecraft.server;
 import java.io.DataInput;
 import java.io.IOException;
 
-public class NBTTagByteArray extends NBTBase
-{
+public class NBTTagByteArray extends NBTBase {
   public byte[] data;
   
   public NBTTagByteArray(String paramString) {
@@ -35,6 +34,10 @@ public class NBTTagByteArray extends NBTBase
 		System.out.println("BTCS: Exception X14 happened in NBTBase");
 		e.printStackTrace();
 	}
+  }
+  
+  void load(java.io.DataInput x1, int x2) { // BTCS: we don't need this in the byte tag, empty method.
+	  System.out.println("BTCS DEBUG-X2: wrong load method got used, report this error to devs.");
   }
   
   public byte getTypeId() {

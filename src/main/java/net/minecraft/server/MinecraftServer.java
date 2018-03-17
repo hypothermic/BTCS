@@ -271,10 +271,24 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
           if (k == 0) {
             world = new WorldServer(this, new ServerNBTManager(this.server.getWorldContainer(), s, true), s, dimension, settings, env, gen);
           } else {
+        	// BTCS start
             String dim = DimensionManager.getProvider(dimension).getSaveFolder();
+            
+            System.out.println("name=" + name);
+            
+            System.out.println("dim=" + dim);
+            
+            if (dim == null) {
+            	// Known issue with Forge, this needs to be fixed. Please send pull request if you know how to fix this.
+            	nl.hypothermic.btcs.XLogger.x(320, "warn: dim=null");
+            	nl.hypothermic.btcs.XLogger.generr("BTCS: This is a known issue, we are looking to fix this soon.");
+            	System.exit(1);
+            }
             
             File newWorld = new File(new File(name), dim);
             File oldWorld = new File(new File(s), dim);
+            
+            // BTCS end
             
             if ((!newWorld.isDirectory()) && (oldWorld.isDirectory())) {
               log.info("---- Migration of old " + worldType + " folder required ----");

@@ -14,15 +14,22 @@ __Current status:__ BTCS, including Forge and CraftBukkit, is fully working exce
 
 ### TODO:
 - ~~"Get it working"~~
-- Get Forge Mods working (see [this](https://github.com/hypothermic/BTCS/issues/1))
+- Get Forge Mods working (see [this issue](https://github.com/hypothermic/BTCS/issues/1))
 - Remove Mojang Statistics
 - Remove Bukkit's Updater
+- Implement NBTReadLimiter into NBTTagList
 - For all errors, dump stacktrace directly to console
 - Split every world on it's own thread
 - Include mods folder in package
-- ...
 
 ### Changelog
+- v1.28
+    - Added NBT max depth to fix vulnerability: http://blog.ammaraskar.com/minecraft-vulnerability-advisory/
+        - Added to-do: implement NBTReadLimiter, priority medium.
+    - Removed EE2 from resources folder.
+    - Crunched a lot of bugs.
+    - Moved file declaration to Launcher class.
+    - Removed LuaJ dependency
 - v1.27
     - Fixed mod loading issue with Balkon's Weapon Mod.
 - v1.26
@@ -40,7 +47,7 @@ __Current status:__ BTCS, including Forge and CraftBukkit, is fully working exce
     - Fixed some JOptSimple stuff.
     
 ### Credits
-__BTCS uses__
+__BTCS uses:__
 - Bukkit API by the Bukkit Team
 - Forge by LexManos, Eloraam, SpaceToad, FlowerChild, Hawkye, MALfunction84, Scokeev9
 - ForgeModLoader by cpw
@@ -49,4 +56,16 @@ __BTCS contains the following mods:__
 - Balkon's Weapon mod by BalkondeurAlpha  
 - Equivalent Exchange 2 by x3n0ph0b3, MidnightLightning and maintainer Pahimar
 
-Special thanks to LexManos for ignoring all my questions on the Forge forums. /s
+__BTCS's maven dependencies:__
+- Ebean by avaje
+- Guava and Gson by Google
+- MySql JDBC
+- JLine
+- Commons by Apache
+- Collect by Google
+- JOptSimple by Paul Holser
+- Snakeyaml by asomov
+- Jansi by fusesource
+- Zip4j by Lingala
+
+_Special thanks to LexManos for ignoring all my questions on the Forge forums. /s_

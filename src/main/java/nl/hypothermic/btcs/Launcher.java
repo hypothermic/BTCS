@@ -32,7 +32,10 @@ public class Launcher {
 	private static double VERSION;
 	private static String VTAG;
 	private static String PROPS_HEADER = " BTCS Configuration File." + LS + " https://github.com/hypothermic/BTCS";
-	private static String CFG_NAME = "btcs.cfg";
+	private static final String CFG_NAME = "btcs.cfg";
+	public static final File MC_CFG_FILE = new File("mc.cfg"); /**{@link net.minecraft.server.PropertyManager#PropertyManager(OptionSet)}*/ // TODO: add to config
+	public static final File BUKKIT_CFG_FILE = new File("bukkit.cfg"); /**{@link org.bukkit.craftbukkit.CraftServer#getConfigFile()}*/ // TODO: add to config
+	public static final File BUKKIT_PLUGIN_FOLDER = new File("plugins"); /**{@link org.bukkit.craftbukkit.CraftServer#loadPlugins()}*/ // TODO: add to config
 	// I wish Properties files could store booleans .-.
 	// I guess we'll have to store them as Strings for now and Boolean.parseBoolean() when we load them
 	private static HashMap<String, String> DEFOPTIONS = new HashMap() {{ put("force-jline", "false");
@@ -41,11 +44,12 @@ public class Launcher {
 	private static ConfigurationManager c = new ConfigurationManager(DEFOPTIONS);
 	private static ResourceManager r = new ResourceManager();
 
+	private static ConcurrencyManager cc = new ConcurrencyManager();
 																		 
 	public static void main(final String[] args) {
 		LS = System.getProperty("line.separator");
 		// TODO: include these in config file. Hardcoded for now since it's not high priority.
-		VERSION = 1.27;
+		VERSION = 1.28;
 		VTAG = "ALPHA";
 		
 		System.out.println(LS + "  << BTCS v" + VERSION + "-" + VTAG + " >>" + LS
@@ -88,10 +92,16 @@ public class Launcher {
 			          System.setProperty("user.language", "en");
 			          useJline = false;
 			        }}
-			        
+			    	
+			    	// TODO: move all options.has() checks to a seperate class
+			    	if (options.has("config")) { // Fun fact: Minecraft crashes if config is not specified.
+			    		XLogger.generr("No configuration file specified. Exiting.");
+			    		forcestop();
+			    	}
 			        if (options.has("noconsole")) {
 			          useConsole = false;
 			        }
+			        
 			        try {
 			        	System.out.println("Launching tests..");
 			        	System.out.println("Initializing Item");
@@ -141,5 +151,10 @@ public class Launcher {
 	    int pos = version.indexOf('.');
 	    pos = version.indexOf('.', pos+1);
 	    return Double.parseDouble (version.substring (0, pos));
+	}
+	
+	public static void forcestop() { // public for now ??
+		XLogger.generr("Force stop got initiated.");
+		System.exit(1);
 	}
 }
