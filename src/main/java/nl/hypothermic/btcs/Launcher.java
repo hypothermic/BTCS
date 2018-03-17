@@ -48,8 +48,9 @@ public class Launcher {
 		VERSION = 1.25;
 		VTAG = "ALPHA";
 		
-		System.out.println(LS + "  << BTCS v" + VERSION + "-" + VTAG + " >>" + LS);
-		System.out.println(" <<  Load Configuration >>");
+		System.out.println(LS + "  << BTCS v" + VERSION + "-" + VTAG + " >>" + LS
+							  + "  << Java" + getVersion() + " on " + System.getProperty("os.name") + " >>" + LS + LS
+							  + " <<  Load Configuration >>");
 		final HashMap config = initConfig();
 		System.out.println("           Done." + LS);
 		// TODO: check if resources exist and deploy them, for now, we let the user choose.
@@ -132,4 +133,13 @@ public class Launcher {
 	private static HashMap<String, Object> initConfig(){
     	return c.execute();
     }
+	
+	// getVersion() method is grabbed from StackOverflow: 
+	// https://stackoverflow.com/questions/2591083/getting-java-version-at-runtime
+	static double getVersion () {
+	    String version = System.getProperty("java.version");
+	    int pos = version.indexOf('.');
+	    pos = version.indexOf('.', pos+1);
+	    return Double.parseDouble (version.substring (0, pos));
+	}
 }

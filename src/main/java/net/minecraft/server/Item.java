@@ -295,9 +295,6 @@ public class Item implements ITextureProvider
   public String l() {
     return LocaleI18n.get(getName() + ".name");
   }
-  
-
-
 
   public boolean t_()
   {
@@ -311,7 +308,6 @@ public class Item implements ITextureProvider
   public int c(ItemStack itemstack) {
     return 0;
   }
-  
 
   protected Item b(String s)
   {

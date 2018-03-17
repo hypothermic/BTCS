@@ -23,45 +23,11 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import nl.hypothermic.btcs.ForgeExchanger; // BTCS
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-public class Loader
-{
+public class Loader {
+	private static ForgeExchanger.Reporter fer = new ForgeExchanger.Reporter(); // BTCS
+	
   private static Pattern zipJar = Pattern.compile("(.+).(zip|jar)$");
   private static Pattern modClass = Pattern.compile("(.+/|)(mod\\_[^\\s$]+).class$");
   
@@ -284,22 +250,6 @@ public class Loader
     
     log.fine("Mod post-initialization complete");
   }
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   private void load()
   {
@@ -421,6 +371,7 @@ public class Loader
           if (modFound)
           {
             log.fine(String.format("File %s loaded successfully", new Object[] { matcher.group(0) }));
+            fer.reportModLoaded(modFile.getName()); // BTCS
           }
           else
           {
@@ -586,20 +537,12 @@ public class Loader
     }
     return foundAModClass;
   }
-  
-
-
-
 
   public static List<ModContainer> getModList()
   {
     return instance().mods;
   }
   
-
-
-
-
   public void loadMods()
   {
     this.state = State.NOINIT;
@@ -611,9 +554,6 @@ public class Loader
     
     this.mods = Collections.unmodifiableList(this.mods);
   }
-  
-
-
 
   public void initializeMods()
   {
@@ -626,19 +566,10 @@ public class Loader
     log.info(String.format("Forge Mod Loader load complete, %d mods loaded", new Object[] { Integer.valueOf(this.mods.size()) }));
   }
   
-
-
-
-
-
-
   public static boolean isModLoaded(String modname)
   {
     return instance().namedMods.containsKey(modname);
   }
-  
-
-
 
   public File getConfigDir()
   {
@@ -657,17 +588,11 @@ public class Loader
     }
     return ret.toString();
   }
-  
-
-
 
   public String getFMLVersionString()
   {
     return String.format("FML v%s.%s.%s.%s", new Object[] { major, minor, rev, build });
   }
-  
-
-
 
   public ClassLoader getModClassLoader()
   {
