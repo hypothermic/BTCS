@@ -45,7 +45,7 @@ public class Launcher {
 	public static void main(final String[] args) {
 		LS = System.getProperty("line.separator");
 		// TODO: include these in config file. Hardcoded for now since it's not high priority.
-		VERSION = 1.25;
+		VERSION = 1.26;
 		VTAG = "ALPHA";
 		
 		System.out.println(LS + "  << BTCS v" + VERSION + "-" + VTAG + " >>" + LS
