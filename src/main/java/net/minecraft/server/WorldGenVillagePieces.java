@@ -20,8 +20,6 @@ public class WorldGenVillagePieces
     localArrayList.add(new WorldGenVillagePieceWeight(WorldGenVillageFarm.class, 3, MathHelper.a(paramRandom, 2 + paramInt, 4 + paramInt * 2)));
     localArrayList.add(new WorldGenVillagePieceWeight(WorldGenVillageBlacksmith.class, 15, MathHelper.a(paramRandom, 0, 1 + paramInt)));
     localArrayList.add(new WorldGenVillagePieceWeight(WorldGenVillageHouse2.class, 8, MathHelper.a(paramRandom, 0 + paramInt, 3 + paramInt * 2)));
-    
-
 
     Iterator localIterator = localArrayList.iterator();
     while (localIterator.hasNext()) {
@@ -33,10 +31,10 @@ public class WorldGenVillagePieces
     return localArrayList;
   }
   
-  private static int a(ArrayList paramArrayList) {
+  private static int a(ArrayList<WorldGenVillagePieceWeight> paramArrayList) {
     int i = 0;
     int j = 0;
-    for (WorldGenVillagePieceWeight localWorldGenVillagePieceWeight : (WorldGenVillagePieceWeight[]) paramArrayList.toArray()) { // BTCS: added cast and .toArray()
+    for (WorldGenVillagePieceWeight localWorldGenVillagePieceWeight : paramArrayList.toArray(new WorldGenVillagePieceWeight[paramArrayList.size()])) { // BTCS: added .toArray()
       if ((localWorldGenVillagePieceWeight.d > 0) && (localWorldGenVillagePieceWeight.c < localWorldGenVillagePieceWeight.d)) {
         i = 1;
       }
@@ -85,7 +83,7 @@ public class WorldGenVillagePieces
       j++;
       
       k = paramRandom.nextInt(i);
-      for (WorldGenVillagePieceWeight localWorldGenVillagePieceWeight : (WorldGenVillagePieceWeight[]) paramWorldGenVillageStartPiece.d.toArray()) { // BTCS: added cast and .toArray()
+      for (WorldGenVillagePieceWeight localWorldGenVillagePieceWeight : ((ArrayList<WorldGenVillagePieceWeight>) paramWorldGenVillageStartPiece.d).toArray(new WorldGenVillagePieceWeight[paramWorldGenVillageStartPiece.d.size()])) { // BTCS: added cast and .toArray()
         k -= localWorldGenVillagePieceWeight.b;
         if (k < 0)
         {

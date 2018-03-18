@@ -23,22 +23,31 @@ public class CraftChunk implements org.bukkit.Chunk
   private WorldServer worldServer;
   private int x;
   private int z;
-  private static final byte[] emptyData = new byte['ࠀ'];
-  private static final short[] emptyBlockIDs = new short['က'];
-  private static final byte[] emptySkyLight = new byte['ࠀ'];
+  private static final byte[] emptyData = new byte[2048];
+  private static final short[] emptyBlockIDs = new short[4096];
+  private static final byte[] emptySkyLight = new byte[2048];
   
   public CraftChunk(net.minecraft.server.Chunk chunk) {
     if (!(chunk instanceof EmptyChunk)) {
       this.weakChunk = new WeakReference(chunk);
     }
     
-    this.worldServer = ((WorldServer)getHandle().world);
+    this.worldServer = (WorldServer) getHandle().world;
     this.x = getHandle().x;
     this.z = getHandle().z;
   }
   
   public org.bukkit.World getWorld() {
-    return this.worldServer.getWorld();
+    nl.hypothermic.btcs.XLogger.generr("WS type: " + this.worldServer.getClass().getName());
+    nl.hypothermic.btcs.XLogger.generr("RETR1: Getting world from worldServer...");
+    org.bukkit.World w = this.worldServer.getWorld();
+    nl.hypothermic.btcs.XLogger.generr("RETR1: Done");
+    if (w == null) {
+		nl.hypothermic.btcs.XLogger.gencrit("org.bukkit.World == null");
+	} else {
+		nl.hypothermic.btcs.XLogger.generr("org.bukkit.World != null");
+	}
+    return w;
   }
   
   public CraftWorld getCraftWorld() {

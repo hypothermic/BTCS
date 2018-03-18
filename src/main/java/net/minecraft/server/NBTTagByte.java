@@ -19,8 +19,6 @@ public class NBTTagByte extends NBTBase {
     try {
 		paramDataOutput.writeByte(this.data);
 	} catch (IOException e) {
-		System.out.println("BTCS: Exception X11 happened in NBTBase");
-		e.printStackTrace();
 	}
   }
   
@@ -29,11 +27,9 @@ public class NBTTagByte extends NBTBase {
   }
   
   void load(DataInput paramDataInput) {
-    try {
+	try {
 		this.data = paramDataInput.readByte();
 	} catch (IOException e) {
-		System.out.println("BTCS: Exception X12 happened in NBTBase");
-		e.printStackTrace();
 	}
   }
   

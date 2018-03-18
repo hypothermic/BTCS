@@ -11,13 +11,13 @@ public abstract class NBTBase {
   
   abstract void write(DataOutput paramDataOutput);
   
-  abstract void load(DataInput paramDataInput, int depth); // BTCS
+  abstract void load(DataInput paramDataInput);
   
   public abstract byte getTypeId();
   
   protected NBTBase(String paramString)
   {
-    if (paramString == null) {
+	if (paramString == null) {
       this.name = "";
     } else {
       this.name = paramString;
@@ -39,7 +39,7 @@ public abstract class NBTBase {
     return this.name;
   }
   
-  public static NBTBase b(DataInput paramDataInput, int depth) {
+  public static NBTBase b(DataInput paramDataInput) {
     byte b;
 	try { // BTCS: try-catch
 		b = paramDataInput.readByte();
@@ -47,11 +47,9 @@ public abstract class NBTBase {
 		if (b == 0) { return new NBTTagEnd();
 	    }
 	    NBTBase localNBTBase = createTag(b, str);
-	    localNBTBase.load(paramDataInput, depth);
+	    localNBTBase.load(paramDataInput);
 	    return localNBTBase;
 	} catch (IOException e) {
-		System.out.println("BTCS: Exception X9 happened in NBTBase");
-		e.printStackTrace();
 		return new NBTTagEnd();
 	}
   }
@@ -65,8 +63,6 @@ public abstract class NBTBase {
 	    
 	    paramNBTBase.write(paramDataOutput);
 	} catch (IOException e) {
-		System.out.println("BTCS: Exception X10 happened in NBTBase");
-		e.printStackTrace();
 	}
   }
   

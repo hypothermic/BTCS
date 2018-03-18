@@ -23,6 +23,10 @@ __Current status:__ BTCS, including Forge and CraftBukkit, is fully working exce
 - Include mods folder in package
 
 ### Changelog
+- v1.30
+    - Fixed world generation (see comment in Chunck.java line 150)
+    - Added debugging mode
+    - Fixed downcasting issues in WorldGenVillagePieces, WeightedRandom, StructurePiece and StructureGenerator
 - v1.28
     - Added NBT max depth to fix vulnerability: http://blog.ammaraskar.com/minecraft-vulnerability-advisory/
         - Added to-do: implement NBTReadLimiter, priority medium.

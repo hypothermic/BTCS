@@ -28,9 +28,9 @@ public abstract class StructurePiece
     return this.i;
   }
   
-  public static StructurePiece a(List paramList, StructureBoundingBox paramStructureBoundingBox)
+  public static StructurePiece a(List<StructurePiece> paramList, StructureBoundingBox paramStructureBoundingBox) // BTCS: added decl <StructurePiece>
   {
-    for (StructurePiece localStructurePiece : (StructurePiece[]) paramList.toArray()) {  // BTCS: added cast and .toArray()
+    for (StructurePiece localStructurePiece : paramList.toArray(new StructurePiece[paramList.size()])) {  // BTCS: added .toArray(...)
       if ((localStructurePiece.b() != null) && (localStructurePiece.b().a(paramStructureBoundingBox))) {
         return localStructurePiece;
       }

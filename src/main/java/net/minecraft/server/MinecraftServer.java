@@ -234,33 +234,34 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
     int j = this.propertyManager.getInt("gamemode", 0);
     
     j = WorldSettings.a(j);
-    log.info("Default game type: " + j);
+    log.info("Default gamemode: " + j);
     
     boolean generateStructures = this.propertyManager.getBoolean("generate-structures", true);
     
+    System.out.print("BTCS: init DimensionManager... ");
+    DimensionManager.init(); // BTCS
+    System.out.println(" done.");
+    
+    System.out.print("BTCS: Retrieving dimensions...");
     Integer[] dimensions = DimensionManager.getIDs();
     java.util.Arrays.sort(dimensions, new java.util.Comparator()
     {
-      public int compare(Integer o1, Integer o2) {
+      /*public int compare(Integer o1, Integer o2) {
         return Math.abs(o1.intValue()) - Math.abs(o2.intValue());
-      }
+      }*/
 
       // BTCS start
       public int compare(Object arg0, Object arg1) {
-    	// TODO Auto-generated method stub
-    	return 0;
+    	  return Math.abs(((Integer) arg0).intValue()) - Math.abs(((Integer) arg1).intValue());
       }
       // BTCS end
     });
-    for (int k = 0; k < dimensions.length; k++)
-    {
+    System.out.println(" done.");
+    for (int k = 0; k < dimensions.length; k++) {
       int dimension = dimensions[k].intValue();
-      if ((dimension != -1) || (this.propertyManager.getBoolean("allow-nether", true)))
-      {
-        if ((dimension != 1) || (this.server.getAllowEnd()))
-        {
-
-
+      if ((dimension != -1) || (this.propertyManager.getBoolean("allow-nether", true))) {
+        if ((dimension != 1) || (this.server.getAllowEnd())) {
+          // 
           org.bukkit.World.Environment env = org.bukkit.World.Environment.getEnvironment(dimension); // BTCS: 'World' --> 'org.bukkit.World'
           String worldType = env.toString().toLowerCase();
           String name = s + "_" + worldType;
@@ -269,17 +270,17 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
           WorldSettings settings = new WorldSettings(i, j, generateStructures, false, worldtype);
           WorldServer world; // BTCS
           if (k == 0) {
+        	System.out.println("---- BTCS: 1/1: Initializing main dimension: " + name + " ----");
             world = new WorldServer(this, new ServerNBTManager(this.server.getWorldContainer(), s, true), s, dimension, settings, env, gen);
+            System.out.println("------ BTCS: " + name + " has been initialized. ------");
           } else {
         	// BTCS start
             String dim = DimensionManager.getProvider(dimension).getSaveFolder();
             
-            System.out.println("name=" + name);
-            
-            System.out.println("dim=" + dim);
+            System.out.println("---- BTCS: 1/3: Initializing dimension: " + name + "(id= " + dim + " ) ----");
             
             if (dim == null) {
-            	// Known issue with Forge, this needs to be fixed. Please send pull request if you know how to fix this.
+            	// Known issue with Forge, this needs to be fixed. Please send pull request if you know how to fix this. TODO
             	nl.hypothermic.btcs.XLogger.x(320, "warn: dim=null");
             	nl.hypothermic.btcs.XLogger.generr("BTCS: This is a known issue, we are looking to fix this soon.");
             	System.exit(1);
@@ -321,6 +322,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
             world = new SecondaryWorldServer(this, new ServerNBTManager(this.server.getWorldContainer(), name, true), name, dimension, settings, (WorldServer) this.worlds.get(0), env, gen);
           }
           
+          System.out.println("---- BTCS: 2/3: Setting properties for world " + name + " ----");
           if (gen != null) {
             world.getWorld().getPopulators().addAll(gen.getDefaultPopulators(world.getWorld()));
           }
@@ -334,22 +336,21 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
           world.getWorldData().setGameType(j);
           this.worlds.add(world);
           this.serverConfigurationManager.setPlayerFileData((WorldServer[])this.worlds.toArray(new WorldServer[0]));
+          System.out.println("------ BTCS: 3/3: " + name + " has been configured. ------");
         }
       }
     }
     short short1 = 196;
     long l = System.currentTimeMillis();
+    System.out.println("---- BTCS: all worlds have been initialized ----");
     
-
+    System.out.println("---- BTCS: building worlds ----");
     for (int i1 = 0; i1 < this.worlds.size(); i1++) {
+    	System.out.println("---- BTCS: building world " + i1 + "/" + this.worlds.size() + " ----");
       WorldServer worldserver = (WorldServer)this.worlds.get(i1);
       log.info("Preparing start region for level " + i1 + " (Seed: " + worldserver.getSeed() + ")");
-      if (worldserver.getWorld().getKeepSpawnInMemory())
-      {
-
-
+      if (worldserver.getWorld().getKeepSpawnInMemory()) {
         ChunkCoordinates chunkcoordinates = worldserver.getSpawn();
-        
         for (int j1 = -short1; (j1 <= short1) && (this.isRunning); j1 += 16) {
           for (int k1 = -short1; (k1 <= short1) && (this.isRunning); k1 += 16) {
             long l1 = System.currentTimeMillis();
@@ -373,15 +374,13 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
         }
       }
     }
-    
-
-
+    System.out.println("---- BTCS: all worlds were built. ----");
     for (World world : this.worlds) {
       this.server.getPluginManager().callEvent(new WorldLoadEvent(world.getWorld()));
     }
-    
-
+    System.out.println("---- BTCS: all worlds were loaded into Bukkit. ----");
     t();
+    System.out.println("---- BTCS: plugins were enabled ----");
   }
   
   private void b(String s, int i) {

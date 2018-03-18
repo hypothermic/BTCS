@@ -3,13 +3,7 @@ package org.bukkit.event.world;
 import org.bukkit.Chunk;
 import org.bukkit.event.HandlerList;
 
-
-
-
-
-public class ChunkPopulateEvent
-  extends ChunkEvent
-{
+public class ChunkPopulateEvent extends ChunkEvent {
   private static final HandlerList handlers = new HandlerList();
   
   public ChunkPopulateEvent(Chunk chunk) {

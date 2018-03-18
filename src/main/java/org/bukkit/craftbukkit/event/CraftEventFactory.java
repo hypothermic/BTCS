@@ -148,35 +148,34 @@ public class CraftEventFactory
   }
   
   public static PlayerInteractEvent callPlayerInteractEvent(EntityHuman who, Action action, int clickedX, int clickedY, int clickedZ, int clickedFace, net.minecraft.server.ItemStack itemstack) {
-    Player player = who == null ? null : (Player)who.getBukkitEntity();
-    CraftItemStack itemInHand = new CraftItemStack(itemstack);
-    
-    CraftWorld craftWorld = (CraftWorld)player.getWorld();
-    CraftServer craftServer = (CraftServer)player.getServer();
+	  Player player = (who == null) ? null : (Player) who.getBukkitEntity();
+      CraftItemStack itemInHand = new CraftItemStack(itemstack);
+
+      CraftWorld craftWorld = (CraftWorld) player.getWorld();
+      CraftServer craftServer = (CraftServer) player.getServer();
     
     Block blockClicked = craftWorld.getBlockAt(clickedX, clickedY, clickedZ);
     org.bukkit.block.BlockFace blockFace = org.bukkit.craftbukkit.block.CraftBlock.notchToBlockFace(clickedFace);
     
     if (clickedY > 255) {
-      blockClicked = null;
-      switch (action) {
-      case LEFT_CLICK_BLOCK: 
-        action = Action.LEFT_CLICK_AIR;
-        break;
-      case RIGHT_CLICK_BLOCK: 
-        action = Action.RIGHT_CLICK_AIR;
-        break;
-      }
-      
+        blockClicked = null;
+        switch (action) {
+        case LEFT_CLICK_BLOCK:
+            action = Action.LEFT_CLICK_AIR;
+            break;
+        case RIGHT_CLICK_BLOCK:
+            action = Action.RIGHT_CLICK_AIR;
+            break;
+        }
     }
-    
-    if ((itemInHand.getType() == Material.AIR) || (itemInHand.getAmount() == 0)) {
-      itemInHand = null;
+
+    if (itemInHand.getType() == Material.AIR || itemInHand.getAmount() == 0) {
+        itemInHand = null;
     }
-    
+
     PlayerInteractEvent event = new PlayerInteractEvent(player, action, itemInHand, blockClicked, blockFace);
     craftServer.getPluginManager().callEvent(event);
-    
+
     return event;
   }
   

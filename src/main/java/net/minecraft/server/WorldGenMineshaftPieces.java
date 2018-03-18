@@ -3,20 +3,7 @@ package net.minecraft.server;
 import java.util.List;
 import java.util.Random;
 
-
-
-
-
-
-
-
-
-
-
-
-
-public class WorldGenMineshaftPieces
-{
+public class WorldGenMineshaftPieces {
   private static StructurePiece a(List paramList, Random paramRandom, int paramInt1, int paramInt2, int paramInt3, int paramInt4, int paramInt5)
   {
     int i = paramRandom.nextInt(100);

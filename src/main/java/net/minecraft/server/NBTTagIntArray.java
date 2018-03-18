@@ -23,8 +23,6 @@ public class NBTTagIntArray extends NBTBase
 			paramDataOutput.writeInt(this.data[i]);
 		}
 	} catch (IOException e) {
-		System.out.println("BTCS: Exception X21 happened in NBT");
-		e.printStackTrace(); 
 	}
   }
   
@@ -36,8 +34,6 @@ public class NBTTagIntArray extends NBTBase
 	      this.data[j] = paramDataInput.readInt();
 	    }
 	} catch (IOException e) {
-		System.out.println("BTCS: Exception X22 happened in NBT");
-		e.printStackTrace();
 	}
   }
   

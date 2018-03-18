@@ -1,31 +1,14 @@
 package net.minecraft.server;
 
-
-
-
-
 public class WorldGenVillagePieceWeight
 {
   public Class a;
-  
-
-
 
   public final int b;
-  
-
-
 
   public int c;
-  
-
-
 
   public int d;
-  
-
-
-
 
   public WorldGenVillagePieceWeight(Class paramClass, int paramInt1, int paramInt2)
   {

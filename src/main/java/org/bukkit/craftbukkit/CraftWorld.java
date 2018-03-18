@@ -219,16 +219,12 @@ public class CraftWorld implements org.bukkit.World
   
   public boolean isChunkInUse(int x, int z) {
     Player[] players = this.server.getOnlinePlayers();
-    
+    System.out.println("---- BTCS: XRETR4: run CraftWorld.isChunckInUse(int, int)");
     for (Player player : players) {
       Location loc = player.getLocation();
+      System.out.println("---- BTCS: XRETR4: rq cps.world CraftWorld.isChunckInUse(int, int)");
       if (loc.getWorld() == this.world.chunkProviderServer.world.getWorld())
       {
-
-
-
-
-
         if ((Math.abs(loc.getBlockX() - (x << 4)) <= 256) && (Math.abs(loc.getBlockZ() - (z << 4)) <= 256))
           return true;
       }

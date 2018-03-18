@@ -19,8 +19,6 @@ public class NBTTagDouble extends NBTBase {
     try { // BTCS
 		paramDataOutput.writeDouble(this.data);
 	} catch (IOException e) {
-		System.out.println("BTCS: Exception X15 happened in NBTBase");
-		e.printStackTrace();
 	}
   }
   
@@ -28,8 +26,6 @@ public class NBTTagDouble extends NBTBase {
     try { // BTCS
 		this.data = paramDataInput.readDouble();
 	} catch (IOException e) {
-		System.out.println("BTCS: Exception X16 happened in NBTBase");
-		e.printStackTrace();
 	}
   }
   

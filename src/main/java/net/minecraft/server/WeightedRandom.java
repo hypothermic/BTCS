@@ -4,22 +4,22 @@ import java.util.Random;
 
 public class WeightedRandom
 {
-  public static int a(java.util.Collection paramCollection) {
+  public static int a(java.util.Collection<WeightedRandomChoice> paramCollection) { // BTCS: decl '<WeightedRandomChoice>'
     int i = 0;
-    for (WeightedRandomChoice localWeightedRandomChoice : (WeightedRandomChoice[]) paramCollection.toArray()) { // BTCS: added cast and .toArray()
+    for (WeightedRandomChoice localWeightedRandomChoice : paramCollection.toArray(new WeightedRandomChoice[paramCollection.size()])) { // BTCS: added .toArray(...)
       i += localWeightedRandomChoice.d;
     }
     return i;
   }
   
-  public static WeightedRandomChoice a(Random paramRandom, java.util.Collection paramCollection, int paramInt)
+  public static WeightedRandomChoice a(Random paramRandom, java.util.Collection<WeightedRandomChoice> paramCollection, int paramInt)
   {
     if (paramInt <= 0) {
       throw new IllegalArgumentException();
     }
     
     int i = paramRandom.nextInt(paramInt);
-    for (WeightedRandomChoice localWeightedRandomChoice : (WeightedRandomChoice[]) paramCollection.toArray()) { // BTCS: added cast and .toArray()
+    for (WeightedRandomChoice localWeightedRandomChoice : paramCollection.toArray(new WeightedRandomChoice[paramCollection.size()])) { // BTCS: added .toArray()
       i -= localWeightedRandomChoice.d;
       if (i < 0) {
         return localWeightedRandomChoice;

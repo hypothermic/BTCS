@@ -41,7 +41,8 @@ class WorldGenVillageStart extends StructureStart
     d();
     
     int j = 0;
-    for (Object localObject = this.a.iterator(); ((Iterator)localObject).hasNext();) { StructurePiece localStructurePiece = (StructurePiece)((Iterator)localObject).next();
+    for (Object localObject = this.a.iterator(); ((Iterator)localObject).hasNext();) { 
+    	StructurePiece localStructurePiece = (StructurePiece)((Iterator)localObject).next();
       if (!(localStructurePiece instanceof WorldGenVillageRoadPiece)) {
         j++;
       }

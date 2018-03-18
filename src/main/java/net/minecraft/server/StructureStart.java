@@ -6,7 +6,7 @@ import java.util.Random;
 
 public abstract class StructureStart
 {
-  protected LinkedList a = new LinkedList();
+  protected LinkedList<StructurePiece> a = new LinkedList(); // BTCS: added <StructurePiece>
   
 
   protected StructureBoundingBox b;
@@ -21,24 +21,25 @@ public abstract class StructureStart
     return this.a;
   }
   
+  /** "Keeps spawning structures until the checks tell it to stop" - according to minecraft source
+   */
   public void a(World paramWorld, Random paramRandom, StructureBoundingBox paramStructureBoundingBox) {
-    Iterator localIterator = this.a.iterator();
-    while (localIterator.hasNext()) {
-      StructurePiece localStructurePiece = (StructurePiece)localIterator.next();
+	System.out.println("---- BTCS: StructureStart.java - 100");
+    for (StructurePiece localStructurePiece : this.a.toArray(new StructurePiece[this.a.size()])) {
       if ((localStructurePiece.b().a(paramStructureBoundingBox)) && 
         (!localStructurePiece.a(paramWorld, paramRandom, paramStructureBoundingBox)))
       {
-
-        localIterator.remove();
+    	  // stop spawning structures
       }
     }
+    System.out.println("---- BTCS: StructureStart.java - 200");
   }
 
   protected void d()
   {
     this.b = StructureBoundingBox.a();
     
-    for (StructurePiece localStructurePiece : (StructurePiece[]) this.a.toArray()) { // BTCS: added cast and .toArray()
+    for (StructurePiece localStructurePiece : this.a.toArray(new StructurePiece[this.a.size()])) { // BTCS: added .toArray()
       this.b.b(localStructurePiece.b());
     }
   }
@@ -56,7 +57,7 @@ public abstract class StructureStart
 
     int k = j - this.b.e;
     this.b.a(0, k, 0);
-    for (StructurePiece localStructurePiece : (StructurePiece[]) this.a.toArray()) { // BTCS: added cast and .toArray()
+    for (StructurePiece localStructurePiece : this.a.toArray(new StructurePiece[this.a.size()])) { // BTCS: added .toArray()
       localStructurePiece.b().a(0, k, 0);
     }
   }
@@ -75,7 +76,7 @@ public abstract class StructureStart
 
     int k = j - this.b.b;
     this.b.a(0, k, 0);
-    for (StructurePiece localStructurePiece : (StructurePiece[]) this.a.toArray()) { // BTCS: added cast and .toArray()
+    for (StructurePiece localStructurePiece : this.a.toArray(new StructurePiece[this.a.size()])) { // BTCS: added cast and .toArray()
       localStructurePiece.b().a(0, k, 0);
     }
   }

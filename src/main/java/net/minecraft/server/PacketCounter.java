@@ -11,32 +11,6 @@ public class PacketCounter
   private static final Map c = new HashMap();
   
   private static final Object d = new Object();
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   public static void a(int paramInt, long paramLong)
   {

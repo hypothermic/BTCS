@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-
-
 public class WorldLoaderServer extends WorldLoader
 {
   public WorldLoaderServer(File paramFile)
@@ -111,13 +109,11 @@ public class WorldLoaderServer extends WorldLoader
     }
   }
   
-  private void a(File paramFile, ArrayList paramArrayList, WorldChunkManager paramWorldChunkManager, int paramInt1, int paramInt2, IProgressUpdate paramIProgressUpdate)
-  {
-    for (File localFile : (File[]) paramArrayList.toArray()) { //BTCS: added cast and .toArray()
+  private void a(File paramFile, ArrayList<File> paramArrayList, WorldChunkManager paramWorldChunkManager, int paramInt1, int paramInt2, IProgressUpdate paramIProgressUpdate) {
+    for (File localFile : paramArrayList.toArray(new File[paramArrayList.size()])) { // BTCS: added .toArray(...)
       a(paramFile, localFile, paramWorldChunkManager, paramInt1, paramInt2, paramIProgressUpdate);
-      
       paramInt1++;
-      int i = (int)Math.round(100.0D * paramInt1 / paramInt2);
+      int i = (int) Math.round(100.0D * paramInt1 / paramInt2);
       paramIProgressUpdate.a(i);
     }
   }

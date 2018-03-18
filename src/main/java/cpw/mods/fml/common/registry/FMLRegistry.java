@@ -10,20 +10,6 @@ import net.minecraft.src.ItemBlock;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.TileEntity;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public class FMLRegistry
 {
   private static IMinecraftRegistry instance;
@@ -113,8 +99,6 @@ public class FMLRegistry
   {
     instance.removeSpawn(entityName, spawnList, biomes);
   }
-  
-
 
   public static IMinecraftRegistry instance()
   {

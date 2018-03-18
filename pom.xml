@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>nl.hypothermic</groupId>
   <artifactId>btcs</artifactId>
-  <version>1.28-ALPHA</version>
+  <version>1.30-ALPHA</version>
   <name>BTCS</name>
   <description>Better Tekkit Classic Server</description>
   <properties>

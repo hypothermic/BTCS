@@ -4,60 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-class WorldGenNetherStart
-  extends StructureStart
-{
+class WorldGenNetherStart extends StructureStart {
   public WorldGenNetherStart(World paramWorld, Random paramRandom, int paramInt1, int paramInt2)
   {
     WorldGenNetherPiece15 localWorldGenNetherPiece15 = new WorldGenNetherPiece15(paramRandom, (paramInt1 << 4) + 2, (paramInt2 << 4) + 2);

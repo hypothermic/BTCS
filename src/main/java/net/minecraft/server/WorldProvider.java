@@ -42,8 +42,10 @@ public abstract class WorldProvider
   }
   
   public boolean canSpawn(int i, int j) {
+	nl.hypothermic.btcs.XLogger.debug("---- BTCS: WorldProvider.canSpawn - 100");
     int k = this.a.b(i, j);
-    
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: WorldProvider.canSpawn - 200");
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: WorldProvider.canSpawn - Block.GRASS.id = " + Block.GRASS.id);
     return k == Block.GRASS.id;
   }
   
@@ -85,29 +87,12 @@ public abstract class WorldProvider
   public int getSeaLevel() {
     return this.type.getMinimumSpawnHeight(this.a);
   }
-  
-
-
-
-
 
   public abstract String getSaveFolder();
-  
-
-
-
 
   public abstract String getWelcomeMessage();
-  
-
-
-
 
   public abstract String getDepartMessage();
-  
-
-
-
 
   public double getMovementFactor()
   {

@@ -3,9 +3,7 @@ package net.minecraft.server;
 import java.util.List;
 import java.util.Random;
 
-public class ChunkProviderGenerate
-  implements IChunkProvider
-{
+public class ChunkProviderGenerate implements IChunkProvider {
   private Random k;
   private NoiseGeneratorOctaves l;
   private NoiseGeneratorOctaves m;
@@ -31,11 +29,6 @@ public class ChunkProviderGenerate
     
     this.a = new NoiseGeneratorOctaves(this.k, 10);
     this.b = new NoiseGeneratorOctaves(this.k, 16);
-    
-
-
-
-
 
     this.c = new NoiseGeneratorOctaves(this.k, 8);
   }
@@ -191,32 +184,47 @@ public class ChunkProviderGenerate
   
   public Chunk getOrCreateChunk(int paramInt1, int paramInt2)
   {
+	nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderGenerate.getOrCreateChunck() - 100");
     this.k.setSeed(paramInt1 * 341873128712L + paramInt2 * 132897987541L);
-    
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderGenerate.getOrCreateChunck() - 200");
     byte[] arrayOfByte1 = new byte[32768];
     
-
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderGenerate.getOrCreateChunck() - 300");
     a(paramInt1, paramInt2, arrayOfByte1);
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderGenerate.getOrCreateChunck() - 400");
     this.y = this.p.getWorldChunkManager().getBiomeBlock(this.y, paramInt1 * 16, paramInt2 * 16, 16, 16);
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderGenerate.getOrCreateChunck() - 500");
     a(paramInt1, paramInt2, arrayOfByte1, this.y);
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderGenerate.getOrCreateChunck() - 600");
     
-
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderGenerate.getOrCreateChunck() - 700");
     this.t.a(this, this.p, paramInt1, paramInt2, arrayOfByte1);
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderGenerate.getOrCreateChunck() - 800");
     this.x.a(this, this.p, paramInt1, paramInt2, arrayOfByte1);
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderGenerate.getOrCreateChunck() - 900");
     if (this.q) {
+      nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderGenerate.getOrCreateChunck() - 1100");
       this.w.a(this, this.p, paramInt1, paramInt2, arrayOfByte1);
+      nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderGenerate.getOrCreateChunck() - 1200");
       this.v.a(this, this.p, paramInt1, paramInt2, arrayOfByte1);
+      nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderGenerate.getOrCreateChunck() - 1300");
       this.u.a(this, this.p, paramInt1, paramInt2, arrayOfByte1);
+      nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderGenerate.getOrCreateChunck() - 1400");
     }
-    
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderGenerate.getOrCreateChunck() - 1500");
     Chunk localChunk = new Chunk(this.p, arrayOfByte1, paramInt1, paramInt2);
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderGenerate.getOrCreateChunck() - 1600");
     byte[] arrayOfByte2 = localChunk.l();
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderGenerate.getOrCreateChunck() - 1700");
     
     for (int i1 = 0; i1 < arrayOfByte2.length; i1++) {
+    	nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderGenerate.getOrCreateChunck() - 1800");
       arrayOfByte2[i1] = ((byte)this.y[i1].id);
     }
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderGenerate.getOrCreateChunck() - 1900");
     
     localChunk.initLighting();
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderGenerate.getOrCreateChunck() - 2000");
     
     return localChunk;
   }
@@ -241,14 +249,6 @@ public class ChunkProviderGenerate
     
     double d1 = 684.412D;
     double d2 = 684.412D;
-    
-
-
-
-
-
-
-
 
     this.g = this.a.a(this.g, paramInt1, paramInt3, paramInt4, paramInt6, 1.121D, 1.121D, 0.5D);
     this.h = this.b.a(this.h, paramInt1, paramInt3, paramInt4, paramInt6, 200.0D, 200.0D, 0.5D);
@@ -347,50 +347,6 @@ public class ChunkProviderGenerate
   
   int[][] j = new int[32][32];
   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   public void getChunkAt(IChunkProvider paramIChunkProvider, int paramInt1, int paramInt2)
   {
     BlockSand.instaFall = true;
@@ -398,10 +354,6 @@ public class ChunkProviderGenerate
     int i2 = paramInt2 * 16;
     
     BiomeBase localBiomeBase = this.p.getBiome(i1 + 16, i2 + 16);
-    
-
-
-
 
     this.k.setSeed(this.p.getSeed());
     long l1 = this.k.nextLong() / 2L * 2L + 1L;
@@ -473,9 +425,6 @@ public class ChunkProviderGenerate
   public boolean canSave() {
     return true;
   }
-  
-
-
 
   public List getMobsFor(EnumCreatureType paramEnumCreatureType, int paramInt1, int paramInt2, int paramInt3)
   {

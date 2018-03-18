@@ -33,9 +33,7 @@ import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.PluginManager;
 
-public class World
-  implements IBlockAccess
-{
+public class World implements IBlockAccess {
   public static double MAX_ENTITY_RADIUS = 2.0D;
   
   public boolean a = false;
@@ -113,15 +111,16 @@ public class World
   final Object chunkLock = new Object();
   
   private boolean canSpawn(int x, int z) {
+	nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.canSpawn - 100");
     if (this.generator != null) {
       return this.generator.canSpawn(getWorld(), x, z);
     }
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.canSpawn - 200");
     return this.worldProvider.canSpawn(x, z);
   }
   
-  public CraftWorld getWorld()
-  {
-    return this.world;
+  public CraftWorld getWorld() {
+      return this.world;
   }
   
   public CraftServer getServer() {
@@ -130,8 +129,10 @@ public class World
   
   public World(IDataManager idatamanager, String s, WorldSettings worldsettings, WorldProvider worldprovider, ChunkGenerator gen, org.bukkit.World.Environment env)
   {
+	nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.<init> - 100");
     this.generator = gen;
     this.world = new CraftWorld((WorldServer)this, gen, env);
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.<init> - 200");
     
 
     this.chunkTickList = new LongHashset();
@@ -161,16 +162,20 @@ public class World
     } else {
       this.worldData.a(s);
     }
-    
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.<init> - 300");
     this.worldProvider.a(this);
     this.chunkProvider = b();
     if (flag) {
+    	nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.<init> - 310");
       c();
+      nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.<init> - 390");
     }
-    
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.<init> - 400");
     g();
     B();
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.<init> - 500");
     getServer().addWorld(this.world);
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.<init> - 600");
   }
   
   protected IChunkProvider b() {
@@ -180,9 +185,13 @@ public class World
   }
   
   protected void c() {
+	  nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.c - 320");
     if (!this.worldProvider.c()) {
+    	nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.c - 330");
       this.worldData.setSpawn(0, this.worldProvider.getSeaLevel(), 0);
+      nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.c - 340");
     } else {
+    	nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.c - 350");
       this.isLoading = true;
       WorldChunkManager worldchunkmanager = this.worldProvider.c;
       List list = worldchunkmanager.a();
@@ -191,6 +200,7 @@ public class World
       int i = 0;
       int j = this.worldProvider.getSeaLevel();
       int k = 0;
+      nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.c - 360");
       
 
       if (this.generator != null) {
@@ -206,6 +216,7 @@ public class World
           return;
         }
       }
+      nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.c - 370");
       
 
 
@@ -217,9 +228,9 @@ public class World
       }
       
       int l = 0;
-      
-
+      nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.c - 375");
       while (!canSpawn(i, k)) {
+    	  nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.c - 380");
         i += random.nextInt(64) - random.nextInt(64);
         k += random.nextInt(64) - random.nextInt(64);
         l++;
@@ -227,9 +238,10 @@ public class World
           break;
         }
       }
-      
+      nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.c - 382");
       this.worldData.setSpawn(i, j, k);
       this.isLoading = false;
+      nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.c - 385");
     }
   }
   
@@ -240,12 +252,57 @@ public class World
   // b(int, int) = getFirstUncoveredBlock(int, int)
   public int b(int i, int j)
   {
-	// BTCS start
+	// BTCS start: this method is shit! Mojang devs, wake up!
+	nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.b - 100");
+	/*int count;
+	System.out.println("---- BTCS: World.b - 125");
+    for (count = 63; !isEmpty(i, count + 1, j); count++) { // 663
+    	System.out.println("---- BTCS: World.b - 150");
+    }
+    System.out.println("---- BTCS: World.b - 200");
+    return getTypeId(i, count, j);*/
 	int k;
-    for (k = 63; !isEmpty(i, k + 1, j); k++) {}
-    // BTCS end
+	nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.b - 125");
+    for (k = 63; !this.isEmpty(i, k + 1, j); ++k) {
+        ;
+    }
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.b - 200");
     return this.getTypeId(i, k, j);
+	/*int k;
+    for (k = 63; !isEmpty(i, k + 1, j); k++) { 
+    
+    }
+    System.out.println("---- BTCS: World.b - 200");*/
+    //return this.getTypeId(i, k, j);
+    // BTCS end
   }
+  
+  // BTCS start
+  public int getBlockId(int par1, int par2, int par3)
+  {
+	  nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.getBlockId - 100");
+      if (par1 < 0xfe363c80 || par3 < 0xfe363c80 || par1 >= 0x1c9c380 || par3 >= 0x1c9c380)
+      {
+          return 0;
+      }
+      nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.getBlockId - 110");
+      if (par2 < 0)
+      {
+          return 0;
+      }
+      nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.getBlockId - 120");
+      if (par2 >= 256)
+      {
+    	  nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.getBlockId - 130");
+          return 0;
+      }
+      else
+      {
+    	  nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.getBlockId - 140");
+          return getChunkAtWorldCoords(par1 >> 4, par3 >> 4).getTypeId(par1 & 0xf, par2, par3 & 0xf);
+      }
+  }
+  // BTCS end
   
   public void save(boolean flag, IProgressUpdate iprogressupdate) {
     if (this.chunkProvider.canSave()) {
@@ -279,7 +336,9 @@ public class World
   
   public boolean isEmpty(int i, int j, int k)
   {
-    int id = getTypeId(i, j, k);
+	nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.isEmpty - 100");
+    int id = getBlockId(i, j, k); // BTCS: 'getTypeId' --> 'getBlockId'
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.isEmpty - 200");
     return (id == 0) || (Block.byId[id] == null) || (Block.byId[id].isAirBlock(this, i, j, k));
   }
   
@@ -323,6 +382,7 @@ public class World
   }
   
   public Chunk getChunkAtWorldCoords(int i, int j) {
+	nl.hypothermic.btcs.XLogger.debug("---- BTCS: World.getChunckAtWorldCoords - 100");
     return getChunkAt(i >> 4, j >> 4);
   }
   
@@ -333,7 +393,8 @@ public class World
       if ((this.lastChunkAccessed == null) || (this.lastXAccessed != i) || (this.lastZAccessed != j)) {
         this.lastXAccessed = i;
         this.lastZAccessed = j;
-        this.lastChunkAccessed = this.chunkProvider.getOrCreateChunk(i, j);
+        nl.hypothermic.btcs.XLogger.debug("ChunckProvider = " + this.chunkProvider.getClass().getName());
+        this.lastChunkAccessed = this.chunkProvider.getOrCreateChunk(i, j); // BTCS: issue is in getOrCreateChunck
       }
       result = this.lastChunkAccessed;
     }
@@ -510,25 +571,25 @@ public class World
   }
   
   private void k(int i, int j, int k, int l) {
-    if ((!this.suppressPhysics) && (!this.isStatic)) {
-      Block block = Block.byId[getTypeId(i, j, k)];
-      
-      if (block != null)
-      {
-        CraftWorld world = ((WorldServer)this).getWorld();
-        if (world != null) {
-          BlockPhysicsEvent event = new BlockPhysicsEvent(world.getBlockAt(i, j, k), l);
-          getServer().getPluginManager().callEvent(event);
-          
-          if (event.isCancelled()) {
-            return;
-          }
-        }
-        
+	  if (!this.suppressPhysics && !this.isStatic) {
+          Block block = Block.byId[this.getTypeId(i, j, k)];
 
-        block.doPhysics(this, i, j, k, l);
+          if (block != null) {
+              // CraftBukkit start
+              CraftWorld world = ((WorldServer) this).getWorld();
+              if (world != null) {
+                  BlockPhysicsEvent event = new BlockPhysicsEvent(world.getBlockAt(i, j, k), l);
+                  this.getServer().getPluginManager().callEvent(event);
+
+                  if (event.isCancelled()) {
+                      return;
+                  }
+              }
+              // CraftBukkit end
+
+              block.doPhysics(this, i, j, k, l);
+          }
       }
-    }
   }
   
   public boolean isChunkLoaded(int i, int j, int k) {
@@ -2956,12 +3017,6 @@ public class World
   {
     return this.dataManager.getUUID();
   }
-  
-
-
-
-
-
 
   public void addTileEntity(TileEntity entity)
   {
@@ -2973,19 +3028,6 @@ public class World
       }
     }
   }
-  
-
-
-
-
-
-
-
-
-
-
-
-
 
   public boolean isBlockSolidOnSide(int x, int y, int z, int side)
   {

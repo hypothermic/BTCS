@@ -47,7 +47,7 @@ public class NBTCompressedStreamTools
   }
 
   public static NBTTagCompound a(java.io.DataInput paramDataInput, boolean x) throws IOException { // BTCS
-    NBTBase localNBTBase = NBTBase.b(paramDataInput, 0);
+    NBTBase localNBTBase = NBTBase.b(paramDataInput);
     if ((localNBTBase instanceof NBTTagCompound)) return (NBTTagCompound)localNBTBase;
     throw new java.io.IOException("Root tag must be a named compound tag");
   }

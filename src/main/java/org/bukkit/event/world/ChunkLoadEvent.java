@@ -14,11 +14,6 @@ public class ChunkLoadEvent
     super(chunk);
     this.newChunk = newChunk;
   }
-  
-
-
-
-
 
   public boolean isNewChunk()
   {

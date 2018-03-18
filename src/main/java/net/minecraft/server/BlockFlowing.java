@@ -6,9 +6,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.plugin.PluginManager;
 
-public class BlockFlowing
-  extends BlockFluids
-{
+public class BlockFlowing extends BlockFluids {
   int a = 0;
   boolean[] b = new boolean[4];
   int[] c = new int[4];
@@ -262,7 +260,7 @@ public class BlockFlowing
     }
     
     for (i1 = 0; i1 < 4; i1++) {
-      this.b[i1] = (Boolean) (this.c[i1] == l ? 1 : false); // BTCS: added cast (Boolean)
+      this.b[i1] = (this.c[i1] == l ? 1 : false) != null; // BTCS: added null check
     }
     
     return this.b;

@@ -11,10 +11,10 @@ abstract class WorldGenNetherPiece extends StructurePiece
     super(paramInt);
   }
   
-  private int a(List paramList) {
+  private int a(List<WorldGenNetherPieceWeight> paramList) {
     int i = 0;
     int j = 0;
-    for (WorldGenNetherPieceWeight localWorldGenNetherPieceWeight : (WorldGenNetherPieceWeight[]) paramList.toArray()) { // BTCS: added cast and .toArray()
+    for (WorldGenNetherPieceWeight localWorldGenNetherPieceWeight : paramList.toArray(new WorldGenNetherPieceWeight[paramList.size()])) { // BTCS: added .toArray()
       if ((localWorldGenNetherPieceWeight.d > 0) && (localWorldGenNetherPieceWeight.c < localWorldGenNetherPieceWeight.d)) {
         i = 1;
       }
@@ -24,7 +24,7 @@ abstract class WorldGenNetherPiece extends StructurePiece
   }
   
 
-  private WorldGenNetherPiece a(WorldGenNetherPiece15 paramWorldGenNetherPiece15, List paramList1, List paramList2, Random paramRandom, int paramInt1, int paramInt2, int paramInt3, int paramInt4, int paramInt5)
+  private WorldGenNetherPiece a(WorldGenNetherPiece15 paramWorldGenNetherPiece15, List<WorldGenNetherPieceWeight> paramList1, List paramList2, Random paramRandom, int paramInt1, int paramInt2, int paramInt3, int paramInt4, int paramInt5)
   {
     int i = a(paramList1);
     int j = (i > 0) && (paramInt5 <= 30) ? 1 : 0;
@@ -34,7 +34,7 @@ abstract class WorldGenNetherPiece extends StructurePiece
       k++;
       
       m = paramRandom.nextInt(i);
-      for (WorldGenNetherPieceWeight localWorldGenNetherPieceWeight : (WorldGenNetherPieceWeight[])paramList1.toArray()) {  // BTCS: added cast and .toArray()
+      for (WorldGenNetherPieceWeight localWorldGenNetherPieceWeight : paramList1.toArray(new WorldGenNetherPieceWeight[paramList1.size()])) {  // BTCS: added .toArray()
         m -= localWorldGenNetherPieceWeight.b;
         if (m < 0)
         {

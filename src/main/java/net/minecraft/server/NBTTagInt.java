@@ -19,8 +19,6 @@ public class NBTTagInt extends NBTBase {
     try {
 		paramDataOutput.writeInt(this.data);
 	} catch (IOException e) {
-		System.out.println("BTCS: Exception X19 happened in NBTBase");
-		e.printStackTrace();
 	}
   }
   
@@ -28,8 +26,6 @@ public class NBTTagInt extends NBTBase {
     try {
 		this.data = paramDataInput.readInt();
 	} catch (IOException e) {
-		System.out.println("BTCS: Exception X20 happened in NBTBase");
-		e.printStackTrace();
 	}
   }
   

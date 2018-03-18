@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class WorldGenMineshaftRoom extends StructurePiece
 {
-  private LinkedList a = new LinkedList();
+  private LinkedList<StructureBoundingBox> a = new LinkedList(); // BTCS: added decl <StructureBoundingBox>
   
   public WorldGenMineshaftRoom(int paramInt1, Random paramRandom, int paramInt2, int paramInt3) {
     super(paramInt1);
@@ -103,7 +103,7 @@ public class WorldGenMineshaftRoom extends StructurePiece
     
 
     a(paramWorld, paramStructureBoundingBox, this.g.a, this.g.b + 1, this.g.c, this.g.d, Math.min(this.g.b + 3, this.g.e), this.g.f, 0, 0, false);
-    for (StructureBoundingBox localStructureBoundingBox : (StructureBoundingBox[]) this.a.toArray()) { // BTCS: added cast and .toArray()
+    for (StructureBoundingBox localStructureBoundingBox : this.a.toArray(new StructureBoundingBox[this.a.size()])) { // BTCS: added .toArray()
       a(paramWorld, paramStructureBoundingBox, localStructureBoundingBox.a, localStructureBoundingBox.e - 2, localStructureBoundingBox.c, localStructureBoundingBox.d, localStructureBoundingBox.e, localStructureBoundingBox.f, 0, 0, false);
     }
     a(paramWorld, paramStructureBoundingBox, this.g.a, this.g.b + 4, this.g.c, this.g.d, this.g.e, this.g.f, 0, false);

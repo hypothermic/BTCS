@@ -14,8 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftChunk;
 import org.bukkit.craftbukkit.util.UnsafeList;
 
-public class Chunk
-{
+public class Chunk {
   public static boolean a;
   private ChunkSection[] sections;
   private byte[] r;
@@ -38,12 +37,17 @@ public class Chunk
   boolean p;
   public org.bukkit.Chunk bukkitChunk;
   
-  public Chunk(World world, int i, int j)
-  {
+  // BTCS start
+  public org.bukkit.Chunk getBukkitChunk() {
+      return bukkitChunk;
+  }
+  // BTCS end
+  
+  public Chunk(World world, int i, int j) {
     this.sections = new ChunkSection[16];
-    this.r = new byte['Ā'];
-    this.b = new int['Ā'];
-    this.c = new boolean['Ā'];
+    this.r = new byte[256];
+    this.b = new int[256];
+    this.c = new boolean[256];
     this.s = false;
     this.tileEntities = new HashMap();
     this.done = false;
@@ -57,7 +61,7 @@ public class Chunk
     this.world = world;
     this.x = i;
     this.z = j;
-    this.heightMap = new int['Ā'];
+    this.heightMap = new int[256];
     
     for (int k = 0; k < this.entitySlices.length; k++) {
       this.entitySlices[k] = new UnsafeList();
@@ -71,8 +75,6 @@ public class Chunk
       this.bukkitChunk = new CraftChunk(this);
     }
   }
-  
-
 
   public Chunk(World world, byte[] abyte, int i, int j)
   {
@@ -99,16 +101,6 @@ public class Chunk
       }
     }
   }
-  
-
-
-
-
-
-
-
-
-
 
   public Chunk(World world, byte[] ids, byte[] metadata, int chunkX, int chunkZ)
   {
@@ -161,60 +153,146 @@ public class Chunk
   }
   
   public void initLighting() {
-    int i = g();
+	// BTCS start: replaced old method from decompiled source with MC's method. Hopefully it works.
+	// Update: it works. This one kept me up all night. It's 5 AM now, special thanks to my coffee for keeping me awake.
+    /*int i = g();
+    System.out.println("---- BTCS: Chunck.initLightning() - 100");
     
-
-
     int j; // BTCS
     for (j = 0; j < 16; j++) {
+    	System.out.println("---- BTCS: Chunck.initLightning() - 200");
       int k = 0;
       
       while (k < 16) {
+    	  System.out.println("---- BTCS: Chunck.initLightning() - 300");
         this.b[(j + (k << 4))] = 64537;
+        System.out.println("---- BTCS: Chunck.initLightning() - 400");
         int l = i + 16 - 1;
         
 
         while (l > 0) {
+          System.out.println("---- BTCS: Chunck.initLightning() - 500 - L = "+ l);
+          System.out.println("-- b(j, l - 1, k) == " + b(j, l - 1, k));
           if (b(j, l - 1, k) == 0) {
+        	  System.out.println("---- BTCS: Chunck.initLightning() - 600");
             l--;
           }
           else
           {
+        	  System.out.println("---- BTCS: Chunck.initLightning() - 700");
+        	  System.out.println("HMbefore=" + this.heightMap[(k << 4 | j)]);
             this.heightMap[(k << 4 | j)] = l;
+            System.out.println("HMafter=" + this.heightMap[(k << 4 | j)]);
           }
+          System.out.println("---- BTCS: Chunck.initLightning() - 500 - L = "+ l);
         }
         if (!this.world.worldProvider.e) {
+        	System.out.println("---- BTCS: Chunck.initLightning() - 800");
           l = 15;
           int i1 = i + 16 - 1;
           do
           {
+        	  System.out.println("---- BTCS: Chunck.initLightning() - 900");
             l -= b(j, i1, k);
             if (l > 0) {
+            	System.out.println("---- BTCS: Chunck.initLightning() - 1000");
               ChunkSection chunksection = this.sections[(i1 >> 4)];
               
               if (chunksection != null) {
+            	  System.out.println("---- BTCS: Chunck.initLightning() - 1100");
                 chunksection.c(j, i1 & 0xF, k, l);
                 this.world.o((this.x << 4) + j, i1, (this.z << 4) + k);
               }
             }
-            
+            System.out.println("---- BTCS: Chunck.initLightning() - 1200");
             i1--;
           } while ((i1 > 0) && (l > 0));
         }
-        
+        System.out.println("---- BTCS: Chunck.initLightning() - 1300");
         k++;
       }
+      System.out.println("---- BTCS: Chunck.initLightning() - 1400");
     }
-    
-
-
+    System.out.println("---- BTCS: Chunck.initLightning() - 1500");
     this.l = true;
     
     for (j = 0; j < 16; j++) {
+    	System.out.println("---- BTCS: Chunck.initLightning() - 1600");
       for (int k = 0; k < 16; k++) {
+    	  System.out.println("---- BTCS: Chunck.initLightning() - 1700");
         e(j, k);
       }
     }
+    System.out.println("---- BTCS: Chunck.initLightning() - 1800");*/
+      int i = g();
+
+      for (int j = 0; j < 16; j++)
+      {
+          for (int l = 0; l < 16; l++)
+          {
+              this.b[j + (l << 4)] = -999;
+              int j1 = (i + 16) - 1;
+
+              do
+              {
+            	  nl.hypothermic.btcs.XLogger.debug("---- BTCS: Chunck.initLightning() - 500");
+                  if (j1 <= 0)
+                  {
+                      break;
+                  }
+
+                  if (b(j, j1 - 1, l) != 0)
+                  {
+                	  nl.hypothermic.btcs.XLogger.debug("---- BTCS: Chunck.initLightning() - 700");
+                      heightMap[l << 4 | j] = j1;
+                      break;
+                  }
+                  nl.hypothermic.btcs.XLogger.debug("---- BTCS: Chunck.initLightning() - 900");
+                  
+                  j1--;
+              }
+              while (true);
+
+              /*if (this.world.worldProvider.e) // It's supposed to be worldProvider.hasNoSky, is this correct or not?
+              {
+                  continue;
+              }*/
+
+              j1 = 15;
+              int k1 = (i + 16) - 1;
+
+              do
+              {
+                  j1 -= b(j, k1, l);
+
+                  if (j1 > 0)
+                  {
+                      ChunkSection extendedblockstorage = this.sections[k1 >> 4];
+
+                      if (extendedblockstorage != null)
+                      {
+                          //extendedblockstorage.setExtSkylightValue(j, k1 & 0xf, l, j1);
+                          //worldObj.func_48086_o((xPosition << 4) + j, k1, (zPosition << 4) + l);
+                    	  extendedblockstorage.c(j, k1 & 0xF, l, j1);
+                          this.world.o((this.x << 4) + j, k1, (this.z << 4) + l);
+                      }
+                  }
+              }
+              while (--k1 > 0 && j1 > 0);
+          }
+      }
+
+      this.l = true;
+
+      for (int k = 0; k < 16; k++)
+      {
+          for (int i1 = 0; i1 < 16; i1++)
+          {
+              e(k, i1);
+          }
+      }
+      nl.hypothermic.btcs.XLogger.debug("---- BTCS: Chunck.initLightning() - Successfully generated new chunck! finally ffs!");
+      // BTCS end
   }
   
   public void loadNOP() {}
@@ -516,8 +594,9 @@ public class Chunk
   public int getBrightness(EnumSkyBlock enumskyblock, int i, int j, int k)
   {
     ChunkSection chunksection = (j >> 4 >= this.sections.length) || (j >> 4 < 0) ? null : this.sections[(j >> 4)];
-    
-    return enumskyblock == EnumSkyBlock.BLOCK ? chunksection.d(i, j & 0xF, k) : enumskyblock == EnumSkyBlock.SKY ? chunksection.c(i, j & 0xF, k) : chunksection == null ? enumskyblock.c : enumskyblock.c;
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: Chunck.getBrightness()");
+    //return enumskyblock == (EnumSkyBlock.BLOCK ? chunksection.d(i, j & 0xF, k) : enumskyblock == EnumSkyBlock.SKY ? chunksection.c(i, j & 0xF, k) : chunksection == null ? enumskyblock.c : enumskyblock.c);
+    return chunksection == null ? enumskyblock.c : (enumskyblock == EnumSkyBlock.SKY ? chunksection.c(i, j & 15, k) : (enumskyblock == EnumSkyBlock.BLOCK ? chunksection.d(i, j & 15, k) : enumskyblock.c));
   }
   
   public void a(EnumSkyBlock enumskyblock, int i, int j, int k, int l) {

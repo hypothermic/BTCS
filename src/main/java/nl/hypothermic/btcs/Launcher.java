@@ -31,6 +31,7 @@ public class Launcher {
     public static String LS;
 	private static double VERSION;
 	private static String VTAG;
+	public static final boolean ENABLE_DEBUG = false;
 	private static String PROPS_HEADER = " BTCS Configuration File." + LS + " https://github.com/hypothermic/BTCS";
 	private static final String CFG_NAME = "btcs.cfg";
 	public static final File MC_CFG_FILE = new File("mc.cfg"); /**{@link net.minecraft.server.PropertyManager#PropertyManager(OptionSet)}*/ // TODO: add to config
@@ -49,7 +50,7 @@ public class Launcher {
 	public static void main(final String[] args) {
 		LS = System.getProperty("line.separator");
 		// TODO: include these in config file. Hardcoded for now since it's not high priority.
-		VERSION = 1.28;
+		VERSION = 1.30;
 		VTAG = "ALPHA";
 		
 		System.out.println(LS + "  << BTCS v" + VERSION + "-" + VTAG + " >>" + LS

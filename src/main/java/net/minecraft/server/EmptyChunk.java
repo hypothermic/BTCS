@@ -4,9 +4,14 @@ import java.util.List;
 import java.util.Random;
 
 
-public class EmptyChunk
-  extends Chunk
-{
+public class EmptyChunk extends Chunk {
+	
+	// BTCS start
+	public org.bukkit.Chunk getBukkitChunk() {
+		nl.hypothermic.btcs.XLogger.generr("BTCS: XRETC1: run EmptyChunk.getBukkitChunk()");
+		return nl.hypothermic.btcs.XLogger.genpass(super.bukkitChunk);
+	}
+	// BTCS end
   public EmptyChunk(World paramWorld, int paramInt1, int paramInt2)
   {
     super(paramWorld, paramInt1, paramInt2);
@@ -19,21 +24,10 @@ public class EmptyChunk
   public int b(int paramInt1, int paramInt2) {
     return 0;
   }
-  
-
-
-
 
   public void initLighting() {}
-  
-
-
-
 
   public void loadNOP() {}
-  
-
-
 
   public int getTypeId(int paramInt1, int paramInt2, int paramInt3)
   {
@@ -72,8 +66,6 @@ public class EmptyChunk
   {
     return 0;
   }
-  
-
 
   public void a(Entity paramEntity) {}
   
@@ -88,17 +80,11 @@ public class EmptyChunk
   {
     return false;
   }
-  
-
-
 
   public TileEntity e(int paramInt1, int paramInt2, int paramInt3)
   {
     return null;
   }
-  
-
-
 
   public void a(TileEntity paramTileEntity) {}
   
@@ -137,30 +123,6 @@ public class EmptyChunk
     return false;
   }
   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   public Random a(long paramLong)
   {
     return new Random(this.world.getSeed() + this.x * this.x * 4987142 + this.x * 5947611 + this.z * this.z * 4392871L + this.z * 389711 ^ paramLong);

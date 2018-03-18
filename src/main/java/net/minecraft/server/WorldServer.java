@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import org.bukkit.Material;
 import org.bukkit.World.Environment;
 import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.generator.InternalChunkGenerator;
 import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.generator.ChunkGenerator;
@@ -18,9 +19,24 @@ public class WorldServer extends World implements forge.bukkit.BukkitForgeHooks.
   public final MinecraftServer server;
   private IntHashMap entitiesById;
   
+  public CraftWorld getWorld() {
+	  nl.hypothermic.btcs.XLogger.debug("RETR2: Now inside WorldServer.getWorld()");
+	  nl.hypothermic.btcs.XLogger.debug("RETR2: Getting world from super");
+	  CraftWorld x = super.getWorld();
+	  if (x == null) {
+		  nl.hypothermic.btcs.XLogger.gencrit("RETR2: CraftWorld == null");
+	  } else {
+		  nl.hypothermic.btcs.XLogger.debug("RETR2: CraftWorld != null");
+	  }
+	  //nl.hypothermic.btcs.XLogger.generr("RETR2: Returning it to " + nl.hypothermic.btcs.XLogger.getCallerClassName());
+	  nl.hypothermic.btcs.XLogger.generr("RETR2: Returning it to " + Thread.currentThread().getStackTrace()[2].getClassName());
+	  return x;
+  }
+  
   public WorldServer(MinecraftServer minecraftserver, IDataManager idatamanager, String s, int i, WorldSettings worldsettings, org.bukkit.World.Environment env, ChunkGenerator gen)
   {
     super(idatamanager, s, worldsettings, WorldProvider.byDimension(env.getId()), gen, env);
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: WorldServer.java - 100");
     this.server = minecraftserver;
     if (this.entitiesById == null) {
       this.entitiesById = new IntHashMap();
@@ -31,6 +47,7 @@ public class WorldServer extends World implements forge.bukkit.BukkitForgeHooks.
     forge.DimensionManager.setWorld(i, this);
     this.pvpMode = minecraftserver.pvpMode;
     this.manager = new PlayerManager(minecraftserver, this.dimension, minecraftserver.propertyManager.getInt("view-distance", 10));
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: WorldServer.java - 200");
   }
   
   public TileEntity getTileEntity(int i, int j, int k)
@@ -66,14 +83,12 @@ public class WorldServer extends World implements forge.bukkit.BukkitForgeHooks.
       (!(result instanceof TileEntitySign))) {
       result = fixTileEntity(i, j, k, type, result);
     }
-    
 
     return result;
   }
   
   private TileEntity fixTileEntity(int x, int y, int z, int type, TileEntity found) {
     getServer().getLogger().severe("Block at " + x + "," + y + "," + z + " is " + Material.getMaterial(type).toString() + " but has " + found + ". " + "Bukkit will attempt to fix this, but there may be additional damage that we cannot recover.");
-    
 
     if ((Block.byId[type] instanceof BlockContainer)) {
       TileEntity replacement = ((BlockContainer)Block.byId[type]).a_();
@@ -83,15 +98,9 @@ public class WorldServer extends World implements forge.bukkit.BukkitForgeHooks.
     getServer().getLogger().severe("Don't know how to fix for this type... Can't do anything! :(");
     return found;
   }
-  
-
 
   public final int dimension;
-  
-
   public EntityTracker tracker;
-  
-
   public PlayerManager manager;
   
   public void entityJoinedWorld(Entity entity, boolean flag)
@@ -168,9 +177,8 @@ public class WorldServer extends World implements forge.bukkit.BukkitForgeHooks.
     if (l > i1) {
       i1 = l;
     }
-    
 
-    return (i1 > getServer().getSpawnRadius()) || (this.server.serverConfigurationManager.isOp(entityhuman.name));
+    return i1 > getServer().getSpawnRadius() || (this.server.serverConfigurationManager.isOp(entityhuman.name));
   }
   
   protected void c() {
@@ -241,11 +249,6 @@ public class WorldServer extends World implements forge.bukkit.BukkitForgeHooks.
     if (explosion.wasCanceled) {
       return explosion;
     }
-    
-
-
-
-
 
     this.server.serverConfigurationManager.sendPacketNearby(d0, d1, d2, 64.0D, this.dimension, new Packet60Explosion(d0, d1, d2, f, explosion.blocks));
     

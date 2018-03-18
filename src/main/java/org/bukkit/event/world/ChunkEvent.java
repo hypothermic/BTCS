@@ -2,23 +2,23 @@ package org.bukkit.event.world;
 
 import org.bukkit.Chunk;
 
-public abstract class ChunkEvent
-  extends WorldEvent
-{
-  protected Chunk chunk;
-  
-  protected ChunkEvent(Chunk chunk)
-  {
-    super(chunk.getWorld());
-    this.chunk = chunk;
-  }
-  
+/**
+ * Represents a Chunk related event
+ */
+public abstract class ChunkEvent extends WorldEvent {
+    protected Chunk chunk;
 
+    protected ChunkEvent(final Chunk chunk) {
+        super(nl.hypothermic.btcs.XLogger.genpass(chunk.getWorld()));
+        this.chunk = chunk;
+    }
 
-
-
-  public Chunk getChunk()
-  {
-    return this.chunk;
-  }
+    /**
+     * Gets the chunk being loaded/unloaded
+     *
+     * @return Chunk that triggered this event
+     */
+    public Chunk getChunk() {
+        return chunk;
+    }
 }

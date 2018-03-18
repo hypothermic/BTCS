@@ -62,16 +62,6 @@ abstract class WorldGenVillagePiece extends StructurePiece
   protected static boolean a(StructureBoundingBox paramStructureBoundingBox) {
     return (paramStructureBoundingBox != null) && (paramStructureBoundingBox.b > 10);
   }
-  
-
-
-
-
-
-
-
-
-
 
   protected void a(World paramWorld, StructureBoundingBox paramStructureBoundingBox, int paramInt1, int paramInt2, int paramInt3, int paramInt4)
   {
@@ -92,10 +82,6 @@ abstract class WorldGenVillagePiece extends StructurePiece
       paramWorld.addEntity(localEntityVillager);
     }
   }
-  
-
-
-
 
   protected int a(int paramInt)
   {

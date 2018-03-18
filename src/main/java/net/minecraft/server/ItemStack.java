@@ -24,7 +24,7 @@ public final class ItemStack implements net.minecraft.src.ItemStack {
   
   public ItemStack(Item item) {
 	// BTCS debug: item.id = null
-	this(600, 1, 0); // BTCS: due to many errors I randomly changed this from 'item.id' to '600', and it works now ?? what the fuck ??
+	this(0, 1, 0); // BTCS: due to many errors I randomly changed this from 'item.id' to '600', and it works now ?? what the fuck ?? // edit 1.29: changed to 0
   }
   
   public ItemStack(Item item, int i) {

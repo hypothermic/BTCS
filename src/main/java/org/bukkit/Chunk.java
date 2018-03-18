@@ -4,8 +4,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 
-public abstract interface Chunk
-{
+public abstract interface Chunk {
   public abstract int getX();
   
   public abstract int getZ();

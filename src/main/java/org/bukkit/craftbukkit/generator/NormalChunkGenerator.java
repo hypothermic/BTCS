@@ -38,6 +38,8 @@ public class NormalChunkGenerator extends InternalChunkGenerator
   }
   
   public Chunk getOrCreateChunk(int i, int i1) {
+	nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderServer.getChunckAt() - 360");
+	nl.hypothermic.btcs.XLogger.debug(" ChunckProvidor = " + this.provider.getClass().getName());
     return this.provider.getOrCreateChunk(i, i1);
   }
   

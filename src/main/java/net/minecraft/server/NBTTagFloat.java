@@ -19,8 +19,6 @@ public class NBTTagFloat extends NBTBase {
     try {
 		paramDataOutput.writeFloat(this.data);
 	} catch (IOException e) {
-		System.out.println("BTCS: Exception X17 happened in NBTBase");
-		e.printStackTrace();
 	}
   }
   
@@ -28,8 +26,6 @@ public class NBTTagFloat extends NBTBase {
     try {
 		this.data = paramDataInput.readFloat();
 	} catch (IOException e) {
-		System.out.println("BTCS: Exception X18 happened in NBTBase");
-		e.printStackTrace();
 	}
   }
   

@@ -19,8 +19,6 @@ public class NBTTagLong extends NBTBase {
     try {
 		paramDataOutput.writeLong(this.data);
 	} catch (IOException e) {
-		System.out.println("BTCS: Exception X27 happened in NBT");
-		e.printStackTrace();
 	}
   }
   
@@ -28,8 +26,6 @@ public class NBTTagLong extends NBTBase {
     try {
 		this.data = paramDataInput.readLong();
 	} catch (IOException e) {
-		System.out.println("BTCS: Exception X28 happened in NBT");
-		e.printStackTrace();
 	}
   }
   

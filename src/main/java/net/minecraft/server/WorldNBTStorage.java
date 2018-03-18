@@ -11,8 +11,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 
-public class WorldNBTStorage
-  implements PlayerFileData, IDataManager
+public class WorldNBTStorage implements PlayerFileData, IDataManager
 {
   private static final Logger log = Logger.getLogger("Minecraft");
   private final File baseDir;
@@ -23,6 +22,7 @@ public class WorldNBTStorage
   private UUID uuid = null;
   
   public WorldNBTStorage(File file1, String s, boolean flag) {
+	nl.hypothermic.btcs.XLogger.debug("---- BTCS: WorldNBTStorage.java - 100");
     this.baseDir = new File(file1, s);
     this.baseDir.mkdirs();
     this.playerDir = new File(this.baseDir, "players");
@@ -33,7 +33,9 @@ public class WorldNBTStorage
       this.playerDir.mkdirs();
     }
     
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: WorldNBTStorage.java - 200");
     f();
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: WorldNBTStorage.java - 300");
   }
   
   private void f() {

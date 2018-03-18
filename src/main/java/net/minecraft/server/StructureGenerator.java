@@ -8,7 +8,7 @@ import java.util.Random;
 
 public abstract class StructureGenerator extends WorldGenBase
 {
-  protected HashMap e = new HashMap();
+  protected HashMap<Long, StructureStart> e = new HashMap(); // BTCS: added decl '<Long, StructureStart>'
   
   public void a(IChunkProvider paramIChunkProvider, World paramWorld, int paramInt1, int paramInt2, byte[] paramArrayOfByte)
   {
@@ -20,7 +20,6 @@ public abstract class StructureGenerator extends WorldGenBase
     if (this.e.containsKey(Long.valueOf(ChunkCoordIntPair.a(paramInt1, paramInt2)))) {
       return;
     }
-    
 
     this.c.nextInt();
     if (a(paramInt1, paramInt2))
@@ -36,35 +35,17 @@ public abstract class StructureGenerator extends WorldGenBase
     int j = (paramInt2 << 4) + 8;
     
     boolean bool = false;
-    for (StructureStart localStructureStart : (StructureStart[]) this.e.values().toArray()) { // BTCS: added cast and .toArray()
+    for (StructureStart localStructureStart : this.e.values().toArray(new StructureStart[this.e.values().size()])) { // BTCS: added .toArray(...)
       if ((localStructureStart.a()) && 
         (localStructureStart.b().a(i, j, i + 15, j + 15))) {
         localStructureStart.a(paramWorld, paramRandom, new StructureBoundingBox(i, j, i + 15, j + 15));
         bool = true;
       }
     }
-    
 
     return bool;
   }
   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   public boolean a(int paramInt1, int paramInt2, int paramInt3)
   {
     for (StructureStart localStructureStart : (StructureStart[]) this.e.values().toArray()) {  // BTCS: added cast and .toArray()
@@ -83,8 +64,6 @@ public abstract class StructureGenerator extends WorldGenBase
     
     return false;
   }
-  
-
 
   public ChunkPosition getNearestGeneratedFeature(World paramWorld, int paramInt1, int paramInt2, int paramInt3)
   {

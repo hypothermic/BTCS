@@ -20,8 +20,6 @@ public class NBTTagByteArray extends NBTBase {
 		paramDataOutput.writeInt(this.data.length);
 		paramDataOutput.write(this.data);
 	} catch (IOException e) {
-		System.out.println("BTCS: Exception X13 happened in NBTBase");
-		e.printStackTrace();
 	}
   }
   
@@ -31,8 +29,6 @@ public class NBTTagByteArray extends NBTBase {
 		this.data = new byte[i];
 	    paramDataInput.readFully(this.data);
 	} catch (IOException e) {
-		System.out.println("BTCS: Exception X14 happened in NBTBase");
-		e.printStackTrace();
 	}
   }
   

@@ -21,7 +21,8 @@ public class DimensionManager
   private static Hashtable<Integer, World> worlds = new Hashtable();
   private static boolean hasInit = false;
   
-  public static boolean registerDimension(int id, WorldProvider provider, boolean keepLoaded)
+  @SuppressWarnings("unlikely-arg-type") // BTCS
+public static boolean registerDimension(int id, WorldProvider provider, boolean keepLoaded)
   {
     if (providers.containsValue(Integer.valueOf(id)))
     {
@@ -45,9 +46,9 @@ public class DimensionManager
     {
       return;
     }
-    registerDimension(0, new WorldProviderNormal(), true);
+    registerDimension(0, new net.minecraft.server.WorldProviderNormal(), true);
     registerDimension(-1, new net.minecraft.server.WorldProviderHell(), true);
-    registerDimension(1, new WorldProviderTheEnd(), false);
+    registerDimension(1, new net.minecraft.server.WorldProviderTheEnd(), false);
   }
   
   public static WorldProvider getProvider(int id)

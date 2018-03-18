@@ -11,10 +11,6 @@ public class NBTTagEnd extends NBTBase
 
   void load(DataInput paramDataInput) {}
   
-  void load(java.io.DataInput x1, int x2) { // BTCS: we don't need this in the byte tag, empty method.
-	  System.out.println("BTCS DEBUG-X6: wrong load method got used, report this error to devs.");
-  }
-  
   void write(java.io.DataOutput paramDataOutput) {}
   
   public byte getTypeId()

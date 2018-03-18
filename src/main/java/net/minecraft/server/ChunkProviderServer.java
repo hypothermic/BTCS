@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
 import org.bukkit.Server;
+import org.bukkit.craftbukkit.CraftChunk;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.util.LongHashset;
@@ -20,8 +21,7 @@ import org.bukkit.plugin.PluginManager;
 
 
 
-public class ChunkProviderServer
-  implements IChunkProvider
+public class ChunkProviderServer implements IChunkProvider
 {
   public LongHashset unloadQueue = new LongHashset();
   public Chunk emptyChunk;
@@ -75,6 +75,7 @@ public class ChunkProviderServer
   
   public Chunk getChunkAt(int i, int j)
   {
+	  nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderServer.getChunckAt() - 100");
     this.unloadQueue.remove(i, j);
     Chunk chunk = (Chunk)this.chunks.get(i, j);
     boolean newChunk = false;
@@ -82,54 +83,62 @@ public class ChunkProviderServer
 
     if (chunk == null) {
       chunk = loadChunk(i, j);
+      nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderServer.getChunckAt() - 310");
       if (chunk == null) {
         if (this.chunkProvider == null) {
+        	nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderServer.getChunckAt() - 340");
           chunk = this.emptyChunk;
         } else {
+          nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderServer.getChunckAt() - 360");
+          nl.hypothermic.btcs.XLogger.debug(" ChunckProvidor = " + this.chunkProvider.getClass().getName());
           chunk = this.chunkProvider.getOrCreateChunk(i, j);
         }
+        nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderServer.getChunckAt() - 380");
         newChunk = true;
       }
       
       this.chunks.put(i, j, chunk);
+      nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderServer.getChunckAt() - 300");
       this.chunkList.add(chunk);
+      nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderServer.getChunckAt() - 400");
       if (chunk != null) {
+    	  nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderServer.getChunckAt() - 500");
         chunk.loadNOP();
         chunk.addEntities();
       }
       
-
+      nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderServer.getChunckAt() - 600");
       Server server = this.world.getServer();
+      nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderServer.getChunckAt() - 700");
       if (server != null)
       {
-
-
-
-
-        server.getPluginManager().callEvent(new ChunkLoadEvent(chunk.bukkitChunk, newChunk));
+        server.getPluginManager().callEvent(new ChunkLoadEvent((CraftChunk) chunk.bukkitChunk, newChunk));
       }
-      
-
+      nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderServer.getChunckAt() - 800");
       chunk.a(this, this, i, j);
     }
-    
+    nl.hypothermic.btcs.XLogger.debug("---- BTCS: ChunckProviderServer.getChunckAt() - 900");
     return chunk;
   }
   
   public Chunk getOrCreateChunk(int i, int j)
   {
-    Chunk chunk = (Chunk)this.chunks.get(i, j);
-    
-    chunk = chunk == null ? getChunkAt(i, j) : (!this.world.isLoading) && (!this.forceChunkLoad) ? this.emptyChunk : chunk;
+	nl.hypothermic.btcs.XLogger.debug("BTCS: start ChunckProvidorServer.getOrCreateChunck()");
+	// CraftBukkit start
+    Chunk chunk = (Chunk) this.chunks.get(i, j);
+
+    chunk = chunk == null ? (!this.world.isLoading && !this.forceChunkLoad ? this.emptyChunk : this.getChunkAt(i, j)) : chunk;
     if (chunk == this.emptyChunk) return chunk;
-    if ((i != chunk.x) || (j != chunk.z)) {
-      MinecraftServer.log.severe("Chunk (" + chunk.x + ", " + chunk.z + ") stored at  (" + i + ", " + j + ") in world '" + this.world.getWorld().getName() + "'");
-      MinecraftServer.log.severe(chunk.getClass().getName());
-      Throwable ex = new Throwable();
-      ex.fillInStackTrace();
-      ex.printStackTrace();
+    if (i != chunk.x || j != chunk.z) {
+        MinecraftServer.log.severe("Chunk (" + chunk.x + ", " + chunk.z + ") stored at  (" + i + ", " + j + ") in world '" + world.getWorld().getName() + "'");
+        MinecraftServer.log.severe(chunk.getClass().getName());
+        Throwable ex = new Throwable();
+        ex.fillInStackTrace();
+        ex.printStackTrace();
     }
+    nl.hypothermic.btcs.XLogger.debug("BTCS: end ChunckProvidorServer.getOrCreateChunck()");
     return chunk;
+    // CraftBukkit end
   }
   
   public Chunk loadChunk(int i, int j)
@@ -189,18 +198,38 @@ public class ChunkProviderServer
         long xRand = random.nextLong() / 2L * 2L + 1L;
         long zRand = random.nextLong() / 2L * 2L + 1L;
         random.setSeed(i * xRand + j * zRand ^ this.world.getSeed());
-        
-        org.bukkit.World world = this.world.getWorld();
+        nl.hypothermic.btcs.XLogger.generr("---- BTCS XRETR6: rq cps.world from ChunckProvidorServer.getChunckAt(iCP, int, int");
+        org.bukkit.World world = this.world.getWorld(); // BTCS: 'org.bukkit.World' --> 'org.bukkit.craftbukkit.CraftWorld' // edit: nvm
+        nl.hypothermic.btcs.XLogger.generr("---- BTCS XRETR6: rq cps.world completed!");
         if (world != null) {
+          nl.hypothermic.btcs.XLogger.generr("---- BTCS: ChunckProvidorServer.getChunckAt - 100");
           for (BlockPopulator populator : world.getPopulators()) {
+        	nl.hypothermic.btcs.XLogger.generr("---- BTCS: ChunckProvidorServer.getChunckAt - 150 (POPULATING)");
             populator.populate(world, random, chunk.bukkitChunk);
+            nl.hypothermic.btcs.XLogger.generr("---- BTCS: ChunckProvidorServer.getChunckAt - 175 (DONE PPL)");
           }
+          nl.hypothermic.btcs.XLogger.generr("---- BTCS: ChunckProvidorServer.getChunckAt - 200");
         }
+        nl.hypothermic.btcs.XLogger.generr("---- BTCS: ChunckProvidorServer.getChunckAt - 300");
         BlockSand.instaFall = false;
-        this.world.getServer().getPluginManager().callEvent(new ChunkPopulateEvent(chunk.bukkitChunk));
-        
-
+        nl.hypothermic.btcs.XLogger.generr("---- BTCS: ChunckProvidorServer.getChunckAt - 400");
+        //this.world.getServer().getPluginManager().callEvent(new ChunkPopulateEvent(chunk.bukkitChunk));
+        PluginManager pm = this.world.getServer().getPluginManager();
+        nl.hypothermic.btcs.XLogger.generr("---- BTCS: ChunckProvidorServer.getChunckAt - 410");
+        org.bukkit.Chunk test = chunk.getBukkitChunk();
+        nl.hypothermic.btcs.XLogger.generr("---- BTCS: ChunckProvidorServer.getChunckAt - 415");
+        nl.hypothermic.btcs.XLogger.generic("BTCS: CHUNCK CL: " + chunk.getClass().getName());
+        nl.hypothermic.btcs.XLogger.generr("---- BTCS: ChunckProvidorServer.getChunckAt - 417");
+        nl.hypothermic.btcs.XLogger.generic("BTCS: BUKKITCHUNCK CL: " + test.getClass().getName());
+        nl.hypothermic.btcs.XLogger.generr("---- BTCS: ChunckProvidorServer.getChunckAt - 420");
+        org.bukkit.World testw = test.getWorld();
+        nl.hypothermic.btcs.XLogger.generr("---- BTCS: ChunckProvidorServer.getChunckAt - 430");
+        ChunkPopulateEvent cpe = new ChunkPopulateEvent(test);
+        nl.hypothermic.btcs.XLogger.generr("---- BTCS: ChunckProvidorServer.getChunckAt - 450");
+        pm.callEvent(cpe);
+        nl.hypothermic.btcs.XLogger.generr("---- BTCS: ChunckProvidorServer.getChunckAt - 500");
         chunk.e();
+        nl.hypothermic.btcs.XLogger.generr("---- BTCS: ChunckProvidorServer.getChunckAt - 600");
       }
     }
   }

@@ -45,13 +45,9 @@ public class NBTTagCompound extends NBTBase {
     this.map.clear();
     
     NBTBase nbtbase;
-    while ((nbtbase = NBTBase.b(datainput, 0)).getTypeId() != 0) { // BTCS TODO: limit this
+    while ((nbtbase = NBTBase.b(datainput)).getTypeId() != 0) { // BTCS TODO: limit this
       this.map.put(nbtbase.getName(), nbtbase);
     }
-  }
-  
-  void load(java.io.DataInput x1, int x2) { // BTCS: we don't need this in the byte tag, empty method.
-	  System.out.println("BTCS DEBUG-X4: wrong load method got used, report this error to devs.");
   }
   
   public Collection d() {

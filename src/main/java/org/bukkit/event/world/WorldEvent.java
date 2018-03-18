@@ -3,22 +3,22 @@ package org.bukkit.event.world;
 import org.bukkit.World;
 import org.bukkit.event.Event;
 
-public abstract class WorldEvent
-  extends Event
-{
-  private final World world;
-  
-  public WorldEvent(World world)
-  {
-    this.world = world;
-  }
-  
+/**
+ * Represents events within a world
+ */
+public abstract class WorldEvent extends Event {
+    private final org.bukkit.World world;
 
+    public WorldEvent(final org.bukkit.World world) {
+        this.world = world;
+    }
 
-
-
-  public World getWorld()
-  {
-    return this.world;
-  }
+    /**
+     * Gets the world primarily involved with this event
+     *
+     * @return World which caused this event
+     */
+    public World getWorld() {
+        return world;
+    }
 }

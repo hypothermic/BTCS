@@ -8,7 +8,7 @@ public class WorldGenStrongholdPieces
 {
   private static final WorldGenStrongholdPieceWeight[] b = { new WorldGenStrongholdPieceWeight(WorldGenStrongholdStraight.class, 40, 0), new WorldGenStrongholdPieceWeight(WorldGenStrongholdPrison.class, 5, 5), new WorldGenStrongholdPieceWeight(WorldGenStrongholdLeftTurn.class, 20, 0), new WorldGenStrongholdPieceWeight(WorldGenStrongholdRightTurn.class, 20, 0), new WorldGenStrongholdPieceWeight(WorldGenStrongholdRoomCrossing.class, 10, 6), new WorldGenStrongholdPieceWeight(WorldGenStrongholdStairsStraight.class, 5, 5), new WorldGenStrongholdPieceWeight(WorldGenStrongholdStairs.class, 5, 5), new WorldGenStrongholdPieceWeight(WorldGenStrongholdCrossing.class, 5, 4), new WorldGenStrongholdPieceWeight(WorldGenStrongholdPiece2.class, 5, 4), new WorldGenStrongholdUnknown(WorldGenStrongholdLibrary.class, 10, 2), new WorldGenStrongholdPieceWeight3(WorldGenStrongholdPortalRoom.class, 20, 1) };
  
-  private static List c;
+  private static List<WorldGenStrongholdPieceWeight> c;
  
   private static Class d;
  
@@ -26,7 +26,7 @@ public class WorldGenStrongholdPieces
   private static boolean c() {
     boolean bool = false;
     a = 0;
-    for (WorldGenStrongholdPieceWeight localWorldGenStrongholdPieceWeight : (WorldGenStrongholdPieceWeight[]) c.toArray()) { // BTCS: added cast and .toArray()
+    for (WorldGenStrongholdPieceWeight localWorldGenStrongholdPieceWeight : c.toArray(new WorldGenStrongholdPieceWeight[c.size()])) { // BTCS: added .toArray()
       if ((localWorldGenStrongholdPieceWeight.d > 0) && (localWorldGenStrongholdPieceWeight.c < localWorldGenStrongholdPieceWeight.d)) {
         bool = true;
       }
@@ -88,7 +88,7 @@ public class WorldGenStrongholdPieces
       i++;
       
       j = paramRandom.nextInt(a);
-      for (WorldGenStrongholdPieceWeight localWorldGenStrongholdPieceWeight : (WorldGenStrongholdPieceWeight[]) c.toArray()) { // BTCS: added cast and .toArray()
+      for (WorldGenStrongholdPieceWeight localWorldGenStrongholdPieceWeight : c.toArray(new WorldGenStrongholdPieceWeight[c.size()])) { // BTCS: added .toArray()
         j -= localWorldGenStrongholdPieceWeight.b;
         if (j < 0)
         {
