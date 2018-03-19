@@ -1,0 +1,43 @@
+# BTCS stuff
+/btcsplus*
+/hs-*
+/pid*
+
+# Eclipse stuff
+#/.classpath # BTCS - uncommented
+#/.project # BTCS - uncommented
+/.settings
+
+# netbeans
+/nbproject
+
+# we use maven!
+/build.xml
+
+# maven
+/target
+
+# vim
+.*.sw[a-p]
+
+# various other potential build files
+/build
+/bin
+/dist
+/manifest.mf
+
+/world
+
+# Mac filesystem dust
+/.DS_Store
+
+# intellij
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# [start] comment by hypothermic on 2-MARCH-2018 12:16 CET
+# /src/main/resources/achievement
+# /src/main/resources/lang
+# [end]
