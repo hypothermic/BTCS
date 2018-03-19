@@ -171,12 +171,30 @@ public class Item {
     public boolean isRepairable() {
       return (this.canRepair) && (g());
     }
+    
     public Item setNoRepair() {
       this.canRepair = false;
       return this;
     }
+    
     public float getStrVsBlock(ItemStack itemstack, Block block, int metadata) {
       return getDestroySpeed(itemstack, block);
+    }
+    
+    public boolean onBlockStartBreak(ItemStack itemstack, int X, int Y, int Z, EntityHuman player) {
+      return false;
+    }
+
+    public boolean onLeftClickEntity(ItemStack stack, EntityHuman entityHuman, Entity entity) {
+      return false;
+    }
+    
+    public int getIconIndex(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
+      return 0;
+    }
+
+    public int getRenderPasses(int metadata) {
+      return 1;
     }
     
     public boolean isDefaultTexture = true;
@@ -189,6 +207,8 @@ public class Item {
       }
       return this.currentTexture;
     }
+    
+    public void onUsingItemTick(ItemStack stack, EntityHuman entityHuman, int count) {}
     // BTCS end
 
     public Item d(int i) {

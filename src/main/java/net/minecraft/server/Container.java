@@ -1,14 +1,20 @@
 package net.minecraft.server;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 // CraftBukkit start
 import org.bukkit.craftbukkit.inventory.CraftInventory;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryView;
 // CraftBukkit end
+
+import forge.bukkit.ModInventoryView;
 
 public abstract class Container {
 
@@ -19,7 +25,8 @@ public abstract class Container {
     protected List listeners = new ArrayList();
     private Set b = new HashSet();
 
-    // CraftBukkit start
+    // BTCS start
+    /*// CraftBukkit start
     public boolean checkReachable = true;
     public abstract InventoryView getBukkitView();
     public void transferTo(Container other, org.bukkit.craftbukkit.entity.CraftHumanEntity player) {
@@ -29,7 +36,49 @@ public abstract class Container {
         ((CraftInventory) destination.getTopInventory()).getInventory().onOpen(player);
         ((CraftInventory) destination.getBottomInventory()).getInventory().onOpen(player);
     }
-    // CraftBukkit end
+    // CraftBukkit end*/
+    public boolean checkReachable = true;
+    private EntityHuman forgePlayer;
+    
+    public InventoryView getBukkitView() {
+  	  return new ModInventoryView(this, getPlayer());
+    }
+    
+    public void transferTo(Container other, CraftHumanEntity player) {
+      InventoryView source = getBukkitView();InventoryView destination = other.getBukkitView();
+      boolean validSource = validateBukkitContainer(source, this);
+      boolean validDest = validateBukkitContainer(destination, other);
+      if ((!validSource) || (!validDest)) {
+        StringWriter sw = new StringWriter();
+        new Throwable().printStackTrace(new PrintWriter(sw));
+        // BTCS: maybe modify the message below, because mcportcentral.co.za is down for 3 years already? (since 2015) I don't know anything about the mod porting though, and all the mods should work because I stole them right from the official server.
+        ModLoader.getLogger().severe(String.format("ALERT: SERIOUS BUKKIT PORTING ERROR. %s (%b) or %s (%b) is a container that does not provide a valid player and inventory to bukkit.\nThe mod porter needs to provide a player through getPlayer() and an IInventory through getInventory().\nYou may encounter issues. File a bug with this message at mcportcentral.co.za, please.\n%s", new Object[] { getClass().getName(), Boolean.valueOf(validSource), other.getClass().getName(), Boolean.valueOf(validDest), sw.toString() }));
+        return;
+      }
+      ((CraftInventory)source.getTopInventory()).getInventory().onClose(player);
+      ((CraftInventory)source.getBottomInventory()).getInventory().onClose(player);
+      ((CraftInventory)destination.getTopInventory()).getInventory().onOpen(player);
+      ((CraftInventory)destination.getBottomInventory()).getInventory().onOpen(player);
+    }
+    
+    private boolean validateBukkitContainer(InventoryView source, Container cont) {
+      if ((source.getType() == InventoryType.MOD) && (
+        (cont.getInventory() == null) || (cont.getPlayer() == null))) {
+        return false;
+      }
+      
+      return true;
+    }
+
+    public EntityHuman getPlayer() {
+      return this.forgePlayer;
+    }
+    
+    public void setPlayer(EntityHuman player) {
+        this.forgePlayer = player;
+    }
+    
+    // BTCS end
 
     public Container() {}
 

@@ -83,33 +83,6 @@ public class FMLBukkitHandler implements IFMLSidedHandler {
   public void onLoadComplete()
   {
 	Loader.instance().initializeMods();
-	// BTCS: Material.getMaterial(i.id) returns null for mod items because they are not initialized. TODO: fix.
-	// debug start
-	int count = 0;
-	StringBuilder sb = new StringBuilder();
-	for (Item i : Item.byId) {
-		try {
-			sb.append(i.id);
-			sb.append(",");
-			count++;
-		} catch (Exception x) {
-			// No item, encountered pre-init spot.
-		}
-	}
-	System.out.println("---> BTCS: Item.byId[] content (" + count + "): " + sb.toString());
-	count = 0;
-	StringBuilder sb2 = new StringBuilder();
-	for (Material m : org.bukkit.Material.values()) {
-		try {
-			sb2.append(m.getId());
-			sb2.append(",");
-			count++;
-		} catch (Exception x) {
-			// No material, encountered pre-init spot.
-		}
-	}
-	System.out.println("---> BTCS: Material.values() content (" + count + "): " + sb2.toString());
-	// debug end
 	for (Item i : Item.byId) {
 		
 		// BTCS start: Forge only puts registered items into net.minecraft.server.Item.byId, not in org.bukkit.Material. TODO: add this on fmlregistry-level, it would be more efficient than afterwards.
@@ -127,21 +100,9 @@ public class FMLBukkitHandler implements IFMLSidedHandler {
 				Material.setMaterialName(i.id, i.l());
 			}
 		} catch (NullPointerException npe) {
-	    	nl.hypothermic.btcs.XLogger.generr("Could not load item: "  + i.id + ", reason: no enum entry exists in org.bukkit.Material for this item.");
+	    	nl.hypothermic.btcs.XLogger.gencrit("Please report this issue to the develepor: No org.bukkit.Material for item "  + i.id);
 		}
 	}
-	count = 0;
-	StringBuilder sb4 = new StringBuilder();
-	for (Material m : org.bukkit.Material.values()) {
-		try {
-			sb4.append(m.getId());
-			sb4.append(",");
-			count++;
-		} catch (Exception x) {
-			// No material, encountered pre-init spot.
-		}
-	}
-	System.out.println("---> BTCS: Material.values() content: (" + count + ") " + sb4.toString());
   }
   
   public void onWorldLoadTick()

@@ -1,8 +1,12 @@
 package net.minecraft.server;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.entity.HumanEntity;
 // CraftBukkit start
 import org.bukkit.inventory.InventoryHolder;
 // CraftBukkit end
@@ -18,6 +22,7 @@ public class TileEntity implements net.minecraft.src.TileEntity { // BTCS: added
     protected boolean o;
     public int p = -1;
     public Block q;
+    private List<HumanEntity> transaction = new ArrayList(2);
 
     public TileEntity() {}
     
@@ -25,6 +30,25 @@ public class TileEntity implements net.minecraft.src.TileEntity { // BTCS: added
     public static void addNewTileEntityMapping(Class<? extends TileEntity> tileEntityClass, String id) {
         a(tileEntityClass, id);
     }
+    public void onOpen(CraftHumanEntity who) {
+      this.transaction.add(who);
+    }
+    
+    public void onClose(CraftHumanEntity who) {
+      this.transaction.remove(who);
+    }
+    
+    public List<HumanEntity> getViewers() {
+      return this.transaction;
+    }
+
+    public boolean canUpdate() {
+      return true;
+    }
+    
+    public void onDataPacket(NetworkManager net, Packet132TileEntityData pkt) {}
+    
+    public void onChunkUnload() {}
     // BTCS end
 
     private static void a(Class oclass, String s) {

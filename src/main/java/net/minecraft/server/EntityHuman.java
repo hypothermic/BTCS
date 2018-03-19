@@ -1,10 +1,12 @@
 package net.minecraft.server;
 
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 
 // CraftBukkit start
 import org.bukkit.craftbukkit.entity.CraftItem;
+import org.bukkit.craftbukkit.event.CraftEventFactory;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
@@ -12,6 +14,15 @@ import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 // CraftBukkit end
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.TickType;
+import forge.ArmorProperties;
+import forge.ForgeHooks;
+import forge.IGuiHandler;
+import forge.MinecraftForge;
+import forge.NetworkMod;
+import forge.packets.PacketOpenGUI;
 
 public abstract class EntityHuman extends EntityLiving {
 
@@ -80,6 +91,31 @@ public abstract class EntityHuman extends EntityLiving {
     }
     
     // BTCS start
+    public void openGui(BaseMod mod, int ID, World world, int x, int y, int z) {
+      if (!(this instanceof EntityPlayer)) {
+        return;
+      }
+      EntityPlayer player = (EntityPlayer)this;
+      if (!(mod instanceof NetworkMod)) {
+        return;
+      }
+      IGuiHandler handler = MinecraftForge.getGuiHandler(mod);
+      if (handler != null) {
+        Container container = (Container)handler.getGuiElement(ID, player, world, x, y, z);
+        if (container != null) {
+          container = CraftEventFactory.callInventoryOpenEvent(player, container);
+          if (container != null) {
+            player.realGetNextWidowId();
+            player.H();
+            PacketOpenGUI pkt = new PacketOpenGUI(player.getCurrentWindowIdField(), MinecraftForge.getModID((NetworkMod)mod), ID, x, y, z);
+            player.netServerHandler.sendPacket(pkt.getPacket());
+            this.activeContainer = container;
+            this.activeContainer.windowId = player.getCurrentWindowIdField();
+            this.activeContainer.addSlotListener(player);
+          }
+        }
+      }
+    }
     public float getCurrentPlayerStrVsBlock(Block block, int meta) {
         ItemStack stack = this.inventory.getItemInHand();
         float f = stack == null ? 1.0F : stack.getItem().getStrVsBlock(stack, block, meta);
@@ -146,12 +182,14 @@ public abstract class EntityHuman extends EntityLiving {
     }
 
     public void F_() {
+    	FMLCommonHandler.instance().tickStart(EnumSet.of(TickType.PLAYER), new Object[] { this, this.world }); // BTCS
         if (this.d != null) {
             ItemStack itemstack = this.inventory.getItemInHand();
 
             if (itemstack != this.d) {
                 this.O();
             } else {
+            	this.d.getItem().onUsingItemTick(this.d, this, this.e);
                 if (this.e <= 25 && this.e % 4 == 0) {
                     this.b(itemstack, 5);
                 }
@@ -245,6 +283,8 @@ public abstract class EntityHuman extends EntityLiving {
         if (!this.world.isStatic) {
             this.foodData.a(this);
         }
+        
+        FMLCommonHandler.instance().tickEnd(EnumSet.of(TickType.PLAYER), new Object[] { this, this.world }); // BTCS
     }
 
     protected void b(ItemStack itemstack, int i) {
@@ -695,6 +735,14 @@ public abstract class EntityHuman extends EntityLiving {
             i = 1 + i >> 1;
         }
 
+        // BTCS start
+        i = ArmorProperties.ApplyArmor(this, this.inventory.armor, damagesource, i);
+        
+        if (i <= 0) {
+            return;
+        }
+        // BTCS end
+        
         i = this.d(damagesource, i);
         i = this.b(damagesource, i);
         this.c(damagesource.f());
@@ -710,6 +758,11 @@ public abstract class EntityHuman extends EntityLiving {
     public void openBrewingStand(TileEntityBrewingStand tileentitybrewingstand) {}
 
     public void e(Entity entity) {
+    	// BTCS start
+    	if (!ForgeHooks.onEntityInteract(this, entity, false)) {
+          return;
+        }
+    	// BTCS end
         if (!entity.b(this)) {
             ItemStack itemstack = this.U();
 
@@ -730,7 +783,12 @@ public abstract class EntityHuman extends EntityLiving {
     }
 
     public void V() {
-        this.inventory.setItem(this.inventory.itemInHandIndex, (ItemStack) null);
+    	// BTCS start
+        //this.inventory.setItem(this.inventory.itemInHandIndex, (ItemStack) null);
+    	ItemStack orig = this.inventory.getItemInHand();
+        this.inventory.setItem(this.inventory.itemInHandIndex, (ItemStack)null);
+        ForgeHooks.onDestroyCurrentItem(this, orig);
+        // BTCS end
     }
 
     public double W() {
@@ -745,6 +803,17 @@ public abstract class EntityHuman extends EntityLiving {
     }
 
     public void attack(Entity entity) {
+    	// BTCS start
+    	if (!ForgeHooks.onEntityInteract(this, entity, true)) {
+          return;
+        }
+    	
+    	ItemStack stack = this.inventory.getItemInHand();
+        if ((stack != null) && (stack.getItem().onLeftClickEntity(stack, this, entity))) {
+          return;
+        }
+        // BTCS end
+        
         if (entity.k_()) {
             int i = this.inventory.a(entity);
 
@@ -862,6 +931,13 @@ public abstract class EntityHuman extends EntityLiving {
     }
 
     public EnumBedResult a(int i, int j, int k) {
+    	// BTCS start
+    	EnumBedResult customSleep = ForgeHooks.sleepInBedAt(this, i, j, k);
+        if (customSleep != null) {
+          return customSleep;
+        }
+        // BTCS end
+        
         if (!this.world.isStatic) {
             if (this.isSleeping() || !this.isAlive()) {
                 return EnumBedResult.OTHER_PROBLEM;
@@ -907,6 +983,12 @@ public abstract class EntityHuman extends EntityLiving {
         if (this.world.isLoaded(i, j, k)) {
             int l = this.world.getData(i, j, k);
             int i1 = BlockBed.b(l);
+            // BTCS start
+            Block block = Block.byId[this.world.getTypeId(i, j, k)];
+            if (block != null) {
+              i1 = block.getBedDirection(this.world, i, j, k);
+            }
+            // BTCS end
             float f = 0.5F;
             float f1 = 0.5F;
 

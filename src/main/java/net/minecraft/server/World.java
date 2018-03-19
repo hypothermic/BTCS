@@ -92,6 +92,25 @@ public class World implements IBlockAccess {
     public WorldChunkManager getWorldChunkManager() {
         return this.worldProvider.c;
     }
+    
+    // BTCS start
+    public void addTileEntity(TileEntity entity) {
+      List dest = this.Q ? this.J : this.tileEntityList;
+      if (entity.canUpdate()) {
+        synchronized (dest) {
+          dest.add(entity);
+        }
+      }
+    }
+
+    public boolean isBlockSolidOnSide(int x, int y, int z, int side) {
+      Block block = Block.byId[getTypeId(x, y, z)];
+      if (block == null) {
+        return false;
+      }
+      return block.isBlockSolidOnSide(this, x, y, z, side);
+    }
+    // BTCS end
 
     // CraftBukkit start
     private final CraftWorld world;

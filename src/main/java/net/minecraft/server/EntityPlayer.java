@@ -68,6 +68,16 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
     public int newTotalExp = 0;
     public boolean keepLevel = false;
     // CraftBukkit end
+    
+    // BTCS start
+    public final void realGetNextWidowId() {
+      nextContainerCounter();
+    }
+    
+    public final int getCurrentWindowIdField() {
+      return this.containerCounter;
+    }
+    // BTCS end
 
     public void a(NBTTagCompound nbttagcompound) {
         super.a(nbttagcompound);

@@ -32,15 +32,17 @@ public class Launcher {
 	private static double VERSION;
 	private static String VTAG;
 	public static final boolean ENABLE_DEBUG = false;
-	private static String PROPS_HEADER = " BTCS Configuration File." + LS + " https://github.com/hypothermic/BTCS";
+	private static String PROPS_HEADER = " BTCS+ Configuration File." + LS + " https://github.com/hypothermic/BTCS";
 	private static final String CFG_NAME = "btcs.cfg";
 	public static final File MC_CFG_FILE = new File("mc.cfg"); /**{@link net.minecraft.server.PropertyManager#PropertyManager(OptionSet)}*/ // TODO: add to config
 	public static final File BUKKIT_CFG_FILE = new File("bukkit.cfg"); /**{@link org.bukkit.craftbukkit.CraftServer#getConfigFile()}*/ // TODO: add to config
 	public static final File BUKKIT_PLUGIN_FOLDER = new File("plugins"); /**{@link org.bukkit.craftbukkit.CraftServer#loadPlugins()}*/ // TODO: add to config
 	// I wish Properties files could store booleans .-.
 	// I guess we'll have to store them as Strings for now and Boolean.parseBoolean() when we load them
+	// TODO: add integrity checker to properties file.
 	private static HashMap<String, String> DEFOPTIONS = new HashMap() {{ put("force-jline", "false");
-																		 put("deploy-resources", "true"); }};
+																		 put("deploy-resources", "true");
+																		 put("use-forgeplugin", "true"); }};
 																		 
 	private static ConfigurationManager c = new ConfigurationManager(DEFOPTIONS);
 	private static ResourceManager r = new ResourceManager();
@@ -50,7 +52,7 @@ public class Launcher {
 	public static void main(final String[] args) {
 		LS = System.getProperty("line.separator");
 		// TODO: include these in config file. Hardcoded for now since it's not high priority.
-		VERSION = 1.00;
+		VERSION = 1.01;
 		VTAG = "ALPHA";
 		
 		System.out.println(LS + "  << BTCS+ v" + VERSION + "-" + VTAG + " >>" + LS
@@ -137,7 +139,7 @@ public class Launcher {
 	
 	// getVersion() method is grabbed from StackOverflow: 
 	// https://stackoverflow.com/questions/2591083/getting-java-version-at-runtime
-	static double getVersion () {
+	static double getVersion() {
 	    String version = System.getProperty("java.version");
 	    int pos = version.indexOf('.');
 	    pos = version.indexOf('.', pos+1);
