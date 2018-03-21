@@ -198,7 +198,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
         log.info("Preparing level \"" + s + "\"");
         this.a(new WorldLoaderServer(server.getWorldContainer()), s, j, worldtype); // CraftBukkit - world container
         long l = System.nanoTime() - i;
-        String s3 = String.format("%.3fs", new Object[] { Double.valueOf((double) l / 1.0E9D)});
+        String s3 = String.format("%.3fs", new Object[] { Double.valueOf(((double) l / 1.0E9D))});
 
         log.info("Done (" + s3 + ")! For help, type \"help\" or \"?\"");
         if (this.propertyManager.getBoolean("enable-query", false)) {
