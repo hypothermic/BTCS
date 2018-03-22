@@ -21,8 +21,10 @@ import joptsimple.OptionSet;
 import net.minecraft.server.Achievement;
 import net.minecraft.server.AchievementList;
 import net.minecraft.server.Block;
+import net.minecraft.server.EntityPlayer;
 import net.minecraft.server.Item;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.Packet250CustomPayload;
 
 public class Launcher {
 	
@@ -104,7 +106,6 @@ public class Launcher {
 			        if (options.has("noconsole")) {
 			          useConsole = false;
 			        }
-			        
 			        net.minecraft.server.MinecraftServer.main(options);
 			      } catch (Exception x) {
 			        x.printStackTrace();
