@@ -1,6 +1,5 @@
 package net.minecraft.server;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -147,12 +146,6 @@ public abstract class Entity implements net.minecraft.src.Entity { // BTCS: adde
     public boolean ce;
     public UUID uniqueId = UUID.randomUUID(); // CraftBukkit
     public boolean valid = true; // CraftBukkit
-    
-    // BTCS start
-    private NBTTagCompound customEntityData;
-    protected boolean captureDrops = false;
-    protected ArrayList<EntityItem> capturedDrops = new ArrayList<EntityItem>();
-    // BTCS end
 
     public Entity(World world) {
         this.id = entityCount++;

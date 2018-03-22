@@ -40,7 +40,6 @@ import org.bukkit.inventory.InventoryView;
 
 import cpw.mods.fml.server.FMLBukkitHandler;
 import forge.MessageManager;
-import nl.hypothermic.btcs.XLogger;
 
 public class NetServerHandler extends NetHandler implements ICommandListener {
 
@@ -733,16 +732,6 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
     }
 
     public void sendPacket(Packet packet) {
-    	if (packet instanceof Packet250CustomPayload) {
-    		XLogger.generr("Sending Packet250CustomPayload...");
-    		if (((Packet250CustomPayload) packet).data == null) {
-        		XLogger.gencrit("Packet data is null! Aborting!");
-    		} else if (((Packet250CustomPayload) packet).tag == null) {
-    			XLogger.gencrit("Packet tag is null! Aborting!");
-    		} else if (((Packet250CustomPayload) packet).length < 1) {
-    			XLogger.gencrit("Packet length is invalid! Aborting!");
-    		}
-    	}
         // CraftBukkit start
         if (packet instanceof Packet6SpawnPosition) {
             Packet6SpawnPosition packet6 = (Packet6SpawnPosition) packet;

@@ -5,10 +5,6 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.logging.Logger;
 
-import cpw.mods.fml.server.FMLBukkitHandler;
-import forge.ForgeHooks;
-import forge.ForgeHooksServer;
-
 public class NetLoginHandler extends NetHandler {
 
     public static Logger logger = Logger.getLogger("Minecraft");
@@ -26,7 +22,6 @@ public class NetLoginHandler extends NetHandler {
         this.server = minecraftserver;
         this.networkManager = new NetworkManager(socket, s, this);
         this.networkManager.f = 0;
-        ForgeHooks.onConnect(this.networkManager); // BTCS
     }
 
     // CraftBukkit start
@@ -144,10 +139,6 @@ public class NetLoginHandler extends NetHandler {
             }
 
             entityplayer.syncInventory();
-            // BTCS start
-            ForgeHooksServer.handleLoginPacket(packet1login, netserverhandler, this.networkManager);
-            FMLBukkitHandler.instance().handleLogin(packet1login, this.networkManager);
-            // BTCS end
         }
 
         this.c = true;

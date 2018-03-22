@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import forge.MessageManager;
-
 public class NetworkManager {
 
     public static final Object a = new Object();
@@ -231,10 +229,6 @@ public class NetworkManager {
                 ;
             }
         }
-        // BTCS start
-        forge.ForgeHooks.onDisconnect(this, s, aobject);
-        MessageManager.getInstance().removeConnection(this);
-        // BTCS end
     }
 
     public void b() {
