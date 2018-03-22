@@ -3,13 +3,10 @@ package net.minecraft.server;
 // CraftBukkit start
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.craftbukkit.event.CraftEventFactory;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 // CraftBukkit end
-
-import forge.ForgeHooks;
 
 public class ItemInWorldManager {
 
@@ -27,21 +24,10 @@ public class ItemInWorldManager {
     private int l;
     private int m;
     private int n;
-    private double blockReachDistance = 5.0D; // BTCS
 
     public ItemInWorldManager(World world) {
         this.world = world;
     }
-    
-    // BTCS start
-    public double getBlockReachDistance() {
-      return this.blockReachDistance;
-    }
-    
-    public void setBlockReachDistance(double distance) {
-      this.blockReachDistance = distance;
-    }
-    // BTCS end
 
     // CraftBukkit start - keep this for backwards compatibility
     public ItemInWorldManager(WorldServer world) {
@@ -215,8 +201,7 @@ public class ItemInWorldManager {
         return flag;
     }
 
-    // BTCS start: forge patch, just replaced whole method instead.
-    /*public boolean breakBlock(int i, int j, int k) {
+    public boolean breakBlock(int i, int j, int k) {
         // CraftBukkit start
         if (this.player instanceof EntityPlayer) {
             org.bukkit.block.Block block = this.world.getWorld().getBlockAt(i, j, k);
@@ -258,7 +243,6 @@ public class ItemInWorldManager {
                 if (itemstack.count == 0) {
                     itemstack.a(this.player);
                     this.player.V();
-                    ForgeHooks.onDestroyCurrentItem(this.player, itemstack);
                 }
             }
 
@@ -268,66 +252,7 @@ public class ItemInWorldManager {
         }
 
         return flag;
-    }*/
-    public boolean breakBlock(int i, int j, int k) {
-        ItemStack stack = this.player.U();
-        if ((stack != null) && (stack.getItem().onBlockStartBreak(stack, i, j, k, this.player))) {
-          return false;
-        }
-        
-
-        if ((this.player instanceof EntityPlayer)) {
-          org.bukkit.block.Block block = this.world.getWorld().getBlockAt(i, j, k);
-          
-
-          if (this.world.getTileEntity(i, j, k) == null) {
-            Packet53BlockChange packet = new Packet53BlockChange(i, j, k, this.world);
-            
-            packet.material = 0;
-            packet.data = 0;
-            ((EntityPlayer)this.player).netServerHandler.sendPacket(packet);
-          }
-          
-          BlockBreakEvent event = new BlockBreakEvent(block, (Player)this.player.getBukkitEntity());
-          this.world.getServer().getPluginManager().callEvent(event);
-          
-          if (event.isCancelled())
-          {
-            ((EntityPlayer)this.player).netServerHandler.sendPacket(new Packet53BlockChange(i, j, k, this.world));
-            return false;
-          }
-        }
-        
-
-        int l = this.world.getTypeId(i, j, k);
-        int i1 = this.world.getData(i, j, k);
-        
-        this.world.a(this.player, 2001, i, j, k, l + (this.world.getData(i, j, k) << 12));
-        boolean flag = b(i, j, k);
-        
-        if (isCreative()) {
-          ((EntityPlayer)this.player).netServerHandler.sendPacket(new Packet53BlockChange(i, j, k, this.world));
-        } else {
-          ItemStack itemstack = this.player.U();
-          boolean flag1 = Block.byId[l].canHarvestBlock(this.player, i1);
-          
-          if (itemstack != null) {
-            itemstack.a(l, i, j, k, this.player);
-            if (itemstack.count == 0) {
-              itemstack.a(this.player);
-              this.player.V();
-              ForgeHooks.onDestroyCurrentItem(this.player, itemstack);
-            }
-          }
-          
-          if ((flag) && (flag1)) {
-            Block.byId[l].a(this.world, this.player, i, j, k, i1);
-          }
-        }
-        
-        return flag;
-      }
-    // BTCS end
+    }
 
     public boolean useItem(EntityHuman entityhuman, World world, ItemStack itemstack) {
         int i = itemstack.count;
@@ -351,8 +276,7 @@ public class ItemInWorldManager {
         }
     }
 
-    // BTCS start: forge patch, just replaced whole method instead.
-    /*// CraftBukkit - TODO: Review this code, it changed in 1.8 but I'm not sure if we need to update or not
+    // CraftBukkit - TODO: Review this code, it changed in 1.8 but I'm not sure if we need to update or not
     public boolean interact(EntityHuman entityhuman, World world, ItemStack itemstack, int i, int j, int k, int l) {
         int i1 = world.getTypeId(i, j, k);
 
@@ -391,56 +315,7 @@ public class ItemInWorldManager {
         }
         return result;
         // CraftBukkit end
-    }*/
-    public boolean interact(EntityHuman entityhuman, World world, ItemStack itemstack, int i, int j, int k, int l)
-    {
-      PlayerInteractEvent event = CraftEventFactory.callPlayerInteractEvent(entityhuman, Action.RIGHT_CLICK_BLOCK, i, j, k, l, itemstack);
-      
-      if ((itemstack != null) && (event.useItemInHand() != Event.Result.DENY) && (event.useInteractedBlock() != Event.Result.DENY) && (itemstack.getItem().onItemUseFirst(itemstack, entityhuman, world, i, j, k, l)))
-      {
-        return true;
-      }
-      
-
-      int i1 = world.getTypeId(i, j, k);
-      
-
-      boolean result = false;
-      if (i1 > 0) {
-        if (event.useInteractedBlock() == Event.Result.DENY)
-        {
-          if (i1 == Block.WOODEN_DOOR.id) {
-            boolean bottom = (world.getData(i, j, k) & 0x8) == 0;
-            ((EntityPlayer)entityhuman).netServerHandler.sendPacket(new Packet53BlockChange(i, j + (bottom ? 1 : -1), k, world));
-          }
-          result = event.useItemInHand() != Event.Result.ALLOW;
-        } else {
-          result = Block.byId[i1].interact(world, i, j, k, entityhuman);
-        }
-        
-        if ((itemstack != null) && (!result)) {
-          int j1 = itemstack.getData();
-          int k1 = itemstack.count;
-          
-          result = itemstack.placeItem(entityhuman, world, i, j, k, l);
-          
-
-          if (isCreative()) {
-            itemstack.setData(j1);
-            itemstack.count = k1;
-          } else if ((result) && (itemstack.count == 0)) {
-            ForgeHooks.onDestroyCurrentItem(entityhuman, itemstack);
-          }
-        }
-        
-
-        if ((itemstack != null) && (((!result) && (event.useItemInHand() != Event.Result.DENY)) || (event.useItemInHand() == Event.Result.ALLOW))) {
-          useItem(entityhuman, world, itemstack);
-        }
-      }
-      return result;
     }
-    // BTCS end
 
     public void a(WorldServer worldserver) {
         this.world = worldserver;
