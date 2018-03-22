@@ -167,7 +167,11 @@ public class Item {
         byId[256 + i] = this;
     }
     
-    // BTCS start
+    // BTCS start: forge patches
+    public boolean onItemUseFirst(ItemStack stack, EntityHuman entityhuman, World world, int X, int Y, int Z, int side) {
+      return false;
+    }
+    
     public boolean isRepairable() {
       return (this.canRepair) && (g());
     }
