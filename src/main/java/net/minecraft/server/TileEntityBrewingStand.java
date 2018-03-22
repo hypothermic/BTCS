@@ -8,9 +8,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.BrewEvent;
 // CraftBukkit end
 
-import forge.ISidedInventory;
-
-public class TileEntityBrewingStand extends TileEntity implements IInventory, ISidedInventory { // BTCS: added implements 'ISidedInventory'
+public class TileEntityBrewingStand extends TileEntity implements IInventory {
 
     public ItemStack[] items = new ItemStack[4]; // CraftBukkit private -> public
     public int brewTime; // CraftBukkit private -> public
@@ -257,18 +255,4 @@ public class TileEntityBrewingStand extends TileEntity implements IInventory, IS
 
         return i;
     }
-
-    // BTCS start: forge patch
-    @Override
-    public int getStartInventorySide(int side)
-    {
-      return side == 1 ? 3 : 0;
-    }
-    
-    @Override
-    public int getSizeInventorySide(int side)
-    {
-      return side == 1 ? 1 : 3;
-    }
-    // BTCS end
 }

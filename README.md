@@ -24,7 +24,6 @@ __Current status:__ BTCS+, including Forge and CraftBukkit, is fully working. Ho
 - Split every world on it's own thread
 
 ### Changelog
-- v1.02 - discarded due to bad packet issues, rebased to v1.01
 - v1.01
     - Added Forge GUI hooks
     - Added ForgePlugin
@@ -32,10 +31,6 @@ __Current status:__ BTCS+, including Forge and CraftBukkit, is fully working. Ho
     - Removed debugging tools in FMLBukkitHandler
 - v1.00
     - Initial commit
-    
-### Known errors
-- Client side: java.io.ioexception received string length is less than zero! weird string!
-    - Solution: Packet53BlockChange is causing the issue. Remove from build path. (fixed in v1.03)
     
 ### Credits
 __BTCS+ uses:__

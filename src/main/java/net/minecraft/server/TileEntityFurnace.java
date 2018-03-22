@@ -7,35 +7,16 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-// BTCS start
-import forge.ForgeHooks;
-import forge.ISidedInventory;
-// BTCS end
-
 import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 // CraftBukkit end
 
-public class TileEntityFurnace extends TileEntity implements IInventory, ISidedInventory { // BTCS: added implements 'ISidedInventory'
+public class TileEntityFurnace extends TileEntity implements IInventory {
 
     private ItemStack[] items = new ItemStack[3];
     public int burnTime = 0;
     public int ticksForCurrentFuel = 0;
     public int cookTime = 0;
 
-    // BTCS start
-    public int getStartInventorySide(int side) {
-      if (side == 0) return 1;
-      if (side == 1) return 0;
-      return 2;
-    }
-    
-    public int getSizeInventorySide(int side) {
-      return 1;
-    }
-    // BTCS end
-    
     // CraftBukkit start
     private int lastTick = (int) (System.currentTimeMillis() / 50);
     private int maxStack = MAX_STACK;
@@ -249,7 +230,6 @@ public class TileEntityFurnace extends TileEntity implements IInventory, ISidedI
         }
     }
 
-    // BTCS: chose not to apply forge patch for this method.
     public void burn() {
         if (this.canBurn()) {
             ItemStack itemstack = FurnaceRecipes.getInstance().getResult(this.items[0].getItem().id);
@@ -284,8 +264,7 @@ public class TileEntityFurnace extends TileEntity implements IInventory, ISidedI
         }
     }
 
-    // BTCS start
-    /*public static int fuelTime(ItemStack itemstack) {
+    public static int fuelTime(ItemStack itemstack) {
         if (itemstack == null) {
             return 0;
         } else {
@@ -293,22 +272,7 @@ public class TileEntityFurnace extends TileEntity implements IInventory, ISidedI
 
             return i < 256 && Block.byId[i].material == Material.WOOD ? 300 : (i == Item.STICK.id ? 100 : (i == Item.COAL.id ? 1600 : (i == Item.LAVA_BUCKET.id ? 20000 : (i == Block.SAPLING.id ? 100 : (i == Item.BLAZE_ROD.id ? 2400 : 0)))));
         }
-    }*/
-    public static int fuelTime(ItemStack itemstack) {
-        if (itemstack == null) {
-          return 0;
-        }
-        int i = itemstack.getItem().id;
-        if (((itemstack.getItem() instanceof ItemBlock)) && (Block.byId[i].material == Material.WOOD)) return 300;
-        if (i == Item.STICK.id) return 100;
-        if (i == Item.COAL.id) return 1600;
-        if (i == Item.LAVA_BUCKET.id) return 20000;
-        if (i == Block.SAPLING.id) return 100;
-        if (i == Item.BLAZE_ROD.id) return 2400;
-        int ret = ForgeHooks.getItemBurnTime(itemstack);
-        return ret > 0 ? ret : FMLCommonHandler.instance().fuelLookup(itemstack.id, itemstack.getData());
-      }
-    // BTCS end
+    }
 
     public static boolean isFuel(ItemStack itemstack) {
         return fuelTime(itemstack) > 0;

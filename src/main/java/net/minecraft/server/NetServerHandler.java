@@ -38,9 +38,6 @@ import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.InventoryView;
 // CraftBukkit end
 
-import cpw.mods.fml.server.FMLBukkitHandler;
-import forge.MessageManager;
-
 public class NetServerHandler extends NetHandler implements ICommandListener {
 
     public static Logger logger = Logger.getLogger("Minecraft");
@@ -78,12 +75,8 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
     private int lastTick = MinecraftServer.currentTick;
     private int lastDropTick = MinecraftServer.currentTick;
     private int dropCount = 0;
-    
-    // BTCS start: "optimization", lol.
-    //private static final int PLACE_DISTANCE_SQUARED = 6 * 6;
-    private static final int PLACE_DISTANCE_SQUARED = 36;
-    // BTCS end
-    
+    private static final int PLACE_DISTANCE_SQUARED = 6 * 6;
+
     // Get position of last block hit for BlockDamageLevel.STOPPED
     private double lastPosX = Double.MAX_VALUE;
     private double lastPosY = Double.MAX_VALUE;
@@ -110,21 +103,6 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
     }
     public EntityPlayer getPlayerEntity() {
       return this.player;
-    }
-    // for misc (Forge):
-    public void a(Packet131ItemData par1Packet131MapData) {
-      forge.ForgeHooks.onItemDataPacket(this.networkManager, par1Packet131MapData);
-    }
-    public void a(Packet132TileEntityData pkt) {
-      World world = getPlayerEntity().world;
-      if (world.isLoaded(pkt.a, pkt.b, pkt.c)) {
-        TileEntity te = world.getTileEntity(pkt.a, pkt.b, pkt.c);
-        if (te != null) {
-          te.onDataPacket(this.networkManager, pkt);
-        } else {
-          ModLoader.getLogger().log(Level.WARNING, String.format("Received a TileEntityData packet for a location that did not have a TileEntity: (%d, %d, %d) %d: %d, %d, %d", new Object[] { Integer.valueOf(pkt.a), Integer.valueOf(pkt.b), Integer.valueOf(pkt.c), Integer.valueOf(pkt.d), Integer.valueOf(pkt.e), Integer.valueOf(pkt.f), Integer.valueOf(pkt.g) }));
-        }
-      }
     }
     // BTCS end
 
@@ -769,27 +747,23 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
 
     public void a(Packet3Chat packet3chat) {
         String s = packet3chat.message;
-        
+
         if (s.length() > 100) {
-          disconnect("Chat message too long");
+            this.disconnect("Chat message too long");
         } else {
-          s = s.trim();
-          
-          for (int i = 0; i < s.length(); i++) {
-            if (!SharedConstants.isAllowedChatCharacter(s.charAt(i))) {
-              disconnect("Illegal characters in chat");
-              return;
+            s = s.trim();
+
+            for (int i = 0; i < s.length(); ++i) {
+                if (!SharedConstants.isAllowedChatCharacter(s.charAt(i))) {
+                    this.disconnect("Illegal characters in chat");
+                    return;
+                }
             }
-          }
-          
-          // BTCS start
-          if (!FMLBukkitHandler.instance().handleChatPacket(packet3chat, this.player))
-          {
-            chat(s);
-          }
-          // BTCS end
+
+            // CraftBukkit start
+            this.chat(s);
         }
-      }
+    }
 
     public boolean chat(String s) {
         if (!this.player.dead) {
@@ -803,8 +777,7 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
                 return true;
             }
 
-            // BTCS start: implement forge cmds
-            /*if (s.startsWith("/")) {
+            if (s.startsWith("/")) {
                 this.handleCommand(s);
                 return true;
             } else {
@@ -822,29 +795,7 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
                     recipient.sendMessage(s);
                 }
                 // CraftBukkit end
-            }*/
-            if (s.startsWith("/")) {
-                handleCommand(s);
-                return true;
-              }
-              Player player = getPlayer();
-              PlayerChatEvent event = new PlayerChatEvent(player, s);
-              this.server.getPluginManager().callEvent(event);
-              
-              if (event.isCancelled()) {
-                return true;
-              }
-              
-              s = forge.ForgeHooks.onServerChat(this.player, s);
-              if (s == null) {
-                return true;
-              }
-              s = String.format(event.getFormat(), new Object[] { event.getPlayer().getDisplayName(), event.getMessage() });
-              this.minecraftServer.console.sendMessage(s);
-              for (Player recipient : event.getRecipients()) {
-                recipient.sendMessage(s);
-              }
-            // BTCS end
+            }
 
             this.m += 20;
             if (this.m > 200) {
@@ -1354,34 +1305,28 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
 
     // CraftBukkit start
     @Override
-    public void a(Packet250CustomPayload packet)
-    {
-      FMLBukkitHandler.instance().handlePacket250(packet, this.player); // BTCS
-      MessageManager inst = MessageManager.getInstance();
-      if (packet.tag.equals("REGISTER")) {
-        try {
-          String channels = new String(packet.data, "UTF8");
-          for (String channel : channels.split("\000")) {
-            getPlayer().addChannel(channel);
-            inst.addActiveChannel(this.networkManager, channel);
-          }
-        } catch (UnsupportedEncodingException ex) {
-          Logger.getLogger(NetServerHandler.class.getName()).log(Level.SEVERE, "Could not parse REGISTER payload in plugin message packet", ex);
+    public void a(Packet250CustomPayload packet) {
+        if (packet.tag.equals("REGISTER")) {
+            try {
+                String channels = new String(packet.data, "UTF8");
+                for (String channel : channels.split("\0")) {
+                    getPlayer().addChannel(channel);
+                }
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(NetServerHandler.class.getName()).log(Level.SEVERE, "Could not parse REGISTER payload in plugin message packet", ex);
+            }
+        } else if (packet.tag.equals("UNREGISTER")) {
+            try {
+                String channels = new String(packet.data, "UTF8");
+                for (String channel : channels.split("\0")) {
+                    getPlayer().removeChannel(channel);
+                }
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(NetServerHandler.class.getName()).log(Level.SEVERE, "Could not parse UNREGISTER payload in plugin message packet", ex);
+            }
+        } else {
+            server.getMessenger().dispatchIncomingMessage(player.getBukkitEntity(), packet.tag, packet.data);
         }
-      } else if (packet.tag.equals("UNREGISTER")) {
-        try {
-          String channels = new String(packet.data, "UTF8");
-          for (String channel : channels.split("\000")) {
-            getPlayer().removeChannel(channel);
-            inst.removeActiveChannel(this.networkManager, channel);
-          }
-        } catch (UnsupportedEncodingException ex) {
-          Logger.getLogger(NetServerHandler.class.getName()).log(Level.SEVERE, "Could not parse UNREGISTER payload in plugin message packet", ex);
-        }
-      } else {
-        inst.dispatchIncomingMessage(this.networkManager, packet.tag, packet.data);
-        this.server.getMessenger().dispatchIncomingMessage(this.player.getBukkitEntity(), packet.tag, packet.data);
-      }
     }
     // CraftBukkit end
 }
