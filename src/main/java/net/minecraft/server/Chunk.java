@@ -14,6 +14,8 @@ import org.bukkit.Location;
 import org.bukkit.craftbukkit.util.UnsafeList;
 // CraftBukkit end
 
+import forge.ForgeHooks;
+
 public class Chunk {
 
     public static boolean a;
@@ -72,7 +74,62 @@ public class Chunk {
 
     public org.bukkit.Chunk bukkitChunk;
     // CraftBukkit end
-
+    
+    // BTCS start
+    /**
+     * Metadata sensitive Chunk constructor for use in new ChunkProviders that 
+     * use metadata sensitive blocks during generation.
+     * 
+     * @param world The world this chunk belongs to
+     * @param ids A ByteArray containing all the BlockID's to set this chunk to 
+     * @param metadata A ByteArray containing all the metadata to set this chunk to
+     * @param chunkX The chunk's X position
+     * @param chunkZ The Chunk's Z position
+     */
+    public Chunk(World world, byte[] ids, byte[] metadata, int chunkX, int chunkZ)
+    {
+        this(world, chunkX, chunkZ);
+        int height = ids.length / 256;
+    
+        for (int x = 0; x < 16; ++x)
+        {
+            for (int z = 0; z < 16; ++z)
+            {
+                for (int y = 0; y < height; ++y)
+                {
+                    int index = x << 11 | z << 7 | y;
+                    int id    = ids[index] & 0xFF;
+                    int meta  = metadata[index] & 0x0F;
+    
+                    if (id != 0)
+                    {
+                        int chunkY = y >> 4;
+    
+                    	// BTCS: modified patch below to match new classnames and obf funcs
+                        if (sections[chunkY] == null)
+                        {
+                        	sections[chunkY] = new ChunkSection(chunkY << 4);
+                        }
+    
+                        sections[chunkY].a(x, y & 15, z, id);
+                        sections[chunkY].b(x, y & 15, z, meta);
+                    }
+                }
+            }
+        }
+    }
+    
+    /** FORGE: Used to remove only invalid TileEntities */
+    public void cleanChunkBlockTileEntity(int x, int y, int z) {
+        ChunkPosition position = new ChunkPosition(x, y, z);
+        if (d) {
+            TileEntity entity = (TileEntity)tileEntities.get(position);
+            if (entity != null && entity.l()) {
+                tileEntities.remove(position);
+            }
+        }
+    }
+    // BTCS end
     public Chunk(World world, byte[] abyte, int i, int j) {
         this(world, i, j);
         int k = abyte.length / 256;
@@ -80,7 +137,12 @@ public class Chunk {
         for (int l = 0; l < 16; ++l) {
             for (int i1 = 0; i1 < 16; ++i1) {
                 for (int j1 = 0; j1 < k; ++j1) {
-                    byte b0 = abyte[l << 11 | i1 << 7 | j1];
+                	// BTCS start
+                	/* FORGE: The following change, a cast from unsigned byte to int,
+                	 * fixes a vanilla bug when generating new chunks that contain a block ID > 127 */
+                    //byte b0 = abyte[l << 11 | i1 << 7 | j1];
+                	int b0 = abyte[l << 11 | i1 << 7 | j1] & 0xFF;
+                    // BTCS end
 
                     if (b0 != 0) {
                         int k1 = j1 >> 4;
@@ -333,7 +395,10 @@ public class Chunk {
     }
 
     public int getTypeId(int i, int j, int k) {
-        if (j >> 4 >= this.sections.length) {
+    	// BTCS start
+        //if (j >> 4 >= this.sections.length) {
+    	if (j >> 4 >= this.sections.length || j >> 4 < 0) {
+        // BTCS end
             return 0;
         } else {
             ChunkSection chunksection = this.sections[j >> 4];
@@ -343,7 +408,10 @@ public class Chunk {
     }
 
     public int getData(int i, int j, int k) {
-        if (j >> 4 >= this.sections.length) {
+    	// BTCS start
+        //if (j >> 4 >= this.sections.length) {
+    	if (j >> 4 >= this.sections.length || j >> 4 < 0) {
+        // BTCS end
             return 0;
         } else {
             ChunkSection chunksection = this.sections[j >> 4];
@@ -356,6 +424,9 @@ public class Chunk {
         return this.a(i, j, k, l, 0);
     }
 
+    /**
+     * Sets a blockID of a position within a chunk with metadata. Args: x, y, z, blockID, metadata
+     */
     public boolean a(int i, int j, int k, int l, int i1) {
         int j1 = k << 4 | i;
 
@@ -369,6 +440,11 @@ public class Chunk {
         if (l1 == l && this.getData(i, j, k) == i1) {
             return false;
         } else {
+        	// BTCS start
+        	if (j >> 4 >= sections.length || j >> 4 < 0) {
+        	    return false;
+        	}
+        	// BTCS end
             ChunkSection chunksection = this.sections[j >> 4];
             boolean flag = false;
 
@@ -388,7 +464,10 @@ public class Chunk {
             if (l1 != 0) {
                 if (!this.world.isStatic) {
                     Block.byId[l1].remove(this.world, i2, j, j2);
-                } else if (Block.byId[l1] instanceof BlockContainer && l1 != l) {
+                // BTCS start
+                } //else if (Block.byId[l1] instanceof BlockContainer && l1 != l) {
+                if (Block.byId[l1] != null && Block.byId[l1].hasTileEntity(getData(i, j, k))) {
+                // BTCS end
                     this.world.q(i2, j, j2);
                 }
             }
@@ -418,23 +497,35 @@ public class Chunk {
                         Block.byId[l].onPlace(this.world, i2, j, j2);
                     }
 
-                    if (Block.byId[l] instanceof BlockContainer) {
+                    // BTCS start
+                    //if (Block.byId[l] instanceof BlockContainer) {
+                    if (Block.byId[l] != null && Block.byId[l].hasTileEntity(i1)) {
+                    // BTCS end
                         tileentity = this.e(i, j, k);
                         if (tileentity == null) {
-                            tileentity = ((BlockContainer) Block.byId[l]).a_();
+                        	// BTCS start
+                            //tileentity = ((BlockContainer) Block.byId[l]).a_();
+                            tileentity = Block.byId[l].getTileEntity(i1);
+                            // BTCS end
                             this.world.setTileEntity(i2, j, j2, tileentity);
                         }
 
                         if (tileentity != null) {
                             tileentity.h();
+                            // BTCS start
+                            tileentity.p = i1;
+                            // BTCS end
                         }
                     }
-                } else if (l1 > 0 && Block.byId[l1] instanceof BlockContainer) {
+                }
+                // BTCS start
+                /*else if (l1 > 0 && Block.byId[l1] instanceof BlockContainer) {
                     tileentity = this.e(i, j, k);
                     if (tileentity != null) {
                         tileentity.h();
                     }
-                }
+                }*/
+                // BTCS end
 
                 this.l = true;
                 return true;
@@ -442,8 +533,15 @@ public class Chunk {
         }
     }
 
+    /**
+     * setBlockMetadata(...);
+     * Set the metadata of a block in the chunk
+     */
     public boolean b(int i, int j, int k, int l) {
-        ChunkSection chunksection = this.sections[j >> 4];
+    	// BTCS start
+        //ChunkSection chunksection = this.sections[j >> 4];
+        ChunkSection chunksection = (j >> 4 >= sections.length || j >> 4 < 0 ? null : sections[j >> 4]);
+        // BTCS end
 
         if (chunksection == null) {
             return false;
@@ -456,9 +554,12 @@ public class Chunk {
                 this.l = true;
                 chunksection.b(i, j & 15, k, l);
                 int j1 = chunksection.a(i, j & 15, k);
-
-                if (j1 > 0 && Block.byId[j1] instanceof BlockContainer) {
-                    TileEntity tileentity = this.e(i, j, k);
+                
+                // BTCS start
+                //if (j1 > 0 && Block.byId[j1] instanceof BlockContainer) {
+                if (j1 > 0 && Block.byId[j1] != null && Block.byId[j1].hasTileEntity(chunksection.b(i, j & 15, k))) {
+                // BTCS end
+                	TileEntity tileentity = this.e(i, j, k);
 
                     if (tileentity != null) {
                         tileentity.h();
@@ -471,13 +572,24 @@ public class Chunk {
         }
     }
 
+    /** Get light value (aka brightness) */
     public int getBrightness(EnumSkyBlock enumskyblock, int i, int j, int k) {
-        ChunkSection chunksection = this.sections[j >> 4];
+    	// BTCS start
+        //ChunkSection chunksection = this.sections[j >> 4];
+    	ChunkSection chunksection = (j >> 4 >= sections.length || j >> 4 < 0 ? null : sections[j >> 4]);
+    	// BTCS end
 
         return chunksection == null ? enumskyblock.c : (enumskyblock == EnumSkyBlock.SKY ? chunksection.c(i, j & 15, k) : (enumskyblock == EnumSkyBlock.BLOCK ? chunksection.d(i, j & 15, k) : enumskyblock.c));
     }
 
+    /** Set light value (aka brightness) */
     public void a(EnumSkyBlock enumskyblock, int i, int j, int k, int l) {
+    	// BTCS start
+    	if (j >> 4 >= sections.length || j >> 4 < 0) {
+    	    return;
+    	}
+    	// BTCS end
+    	
         ChunkSection chunksection = this.sections[j >> 4];
 
         if (chunksection == null) {
@@ -499,8 +611,12 @@ public class Chunk {
         }
     }
 
+    /** Get block light val */
     public int c(int i, int j, int k, int l) {
-        ChunkSection chunksection = this.sections[j >> 4];
+    	// BTCS start
+        //ChunkSection chunksection = this.sections[j >> 4];
+        ChunkSection chunksection = (j >> 4 >= sections.length || j >> 4 < 0 ? null : sections[j >> 4]);
+        // BTCS end
 
         if (chunksection == null) {
             return !this.world.worldProvider.e && l < EnumSkyBlock.SKY.c ? EnumSkyBlock.SKY.c - l : 0;
@@ -575,28 +691,44 @@ public class Chunk {
     public TileEntity e(int i, int j, int k) {
         ChunkPosition chunkposition = new ChunkPosition(i, j, k);
         TileEntity tileentity = (TileEntity) this.tileEntities.get(chunkposition);
+        // BTCS start
+        if (tileentity != null && tileentity.l())
+        {
+            tileEntities.remove(chunkposition);
+            chunkposition = null;
+        }
+        // BTCS end
 
         if (tileentity == null) {
             int l = this.getTypeId(i, j, k);
 
-            if (l <= 0 || !Block.byId[l].o()) {
+            // BTCS start
+            //if (l <= 0 || !Block.byId[l].o())
+            int meta = getData(i, j, k);
+            if (l <= 0 || Block.byId[l] == null || !Block.byId[l].hasTileEntity(meta)) {
+            // BTCS end
                 return null;
             }
-
             if (tileentity == null) {
-                tileentity = ((BlockContainer) Block.byId[l]).a_();
+            	// BTCS start
+                //tileentity = ((BlockContainer) Block.byId[l]).a_();
+                tileentity = Block.byId[l].getTileEntity(meta);
+                // BTCS end
                 this.world.setTileEntity(this.x * 16 + i, j, this.z * 16 + k, tileentity);
             }
 
             tileentity = (TileEntity) this.tileEntities.get(chunkposition);
         }
 
-        if (tileentity != null && tileentity.l()) {
+        // BTCS start
+        /*if (tileentity != null && tileentity.l()) {
             this.tileEntities.remove(chunkposition);
             return null;
         } else {
             return tileentity;
-        }
+        }*/
+        return tileentity;
+        // BTCS end
     }
 
     public void a(TileEntity tileentity) {
@@ -606,7 +738,10 @@ public class Chunk {
 
         this.a(i, j, k, tileentity);
         if (this.d) {
-            this.world.tileEntityList.add(tileentity);
+        	// BTCS start
+            //this.world.tileEntityList.add(tileentity);
+            this.world.addTileEntity(tileentity);
+            // BTCS end
         }
     }
 
@@ -617,7 +752,15 @@ public class Chunk {
         tileentity.x = this.x * 16 + i;
         tileentity.y = j;
         tileentity.z = this.z * 16 + k;
-        if (this.getTypeId(i, j, k) != 0 && Block.byId[this.getTypeId(i, j, k)] instanceof BlockContainer) {
+        // BTCS start
+        //if (this.getTypeId(i, j, k) != 0 && Block.byId[this.getTypeId(i, j, k)] instanceof BlockContainer) {
+        int id = getTypeId(i, j, k);
+        if (id > 0 && Block.byId[id] != null && Block.byId[id].hasTileEntity(b(i, j, k))) {
+            TileEntity old = (TileEntity)tileEntities.get(chunkposition);
+            if (old != null) {
+                old.j();
+            }
+            // BTCS end
             tileentity.m();
             this.tileEntities.put(chunkposition, tileentity);
         // CraftBukkit start
@@ -649,6 +792,7 @@ public class Chunk {
         for (int i = 0; i < this.entitySlices.length; ++i) {
             this.world.a(this.entitySlices[i]);
         }
+        ForgeHooks.onChunkLoad(this.world, this); // BTCS
     }
 
     public void removeEntities() {
@@ -679,15 +823,21 @@ public class Chunk {
 
             this.world.b(this.entitySlices[i]);
         }
+        ForgeHooks.onChunkUnload(this.world, this); // BTCS
     }
 
     public void e() {
         this.l = true;
     }
 
+    /** getEntitiesWithinAABBForEntity() */
     public void a(Entity entity, AxisAlignedBB axisalignedbb, List list) {
-        int i = MathHelper.floor((axisalignedbb.b - 2.0D) / 16.0D);
-        int j = MathHelper.floor((axisalignedbb.e + 2.0D) / 16.0D);
+    	// BTCS start
+        //int i = MathHelper.floor((axisalignedbb.b - 2.0D) / 16.0D);
+        //int j = MathHelper.floor((axisalignedbb.e + 2.0D) / 16.0D);
+    	int i = MathHelper.floor((axisalignedbb.b - World.MAX_ENTITY_RADIUS) / 16.0D);
+        int j = MathHelper.floor((axisalignedbb.e + World.MAX_ENTITY_RADIUS) / 16.0D);
+        // BTCS end
 
         if (i < 0) {
             i = 0;
@@ -720,9 +870,14 @@ public class Chunk {
         }
     }
 
+    /** getEntitiesOfTypeWithinAAAB() */
     public void a(Class oclass, AxisAlignedBB axisalignedbb, List list) {
-        int i = MathHelper.floor((axisalignedbb.b - 2.0D) / 16.0D);
-        int j = MathHelper.floor((axisalignedbb.e + 2.0D) / 16.0D);
+    	// BTCS start
+        //int i = MathHelper.floor((axisalignedbb.b - 2.0D) / 16.0D);
+        //int j = MathHelper.floor((axisalignedbb.e + 2.0D) / 16.0D);
+    	int i = MathHelper.floor((axisalignedbb.b - World.MAX_ENTITY_RADIUS) / 16.0D);
+        int j = MathHelper.floor((axisalignedbb.e + World.MAX_ENTITY_RADIUS) / 16.0D);
+        // BTCS end
 
         if (i < 0) {
             i = 0;

@@ -1,6 +1,8 @@
 package net.minecraft.server;
 
 public class ChunkSection {
+	
+	// BTCS comment: this class is called ExtendedBlockStorage inside the normal mc server.
 
     private int a;
     private int b;
@@ -33,12 +35,23 @@ public class ChunkSection {
     }
     // CraftBukkit end
 
+    /**
+     * getExtBlockID(...);
+     * Returns the extended block ID for a location in a chunk, merged from a byte array and a NibbleArray to form a
+     * full 12-bit block ID.
+     */
     public int a(int i, int j, int k) {
         int l = this.d[j << 8 | k << 4 | i] & 255;
 
         return this.e != null ? this.e.a(i, j, k) << 8 | l : l;
     }
 
+    /**
+     * setExtBlockID(...);
+     * Sets the extended block ID for a location in a chunk, splitting bits 11..8 into a NibbleArray and bits 7..0 into
+     * a byte array. Also performs reference counting to determine whether or not to broadly cull this Chunk from the
+     * random-update tick list.
+     */
     public void a(int i, int j, int k, int l) {
         int i1 = this.d[j << 8 | k << 4 | i] & 255;
 
@@ -73,11 +86,19 @@ public class ChunkSection {
             this.e.a(i, j, k, 0);
         }
     }
-
+    
+    /**
+     * getExtBlockMetadata(...);
+     * Returns the metadata associated with the block at the given coordinates in this ExtendedBlockStorage.
+     */
     public int b(int i, int j, int k) {
         return this.f.a(i, j, k);
     }
 
+    /**
+     * setExtBlockMetadata(...);
+     * Sets the metadata of the Block at the given coordinates in this ExtendedBlockStorage to the given metadata.
+     */
     public void b(int i, int j, int k, int l) {
         this.f.a(i, j, k, l);
     }

@@ -20,10 +20,11 @@ public class TileEntity implements net.minecraft.src.TileEntity {
     public int y;
     public int z;
     protected boolean o;
+    /** Block metadata */
     public int p = -1;
     public Block q;
 
-    //public TileEntity() {}
+    public TileEntity() {} // BTCS
 
     private static void a(Class oclass, String s) {
         if (b.containsKey(s)) {
@@ -96,14 +97,17 @@ public class TileEntity implements net.minecraft.src.TileEntity {
         return null;
     }
 
+    /** isInvalid() */
     public boolean l() {
         return this.o;
     }
 
+    /** invalidate() */
     public void j() {
         this.o = true;
     }
 
+    /** validate() */
     public void m() {
         this.o = false;
     }
