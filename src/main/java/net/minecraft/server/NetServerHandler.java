@@ -80,7 +80,7 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
     private int lastTick = MinecraftServer.currentTick;
     private int lastDropTick = MinecraftServer.currentTick;
     private int dropCount = 0;
-    private static final int PLACE_DISTANCE_SQUARED = 6 * 6;
+    private static final int PLACE_DISTANCE_SQUARED = 36; // BTCS: 6 * 6
 
     // Get position of last block hit for BlockDamageLevel.STOPPED
     private double lastPosX = Double.MAX_VALUE;
@@ -1359,8 +1359,8 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
       return this.player;
     }
     
-    public void a(Packet131ItemData par1Packet131MapData)
-    {
+    @Override
+    public void a(Packet131ItemData par1Packet131MapData) {
         ForgeHooks.onItemDataPacket(this.networkManager, par1Packet131MapData);
     }
     

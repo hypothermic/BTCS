@@ -95,8 +95,7 @@ public abstract class WorldProvider
 
   public abstract String getDepartMessage();
 
-  public double getMovementFactor()
-  {
+  public double getMovementFactor() {
     return 1.0D;
   }
 }

@@ -22,7 +22,11 @@ public class ItemBlock extends Item implements net.minecraft.src.ItemBlock {
 
         if (i1 == Block.SNOW.id) {
             l = 1;
-        } else if (i1 != Block.VINE.id && i1 != Block.LONG_GRASS.id && i1 != Block.DEAD_BUSH.id) {
+        // BTCS start
+        //} else if (i1 != Block.VINE.id && i1 != Block.LONG_GRASS.id && i1 != Block.DEAD_BUSH.id) {
+        } else if ((i1 != Block.VINE.id && i1 != Block.LONG_GRASS.id && i1 != Block.DEAD_BUSH.id) &&
+        		  (Block.byId[i1] != null && !Block.byId[i1].isBlockReplaceable(world, i, j, k))) {
+        // BTCS end
             if (l == 0) {
                 --j;
             }

@@ -84,12 +84,20 @@ public class ServerConfigurationManager {
 
     public void a(EntityPlayer entityplayer) {
         // CraftBukkit - removed playermanagers
+    	// BTCS start: not sure if Forge patch is nessacary here or if CB code is good enough.
+    	/* CB code:
         for (WorldServer world : this.server.worlds) {
             if (world.manager.managedPlayers.contains(entityplayer)) {
                 world.manager.removePlayer(entityplayer);
                 break;
             }
         }
+        */
+    	for (World world : forge.DimensionManager.getWorlds())
+    	{
+    	    ((WorldServer)world).manager.removePlayer(entityplayer);
+    	}
+    	// BTCS end
         this.getPlayerManager(entityplayer.dimension).addPlayer(entityplayer);
         WorldServer worldserver = this.server.getWorldServer(entityplayer.dimension);
 
@@ -106,7 +114,11 @@ public class ServerConfigurationManager {
     }
 
     private PlayerManager getPlayerManager(int i) {
-        return this.server.getWorldServer(i).manager; // CraftBukkit
+    	// BTCS start
+        //return this.server.getWorldServer(i).manager; // CraftBukkit
+    	WorldServer world = (WorldServer) forge.DimensionManager.getWorld(i);
+    	return (world == null ? null : world.manager);
+    	// BTCS end
     }
 
     public void b(EntityPlayer entityplayer) {
@@ -768,7 +780,10 @@ public class ServerConfigurationManager {
     }
 
     public String[] getSeenPlayers() {
-        return this.server.worlds.get(0).getDataManager().getPlayerFileData().getSeenPlayers(); // CraftBukkit
+    	// BTCS start
+        //return this.server.worlds.get(0).getDataManager().getPlayerFileData().getSeenPlayers(); // CraftBukkit
+    	return forge.DimensionManager.getWorld(0).getDataManager().getPlayerFileData().getSeenPlayers();
+    	// BTCS end
     }
 
     private void u() {

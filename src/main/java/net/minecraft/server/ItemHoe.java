@@ -14,6 +14,12 @@ public class ItemHoe extends Item {
         if (!entityhuman.d(i, j, k)) {
             return false;
         } else {
+        	// BTCS start
+        	if(forge.ForgeHooks.onUseHoe(itemstack, entityhuman, world, i, j, k)) {
+        	    itemstack.damage(1, entityhuman);
+        	    return true;
+        	}
+        	// BTCS end
             int i1 = world.getTypeId(i, j, k);
             int j1 = world.getTypeId(i, j + 1, k);
 

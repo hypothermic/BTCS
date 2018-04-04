@@ -142,13 +142,30 @@ public class WorldServer extends World implements /*org.bukkit.BlockChangeDelega
     public List getTileEntities(int i, int j, int k, int l, int i1, int j1) {
         ArrayList arraylist = new ArrayList();
 
-        for (int k1 = 0; k1 < this.tileEntityList.size(); ++k1) {
+        // BTCS start
+        /*for (int k1 = 0; k1 < this.tileEntityList.size(); ++k1) {
             TileEntity tileentity = (TileEntity) this.tileEntityList.get(k1);
 
             if (tileentity.x >= i && tileentity.y >= j && tileentity.z >= k && tileentity.x < l && tileentity.y < i1 && tileentity.z < j1) {
                 arraylist.add(tileentity);
             }
+        }*/
+        for (int x = i >> 4; x <= l >> 4; x++) {
+          for (int z = k >> 4; z <= j1 >> 4; z++) {
+            Chunk chunk = getChunkAt(x, z);
+            if (chunk != null) {
+              for (Object obj : chunk.tileEntities.values()) {
+                TileEntity entity = (TileEntity)obj;
+                if (!entity.l()) {
+                  if ((entity.x >= i) && (entity.y >= j) && (entity.z >= k) && (entity.x <= l) && (entity.y <= i1) && (entity.z <= j1)) {
+                    arraylist.add(entity);
+                  }
+                }
+              }
+            }
+          }
         }
+        // BTCS end
 
         return arraylist;
     }

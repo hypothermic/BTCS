@@ -5,7 +5,9 @@ import forge.ForgeHooks;
 public class ItemTool extends Item
 {
   private Block[] bU;
+  /** efficiencyOnProperMaterial */
   public float a = 4.0F;
+  /** damageVsEntity */
   public int bV; // BTCS: private --> public
   protected EnumToolMaterial b;
   
@@ -47,10 +49,10 @@ public class ItemTool extends Item
   }
 
   // BTCS start
-  public float getStrVsBlock(ItemStack stack, Block block, int meta)
-  {
-    if (ForgeHooks.isToolEffective(stack, block, meta))
-    {
+  /** FORGE: Overridden to allow custom tool effectiveness */
+  @Override
+  public float getStrVsBlock(ItemStack stack, Block block, int meta) {
+    if (ForgeHooks.isToolEffective(stack, block, meta)) {
       return this.a;
     }
     return getDestroySpeed(stack, block);

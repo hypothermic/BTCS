@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // CraftBukkit - We import this because the compiler hates package-private methods in an external jar // BTCS: no.
-public class MinecartTrackLogic { // TBTCS: class --> public class
+public class MinecartTrackLogic { // BTCS: class --> public class
 
     private World b;
     private int c;
@@ -12,6 +12,8 @@ public class MinecartTrackLogic { // TBTCS: class --> public class
     private int e;
     private final boolean f;
     private List g;
+    
+    private final boolean canMakeSlopes; // BTCS
 
     final BlockMinecartTrack a;
 
@@ -23,14 +25,20 @@ public class MinecartTrackLogic { // TBTCS: class --> public class
         this.d = j;
         this.e = k;
         int l = world.getTypeId(i, j, k);
-        int i1 = world.getData(i, j, k);
+        // BTCS start
+        /*int i1 = world.getData(i, j, k);
 
         if (BlockMinecartTrack.a((BlockMinecartTrack) Block.byId[l])) {
             this.f = true;
             i1 &= -9;
         } else {
             this.f = false;
-        }
+        }*/
+        BlockMinecartTrack target = (BlockMinecartTrack)Block.byId[l];
+        int i1 = target.getBasicRailMetadata(world, null, i, j, k);
+        this.f = (!target.isFlexibleRail(world, i, j, k));
+        this.canMakeSlopes = target.canMakeSlopes(world, i, j, k);
+        // BTCS end
 
         this.a(i1);
     }
@@ -184,7 +192,7 @@ public class MinecartTrackLogic { // TBTCS: class --> public class
             }
         }
 
-        if (b0 == 0) {
+        if (b0 == 0 && canMakeSlopes) { // BTCS: added canMakeSlopes
             if (BlockMinecartTrack.g(this.b, this.c, this.d + 1, this.e - 1)) {
                 b0 = 4;
             }
@@ -194,7 +202,7 @@ public class MinecartTrackLogic { // TBTCS: class --> public class
             }
         }
 
-        if (b0 == 1) {
+        if (b0 == 1 && canMakeSlopes) { // BTCS: added canMakeSlopes
             if (BlockMinecartTrack.g(this.b, this.c + 1, this.d + 1, this.e)) {
                 b0 = 2;
             }
@@ -307,7 +315,7 @@ public class MinecartTrackLogic { // TBTCS: class --> public class
             }
         }
 
-        if (b0 == 0) {
+        if (b0 == 0 && canMakeSlopes) { // BTCS: added canMakeSlopes
             if (BlockMinecartTrack.g(this.b, this.c, this.d + 1, this.e - 1)) {
                 b0 = 4;
             }
@@ -317,7 +325,7 @@ public class MinecartTrackLogic { // TBTCS: class --> public class
             }
         }
 
-        if (b0 == 1) {
+        if (b0 == 1 && canMakeSlopes) { // BTCS: added canMakeSlopes
             if (BlockMinecartTrack.g(this.b, this.c + 1, this.d + 1, this.e)) {
                 b0 = 2;
             }
@@ -354,7 +362,7 @@ public class MinecartTrackLogic { // TBTCS: class --> public class
         }
     }
 
-    static int a(MinecartTrackLogic minecarttracklogic) {
+    public static int a(MinecartTrackLogic minecarttracklogic) { // BTCS: none --> pub
         return minecarttracklogic.b();
     }
 }

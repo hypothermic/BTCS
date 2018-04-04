@@ -23,10 +23,20 @@ public class WorldGenGroundBush extends WorldGenerator implements BlockSapling.T
         // CraftBukkit end
         int l;
 
-        for (boolean flag = false; ((l = world.getTypeId(i, j, k)) == 0 || l == Block.LEAVES.id) && j > 0; --j) {
-            ;
-        }
-
+        // BTCS start
+        //for (boolean flag = false; ((l = world.getTypeId(i, j, k)) == 0 || l == Block.LEAVES.id) && j > 0; --j) {
+        //    ;
+        //}
+        Block block = null;
+        do {
+        	block = Block.byId[world.getTypeId(i, j, k)];
+        	if (block != null && !block.isLeaves(world, i, j, k)) {
+        		break;
+        	}
+        	j--;
+        } while (j > 0);
+        // BTCS end
+        	
         int i1 = world.getTypeId(i, j, k);
 
         if (i1 == Block.DIRT.id || i1 == Block.GRASS.id) {

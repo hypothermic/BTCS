@@ -7,6 +7,8 @@ import org.bukkit.block.BlockState;
 import org.bukkit.material.MaterialData;
 // CraftBukkit end
 
+// aka WorldGenBigMushroom in forge patchees.
+
 public class WorldGenHugeMushroom extends WorldGenerator implements BlockSapling.TreeGenerator { // CraftBukkit - add interface
 
     private int a = -1;
@@ -57,7 +59,12 @@ public class WorldGenHugeMushroom extends WorldGenerator implements BlockSapling
                     for (l1 = k - b0; l1 <= k + b0 && flag; ++l1) {
                         if (j1 >= 0 && j1 < 256) {
                             i2 = world.getTypeId(k1, j1, l1);
-                            if (i2 != 0 && i2 != Block.LEAVES.id) {
+                            // BTCS start
+                            //if (i2 != 0 && i2 != Block.LEAVES.id) {
+                            Block block = Block.byId[i2];
+                            
+                            if (i2 != 0 && block != null && !block.isLeaves(world, k1, j1, l1)) {
+                            // BTCS end
                                 flag = false;
                             }
                         } else {
@@ -163,8 +170,13 @@ public class WorldGenHugeMushroom extends WorldGenerator implements BlockSapling
                                 if (l2 == 5 && k1 < j + i1) {
                                     l2 = 0;
                                 }
-
-                                if ((l2 != 0 || j >= j + i1 - 1) && !Block.n[world.getTypeId(i2, k1, k2)]) {
+                                
+                                // BTCS start
+                                Block block = Block.byId[world.getTypeId(i2, k1, k2)];
+                                
+                                if ((l2 != 0 || j >= j + i1 - 1) //&& !Block.n[world.getTypeId(i2, k1, k2)]) {
+                                		&& (block == null || block.canBeReplacedByLeaves(world, i2, k1, k2))) {
+                                // BTCS end
                                     // CraftBukkit start
                                     if (event == null) {
                                        this.setTypeAndData(world, i2, k1, k2, Block.BIG_MUSHROOM_1.id + l, l2);
@@ -173,6 +185,7 @@ public class WorldGenHugeMushroom extends WorldGenerator implements BlockSapling
                                         state.setTypeId(Block.BIG_MUSHROOM_1.id + l);
                                         state.setData(new MaterialData(Block.BIG_MUSHROOM_1.id + l, (byte) l2));
                                         event.getBlocks().add(state);
+                                        
                                     }
                                     // CraftBukkit end
                                 }
@@ -182,7 +195,11 @@ public class WorldGenHugeMushroom extends WorldGenerator implements BlockSapling
 
                     for (k1 = 0; k1 < i1; ++k1) {
                         l1 = world.getTypeId(i, j + k1, k);
-                        if (!Block.n[l1]) {
+                        // BTCS start
+                        //if (!Block.n[l1]) {
+                        Block block = Block.byId[l1];
+                        if (block == null || block.canBeReplacedByLeaves(world, i, j + k1, k)) {
+                        // BTCS end
                             // CraftBukkit start
                             if (event == null) {
                                 this.setTypeAndData(world, i, j + k1, k, Block.BIG_MUSHROOM_1.id + l, 10);

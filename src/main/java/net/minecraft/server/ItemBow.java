@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+import forge.ForgeHooks; // BTCS
 
 public class ItemBow extends Item {
 
@@ -10,6 +11,11 @@ public class ItemBow extends Item {
     }
 
     public void a(ItemStack itemstack, World world, EntityHuman entityhuman, int i) {
+    	// BTCS start
+    	if (ForgeHooks.onArrowLoose(itemstack, world, entityhuman, c(itemstack) - i)) {
+    	    return;
+    	}
+    	// BTCS end
         boolean flag = entityhuman.abilities.canInstantlyBuild || EnchantmentManager.getEnchantmentLevel(Enchantment.ARROW_INFINITE.id, itemstack) > 0;
 
         if (flag || entityhuman.inventory.d(Item.ARROW.id)) {
@@ -73,6 +79,7 @@ public class ItemBow extends Item {
         return itemstack;
     }
 
+    /** getMaxItemUseDuration() */
     public int c(ItemStack itemstack) {
         return 72000;
     }
@@ -82,6 +89,12 @@ public class ItemBow extends Item {
     }
 
     public ItemStack a(ItemStack itemstack, World world, EntityHuman entityhuman) {
+    	// BTCS start
+    	ItemStack stack = ForgeHooks.onArrowNock(itemstack, world, entityhuman);
+    	if (stack != null) {
+    		return stack;
+    	}
+    	// BTCS end
         if (entityhuman.abilities.canInstantlyBuild || entityhuman.inventory.d(Item.ARROW.id)) {
             entityhuman.a(itemstack, this.c(itemstack));
         }

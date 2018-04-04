@@ -15,6 +15,7 @@ __Current status:__ BTCS++ is currently in beta. Please report any issues. If yo
         * After: `// BTCS end`
 
 ### TODO:
+- Solve issue `"class net.minecraft.server.NetServerHandler wasn't prepared to deal with a class net.minecraft.server.Packet132TileEntityData"` when opening Sensor Controller.
 - Solve WM bullet entities not registered error
 - BlockVine forge patch (failed last time)
 - ConsoleCommandHandler forge patch
@@ -26,6 +27,10 @@ __Current status:__ BTCS++ is currently in beta. Please report any issues. If yo
 - Split every world on it's own thread
 
 ### Changelog
+- v1.08
+    - All FML and forge patches are now implemented.
+    - Disabled ForgePlugin by default, it is highly unstable and causes many issues. Not recommended to use.
+    - Fix Packet53 size
 - v1.07
     - Added this readme
     - Implemented forge patches for all blocks and entities

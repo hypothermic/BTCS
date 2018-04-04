@@ -1,6 +1,7 @@
 package net.minecraft.server;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -41,7 +42,7 @@ public final class SpawnerCreature {
     protected static ChunkPosition getRandomPosition(World world, int i, int j) {
         Chunk chunk = world.getChunkAt(i, j);
         int k = i * 16 + world.random.nextInt(16);
-        int l = world.random.nextInt(chunk == null ? 128 : Math.max(128, chunk.g()));
+        int l = world.random.nextInt(chunk == null ? 128 : Math.max(128, chunk.g() + 15)); // BTCS: added +15 to fix vanilla bug that causes mobs to not spawn on the topmost chunk with blocks.
         int i1 = j * 16 + world.random.nextInt(16);
 
         return new ChunkPosition(k, l, i1);
@@ -113,6 +114,13 @@ public final class SpawnerCreature {
 
                 if ((!enumcreaturetype.d() || flag1) && (enumcreaturetype.d() || flag) && world.a(enumcreaturetype.a()) <= limit * b.size() / 256) { // CraftBukkit - use per-world limits
 
+                	// BTCS start
+                	if (mod_MinecraftForge.SPAWNER_MAKE_MORE_RANDOM)
+                    {
+                      Collections.shuffle(b);
+                    }
+                	// BTCS end
+                	
                     // CraftBukkit start
                     label108:
                     for (EntryBase base : b) {
@@ -214,12 +222,28 @@ public final class SpawnerCreature {
         } else {
             int l = world.getTypeId(i, j - 1, k);
 
-            return Block.g(l) && l != Block.BEDROCK.id && !world.e(i, j, k) && !world.getMaterial(i, j, k).isLiquid() && !world.e(i, j + 1, k);
+            // BTCS start
+            //return Block.g(l) && l != Block.BEDROCK.id && !world.e(i, j, k) && !world.getMaterial(i, j, k).isLiquid() && !world.e(i, j + 1, k);
+            boolean spawnBlock = (Block.byId[l] != null && Block.byId[l].canCreatureSpawn(enumcreaturetype, world, i, j - 1, k));
+            return spawnBlock && l != Block.BEDROCK.id && !world.e(i, j, k) && !world.getMaterial(i, j, k).isLiquid() && !world.e(i, j + 1, k);
+            // BTCS end
         }
     }
 
+    /** creatureSpecificInit(...) */
     private static void a(EntityLiving entityliving, World world, float f, float f1, float f2) {
-        if (entityliving.dead) return; // CraftBukkit
+    	if (entityliving.dead) return; // CraftBukkit
+    	// BTCS start
+    	if (forge.ForgeHooks.onEntitySpawnSpecial(entityliving, world, f, f1, f2)) //Deprecated in 1.2.5, remove in 1.3
+    	{
+    	    return;
+    	}
+    		
+    	if (forge.ForgeHooks.onEntityLivingSpawn(entityliving, world, f, f1, f2))
+    	{
+    	    return;
+    	}
+    	// BTCS end
         if (entityliving instanceof EntitySpider && world.random.nextInt(100) == 0) {
             EntitySkeleton entityskeleton = new EntitySkeleton(world);
 

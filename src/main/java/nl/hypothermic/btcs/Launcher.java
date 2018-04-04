@@ -34,7 +34,7 @@ public class Launcher {
 	// TODO: add integrity checker to properties file.
 	private static HashMap<String, String> DEFOPTIONS = new HashMap() {{ put("force-jline", "false");
 																		 put("deploy-resources", "true");
-																		 put("use-forgeplugin", "true"); 
+																		 put("deploy-use-forgeplugin", "false"); // ForgePlugin causes many issues. Disabled by default for now. 
 																		 put("enable-update-check", "true");
 																		 put("enable-servercontroller", "false");
 																		 put("enable-message-login-modlist", "false");
@@ -51,7 +51,7 @@ public class Launcher {
 	public static void main(final String[] args) {
 		LS = System.getProperty("line.separator");
 		// TODO: include these in config file. Hardcoded for now since it's not high priority.
-		VERSION = 1.07;
+		VERSION = 1.08;
 		VTAG = "BETA";
 		
 		System.out.println(LS + "  << BTCS++ " + VERSION + "-" + VTAG + " >>" + LS
@@ -70,7 +70,7 @@ public class Launcher {
 		// TODO: check if resources exist and deploy them, for now, we let the user choose.
 		if ((Boolean) config.get("deploy-resources")) {
 			System.out.println(" << Deploying Resources >>");
-			initRsc();
+			initRsc((Boolean) config.get("deploy-use-forgeplugin"));
 			c.updateProperty("deploy-resources", "false");
 			System.out.println("           Done." + LS);
 		}
@@ -144,9 +144,14 @@ public class Launcher {
 		return java.util.Arrays.asList(params);
 	}
 	
-	private static void initRsc() {
+	private static void initRsc(boolean fp) {
 		File destination = new File("resources.dat");
-		r.extract("/resources.dat", destination);
+		// bool if use forgeplugin or not
+		if (fp) {
+			r.extract("/resources.dat", destination);
+		} else {
+			r.extract("/old-resources.dat", destination);
+		}
 		try {
 			r.unzip(destination);
 		} catch (FileNotFoundException e) {

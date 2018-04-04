@@ -84,9 +84,9 @@ public class NetLoginHandler extends NetHandler {
         this.g = packet1login.name;
         if (packet1login.a != 29) {
             if (packet1login.a > 29) {
-                this.disconnect("Outdated server!");
+                this.disconnect("This server only supports the Tekkit Classic modpack!");
             } else {
-                this.disconnect("Outdated client!");
+                this.disconnect("This server only supports the Tekkit Classic modpack!");
             }
         } else {
             if (!this.server.onlineMode) {

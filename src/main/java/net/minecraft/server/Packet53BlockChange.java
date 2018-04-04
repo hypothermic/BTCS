@@ -5,8 +5,11 @@ import java.io.DataOutputStream;
 
 public class Packet53BlockChange extends Packet
 {
+  /** x pos */
   public int a;
+  /** y pos */
   public int b;
+  /** z pos */
   public int c;
   public int material;
   public int data;
@@ -29,7 +32,7 @@ public class Packet53BlockChange extends Packet
     this.a = datainputstream.readInt();
     this.b = datainputstream.read();
     this.c = datainputstream.readInt();
-    this.material = datainputstream.readInt();
+    this.material = datainputstream.readInt(); // 4096
     this.data = datainputstream.read();
   }
   
@@ -37,7 +40,7 @@ public class Packet53BlockChange extends Packet
     dataoutputstream.writeInt(this.a);
     dataoutputstream.write(this.b);
     dataoutputstream.writeInt(this.c);
-    dataoutputstream.writeInt(this.material);
+    dataoutputstream.writeInt(this.material); // 4096
     dataoutputstream.write(this.data);
   }
   
@@ -45,7 +48,8 @@ public class Packet53BlockChange extends Packet
     nethandler.a(this);
   }
   
+  /** getPacketSize() */
   public int a() {
-    return 11; // BTCS: shouldn't this be 14?
+	return 14; // BTCS: changed to 14.
   }
 }

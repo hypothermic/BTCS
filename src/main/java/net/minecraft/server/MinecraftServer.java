@@ -489,8 +489,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
                 if (dim == null) {
                 	// Known issue with Forge, this needs to be fixed. Please send pull request if you know how to fix this. TODO
                 	nl.hypothermic.btcs.XLogger.x(320, "warn: dim=null");
-                	//nl.hypothermic.btcs.XLogger.generr("BTCS: This is a known issue, we are looking to fix this soon.");
-                	System.exit(1);
+                	nl.hypothermic.btcs.XLogger.gencrit("BTCS: This is a known issue, we are looking to fix this soon.");
                 }
                 
                 File newWorld = new File(new File(name), dim);
@@ -722,10 +721,10 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
 
     private void w() {
     	FMLCommonHandler.instance().rescheduleTicks();
-        FMLBukkitHandler.instance().onServerPreTick();
         long i = System.nanoTime();
         ArrayList arraylist = new ArrayList();
         Iterator iterator = trackerList.keySet().iterator();
+        FMLBukkitHandler.instance().onServerPreTick();
 
         while (iterator.hasNext()) {
             String s = (String) iterator.next();
@@ -771,8 +770,9 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
                 }
                 // CraftBukkit end */
 
-                worldserver.doTick();
                 FMLBukkitHandler.instance().onPreWorldTick(worldserver); // BTCS
+                worldserver.doTick();
+                FMLBukkitHandler.instance().onPostWorldTick(worldserver);
 
                 while (true) {
                     if (!worldserver.updateLights()) {
@@ -780,7 +780,6 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
                         break;
                     }
                 }
-                FMLBukkitHandler.instance().onPostWorldTick(worldserver);
             }
 
             // this.g[k][this.ticks % 100] = System.nanoTime() - l; // CraftBukkit

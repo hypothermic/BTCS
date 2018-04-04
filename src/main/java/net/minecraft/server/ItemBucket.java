@@ -38,9 +38,16 @@ public class ItemBucket extends Item {
                 }
 
                 if (this.a == 0) {
-                    if (!entityhuman.d(i, j, k)) {
+                    if (entityhuman != null && !entityhuman.d(i, j, k)) { // BTCS: added null check for entityhuman
                         return itemstack;
                     }
+                    
+                    // BTCS start
+                    ItemStack stack = forge.MinecraftForge.fillCustomBucket(world, i, j, k);
+                    if (stack != null) {
+                    	return stack;
+                    }
+                    // BTCS end
 
                     if (world.getMaterial(i, j, k) == Material.WATER && world.getData(i, j, k) == 0) {
                         // CraftBukkit start

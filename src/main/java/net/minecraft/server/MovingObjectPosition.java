@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+// BTCS: imported in v1.06
 
 public class MovingObjectPosition
 {
@@ -10,7 +11,7 @@ public class MovingObjectPosition
   public int face;
   public Vec3D pos;
   public Entity entity;
-  public int subHit = -1;
+  public int subHit = -1; // BTCS
   
   public MovingObjectPosition(int i, int j, int k, int l, Vec3D vec3d)
   {

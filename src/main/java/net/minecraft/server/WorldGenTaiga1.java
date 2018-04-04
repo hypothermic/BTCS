@@ -10,7 +10,7 @@ public class WorldGenTaiga1 extends WorldGenerator implements BlockSapling.TreeG
 
     public boolean a(World world, Random random, int i, int j, int k) {
         // CraftBukkit start
-        // sk: The idea is to have (our) WorldServer implement
+        // sk89q: The idea is to have (our) WorldServer implement
         // BlockChangeDelegate and then we can implicitly cast World to
         // WorldServer (a safe cast, AFAIK) and no code will be broken. This
         // then allows plugins to catch manually-invoked generation events
@@ -45,7 +45,11 @@ public class WorldGenTaiga1 extends WorldGenerator implements BlockSapling.TreeG
                     for (j2 = k - l2; j2 <= k + l2 && flag; ++j2) {
                         if (l1 >= 0 && l1 < 128) {
                             k2 = world.getTypeId(i2, l1, j2);
-                            if (k2 != 0 && k2 != Block.LEAVES.id) {
+                            // BTCS start
+                            //if (k2 != 0 && k2 != Block.LEAVES.id) {
+                            Block bl = Block.byId[k2];
+                            if ((bl == null) || (bl.canBeReplacedByLeaves(world, i2, l1, j2))) {
+                            // BTCS end
                                 flag = false;
                             }
                         } else {
@@ -69,8 +73,12 @@ public class WorldGenTaiga1 extends WorldGenerator implements BlockSapling.TreeG
 
                             for (int i3 = k - l2; i3 <= k + l2; ++i3) {
                                 int j3 = i3 - k;
-
-                                if ((Math.abs(k2) != l2 || Math.abs(j3) != l2 || l2 <= 0) && !Block.n[world.getTypeId(j2, i2, i3)]) {
+                                
+                                // BTCS start
+                                Block bl = Block.byId[world.getTypeId(j2, i2, i3)];
+                                if (((Math.abs(k2) != l2) || (Math.abs(j3) != l2) || (l2 <= 0)) && ((bl == null) || (bl.canBeReplacedByLeaves(world, j2, i2, i3)))) {
+                                //if ((Math.abs(k2) != l2 || Math.abs(j3) != l2 || l2 <= 0) && !Block.n[world.getTypeId(j2, i2, i3)]) {
+                                // BTCS end
                                     this.setTypeAndData(world, j2, i2, i3, Block.LEAVES.id, 1);
                                 }
                             }
@@ -85,7 +93,11 @@ public class WorldGenTaiga1 extends WorldGenerator implements BlockSapling.TreeG
 
                     for (i2 = 0; i2 < l - 1; ++i2) {
                         j2 = world.getTypeId(i, j + i2, k);
-                        if (j2 == 0 || j2 == Block.LEAVES.id) {
+                        // BTCS start
+                        //if (j2 == 0 || j2 == Block.LEAVES.id) {
+                        Block bl = Block.byId[j2];
+                        if ((j2 == 0) || (bl == null) || (bl.isLeaves(world, i, j + i2, k))) {
+                        // BTCS end
                             this.setTypeAndData(world, i, j + i2, k, Block.LOG.id, 1);
                         }
                     }
