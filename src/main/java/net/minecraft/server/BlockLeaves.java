@@ -1,13 +1,40 @@
 package net.minecraft.server;
 
+import java.util.ArrayList; // BTCS
 import java.util.Random;
 
 import org.bukkit.event.block.LeavesDecayEvent; // CraftBukkit
 
-public class BlockLeaves extends BlockTransparant {
+import forge.IShearable; // BTCS
+
+public class BlockLeaves extends BlockTransparant implements IShearable { // BTCS: implement IShearable
 
     private int c;
     int[] a;
+    
+    // BTCS start
+    @Override
+    public boolean isShearable(ItemStack item, World world, int x, int y, int z) {
+        return true;
+    }
+    
+    @Override
+    public ArrayList<ItemStack> onSheared(ItemStack item, World world, int x, int y, int z, int fortune) {
+        ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
+        ret.add(new ItemStack(this, 1, world.getData(x, y, z) & 3));
+        return ret;
+    }
+    
+    @Override
+    public void beginLeavesDecay(World world, int x, int y, int z) {
+        world.setData(x, y, z, world.getData(x, y, z) | 8);
+    }
+    
+    @Override
+    public boolean isLeaves(World world, int x, int y, int z) {
+        return true;
+    }
+    // BTCS end
 
     protected BlockLeaves(int i, int j) {
         super(i, j, Material.LEAVES, false);
@@ -25,10 +52,14 @@ public class BlockLeaves extends BlockTransparant {
                     for (int k1 = -b0; k1 <= b0; ++k1) {
                         int l1 = world.getTypeId(i + i1, j + j1, k + k1);
 
-                        if (l1 == Block.LEAVES.id) {
-                            int i2 = world.getData(i + i1, j + j1, k + k1);
+                        // BTCS start
+                        //if (l1 == Block.LEAVES.id) {
+                        if (Block.byId[l1] != null) {
+                            //int i2 = world.getData(i + i1, j + j1, k + k1);
 
-                            world.setRawData(i + i1, j + j1, k + k1, i2 | 8);
+                            //world.setRawData(i + i1, j + j1, k + k1, i2 | 8);
+                            Block.byId[l1].beginLeavesDecay(world, i + i1, j + j1, k + k1);
+                            // BTCS end
                         }
                     }
                 }
@@ -62,13 +93,23 @@ public class BlockLeaves extends BlockTransparant {
                         for (i2 = -b0; i2 <= b0; ++i2) {
                             for (j2 = -b0; j2 <= b0; ++j2) {
                                 k2 = world.getTypeId(i + l1, j + i2, k + j2);
-                                if (k2 == Block.LOG.id) {
+                                
+                                Block block = Block.byId[k2];
+                                
+                                if ((block != null) && (block.canSustainLeaves(world, i + l1, j + i2, k + j2))) {
+                                  this.a[((l1 + k1) * j1 + (i2 + k1) * b1 + j2 + k1)] = 0;
+                                } else if ((block != null) && (block.isLeaves(world, i + l1, j + i2, k + j2))) {
+                                  this.a[((l1 + k1) * j1 + (i2 + k1) * b1 + j2 + k1)] = -2;
+                                } else {
+                                  this.a[((l1 + k1) * j1 + (i2 + k1) * b1 + j2 + k1)] = -1;
+                                }
+                                /*if (k2 == Block.LOG.id) {
                                     this.a[(l1 + k1) * j1 + (i2 + k1) * b1 + j2 + k1] = 0;
                                 } else if (k2 == Block.LEAVES.id) {
                                     this.a[(l1 + k1) * j1 + (i2 + k1) * b1 + j2 + k1] = -2;
                                 } else {
                                     this.a[(l1 + k1) * j1 + (i2 + k1) * b1 + j2 + k1] = -1;
-                                }
+                                }*/
                             }
                         }
                     }
@@ -158,14 +199,19 @@ public class BlockLeaves extends BlockTransparant {
         }
     }
 
-    public void a(World world, EntityHuman entityhuman, int i, int j, int k, int l) {
+    // BTCS start
+    /*public void a(World world, EntityHuman entityhuman, int i, int j, int k, int l) {
         if (!world.isStatic && entityhuman.U() != null && entityhuman.U().id == Item.SHEARS.id) {
             entityhuman.a(StatisticList.C[this.id], 1);
             this.a(world, i, j, k, new ItemStack(Block.LEAVES.id, 1, l & 3));
         } else {
             super.a(world, entityhuman, i, j, k, l);
         }
+    }*/
+    public void a(World world, EntityHuman entityhuman, int i, int j, int k, int l) {
+      super.a(world, entityhuman, i, j, k, l);
     }
+    // BTCS end
 
     protected int getDropData(int i) {
         return i & 3;

@@ -3,6 +3,11 @@ package net.minecraft.server;
 import org.bukkit.event.block.BlockRedstoneEvent; // CraftBukkit
 
 public class BlockTrapdoor extends Block {
+	
+	// BTCS start
+	/** Set this to allow trapdoors to remain free-floating */
+	public static boolean disableValidation = false;
+	// BTCS end
 
     protected BlockTrapdoor(int i, Material material) {
         super(i, material);
@@ -172,6 +177,11 @@ public class BlockTrapdoor extends Block {
     }
 
     public boolean canPlace(World world, int i, int j, int k, int l) {
+    	// BTCS start
+    	if (disableValidation) {
+    		return true;
+    	}
+    	// BTCS end
         if (l == 0) {
             return false;
         } else if (l == 1) {
@@ -193,7 +203,10 @@ public class BlockTrapdoor extends Block {
                 --i;
             }
 
-            return h(world.getTypeId(i, j, k));
+            // BTCS start
+            //return h(world.getTypeId(i, j, k));
+            return h(world.getTypeId(i, j, k))  || world.isBlockSolidOnSide(i, j, k, l);
+            // BTCS end
         }
     }
 
@@ -202,6 +215,11 @@ public class BlockTrapdoor extends Block {
     }
 
     private static boolean h(int i) {
+    	// BTCS start
+    	if (disableValidation) {
+    	    return true;
+    	}
+    	// BTCS end
         if (i <= 0) {
             return false;
         } else {

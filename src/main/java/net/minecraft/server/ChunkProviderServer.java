@@ -16,6 +16,8 @@ import org.bukkit.craftbukkit.util.LongHashtable;
 import org.bukkit.event.world.ChunkUnloadEvent;
 // CraftBukkit end
 
+import forge.ForgeHooks;
+
 public class ChunkProviderServer implements IChunkProvider {
 
     // CraftBukkit start
@@ -46,7 +48,13 @@ public class ChunkProviderServer implements IChunkProvider {
         return this.chunks.containsKey(i, j); // CraftBukkit
     }
 
+    // aka dropChunk(...)
     public void queueUnload(int i, int j) {
+    	// BTCS start
+    	if(!ForgeHooks.canUnloadChunk(world.getChunkAt(i, j))) { // method in forge patch is called "getChunkFromChunkCoords", not sure if this is the same.
+    	    return;
+    	}
+    	// BTCS end
         if (this.world.worldProvider.c()) {
             ChunkCoordinates chunkcoordinates = this.world.getSpawn();
             int k = i * 16 + 8 - chunkcoordinates.x;

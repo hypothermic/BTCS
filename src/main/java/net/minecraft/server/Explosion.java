@@ -12,6 +12,9 @@ import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+
+import forge.ISpecialResistance;
+
 import org.bukkit.Location;
 // CraftBukkit end
 
@@ -79,7 +82,16 @@ public class Explosion {
                             int k1 = this.world.getTypeId(l, i1, j1);
 
                             if (k1 > 0) {
-                                f1 -= (Block.byId[k1].a(this.source) + 0.3F) * f2;
+                            	// BTCS start
+                                //f1 -= (Block.byId[k1].a(this.source) + 0.3F) * f2;
+                            	if (Block.byId[k1] instanceof ISpecialResistance) {
+                            	    ISpecialResistance isr = (ISpecialResistance)Block.byId[k1];
+                            	    // Not sure if params l i1 j1 are correct.
+                            	    f1 -= (isr.getSpecialExplosionResistance(world, l, i1, j1, this.posX, this.posY, this.posZ, source) + 0.3F) * f2;
+                            	} else {
+                            	    f1 -= (Block.byId[k1].a(this.source) + 0.3F) * f2;
+                            	}
+                                // BTCS end
                             }
 
                             if (f1 > 0.0F && i1 < 256 && i1 >= 0) { // CraftBukkit - Don't wrap explosions

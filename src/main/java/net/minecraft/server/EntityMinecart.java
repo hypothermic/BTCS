@@ -12,6 +12,7 @@ import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
 import org.bukkit.util.Vector;
 
+import forge.ForgeHooks;
 import forge.IMinecartCollisionHandler;
 
 import org.bukkit.inventory.InventoryHolder;
@@ -20,19 +21,37 @@ import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 
 public class EntityMinecart extends Entity implements IInventory {
 
-    private ItemStack[] items;
-    private int e;
-    private boolean f;
+	// BTCS start: all priv --> prot
+	/** cargoItems */
+    protected ItemStack[] items;
+    /** fuel */
+    protected int e;
+    /** field_496_aj*/
+    protected boolean f;
+    // BTCS end
+    /** minecartType */
     public int type;
+    /** pushX */
     public double b;
+    /** pushZ*/
     public double c;
-    private static final int[][][] matrix = new int[][][] { { { 0, 0, -1}, { 0, 0, 1}}, { { -1, 0, 0}, { 1, 0, 0}}, { { -1, -1, 0}, { 1, 0, 0}}, { { -1, 0, 0}, { 1, -1, 0}}, { { 0, 0, -1}, { 0, -1, 1}}, { { 0, -1, -1}, { 0, 0, 1}}, { { 0, 0, 1}, { 1, 0, 0}}, { { 0, 0, 1}, { -1, 0, 0}}, { { 0, 0, -1}, { -1, 0, 0}}, { { 0, 0, -1}, { 1, 0, 0}}};
-    private int h;
-    private double i;
-    private double j;
-    private double k;
-    private double l;
-    private double m;
+    // BTCS start
+    //private static final int[][][] matrix = new int[][][] { { { 0, 0, -1}, { 0, 0, 1}}, { { -1, 0, 0}, { 1, 0, 0}}, { { -1, -1, 0}, { 1, 0, 0}}, { { -1, 0, 0}, { 1, -1, 0}}, { { 0, 0, -1}, { 0, -1, 1}}, { { 0, -1, -1}, { 0, 0, 1}}, { { 0, 0, 1}, { 1, 0, 0}}, { { 0, 0, 1}, { -1, 0, 0}}, { { 0, 0, -1}, { -1, 0, 0}}, { { 0, 0, -1}, { 1, 0, 0}}};
+    protected static final int[][][] matrix = new int[][][] {{{0, 0, -1}, {0, 0, 1}}, {{ -1, 0, 0}, {1, 0, 0}}, {{ -1, -1, 0}, {1, 0, 0}}, {{ -1, 0, 0}, {1, -1, 0}}, {{0, 0, -1}, {0, -1, 1}}, {{0, -1, -1}, {0, 0, 1}}, {{0, 0, 1}, {1, 0, 0}}, {{0, 0, 1}, { -1, 0, 0}}, {{0, 0, -1}, { -1, 0, 0}}, {{0, 0, -1}, {1, 0, 0}}};
+    // BTCS end
+    // BTCS start: all priv --> prot
+    /** turnProgress */
+    protected int h;
+    /** minecartX */
+    protected double i;
+    /** minecartY */
+    protected double j;
+    /** minecartZ */
+    protected double k;
+    /** minecartYaw */
+    protected double l;
+    /** minecartPitch */
+    protected double m;
     
     // BTCS start
     protected double velocityX;
@@ -103,7 +122,20 @@ public class EntityMinecart extends Entity implements IInventory {
         this.bf = true;
         this.b(0.98F, 0.7F);
         this.height = this.length / 2.0F;
+        
+        // BTCS start
+        maxSpeedRail = defaultMaxSpeedRail;
+        maxSpeedGround = defaultMaxSpeedGround;
+        maxSpeedAirLateral = defaultMaxSpeedAirLateral;
+        maxSpeedAirVertical = defaultMaxSpeedAirVertical;
+        dragAir = defaultDragAir;
     }
+    
+    public EntityMinecart(World world, int type) {
+         this(world);
+         this.type = type;
+    }
+    // BTCS end
 
     protected boolean g_() {
         return false;
@@ -117,15 +149,28 @@ public class EntityMinecart extends Entity implements IInventory {
     }
 
     public AxisAlignedBB b_(Entity entity) {
+    	// BTCS start
+    	if (getCollisionHandler() != null){
+    	    return getCollisionHandler().getCollisionBox(this, entity);
+    	}
+    	// BTCS end
         return entity.boundingBox;
     }
 
     public AxisAlignedBB h() {
+    	// BTCS start
+    	if (getCollisionHandler() != null) {
+    	    return getCollisionHandler().getBoundingBox(this);
+    	}
+    	// BTCS end
         return null;
     }
 
     public boolean e_() {
-        return true;
+    	// BTCS start
+        //return true;
+        return canBePushed;
+        // BTCS end
     }
 
     public EntityMinecart(World world, double d0, double d1, double d2, int i) {
@@ -181,6 +226,8 @@ public class EntityMinecart extends Entity implements IInventory {
                 // CraftBukkit end
 
                 this.die();
+                // BTCS start
+                /*
                 this.a(Item.MINECART.id, 1, 0.0F);
                 if (this.type == 1) {
                     EntityMinecart entityminecart = this;
@@ -216,7 +263,9 @@ public class EntityMinecart extends Entity implements IInventory {
                     this.a(Block.CHEST.id, 1, 0.0F);
                 } else if (this.type == 2) {
                     this.a(Block.FURNACE.id, 1, 0.0F);
-                }
+                }*/
+                this.dropCartAsItem();
+                // BTCS end
             }
 
             return true;
@@ -286,7 +335,10 @@ public class EntityMinecart extends Entity implements IInventory {
             this.aI();
         }
 
-        if (this.k() && this.random.nextInt(4) == 0) {
+        // BTCS start
+        //if (this.k() && this.random.nextInt(4) == 0) {
+        if (this.k() && this.random.nextInt(4) == 0 && this.type == 2 && getClass() == EntityMinecart.class) {
+        // BTCS end
             this.world.a("largesmoke", this.locX, this.locY + 0.8D, this.locZ, 0.0D, 0.0D, 0.0D);
         }
 
@@ -333,28 +385,35 @@ public class EntityMinecart extends Entity implements IInventory {
             double d5 = 0.0078125D;
             int l = this.world.getTypeId(i, j, k);
 
-            if (BlockMinecartTrack.d(l)) {
+            if (canUseRail() && BlockMinecartTrack.d(l)) { // BTCS: added 'canUseRail() &&'
                 Vec3D vec3d = this.h(this.locX, this.locY, this.locZ);
-                int i1 = this.world.getData(i, j, k);
+                // BTCS start
+                //int i1 = this.world.getData(i, j, k);
+                int i1 = ((BlockMinecartTrack)Block.byId[l]).getBasicRailMetadata(this.world, this, i, j, k);
+                // BTCS end
 
                 this.locY = (double) j;
                 boolean flag = false;
                 boolean flag1 = false;
 
                 if (l == Block.GOLDEN_RAIL.id) {
-                    flag = (i1 & 8) != 0;
+                	// BTCS start
+                    //flag = (i1 & 8) != 0;
+                	flag = (this.world.getData(i, j, k) & 0x8) != 0;
+                	// BTCS end
                     flag1 = !flag;
                 }
 
-                if (((BlockMinecartTrack) Block.byId[l]).i()) {
+                // BTCS start
+                /*if (((BlockMinecartTrack) Block.byId[l]).i()) {
                     i1 &= 7;
-                }
+                }*/
 
                 if (i1 >= 2 && i1 <= 5) {
                     this.locY = (double) (j + 1);
                 }
 
-                if (i1 == 2) {
+                /*if (i1 == 2) {
                     this.motX -= d5;
                 }
 
@@ -368,7 +427,9 @@ public class EntityMinecart extends Entity implements IInventory {
 
                 if (i1 == 5) {
                     this.motZ -= d5;
-                }
+                }*/
+                adjustSlopeVelocities(i1);
+                // BTCS end
 
                 int[][] aint = matrix[i1];
                 double d6 = (double) (aint[1][0] - aint[0][0]);
@@ -387,7 +448,7 @@ public class EntityMinecart extends Entity implements IInventory {
                 this.motZ = d10 * d7 / d8;
                 double d11;
 
-                if (flag1) {
+                if (flag1 && shouldDoRailFunctions()) { // BTCS: added shouldDoRailFunctions
                     d11 = Math.sqrt(this.motX * this.motX + this.motZ * this.motZ);
                     if (d11 < 0.03D) {
                         this.motX *= 0.0D;
@@ -428,7 +489,8 @@ public class EntityMinecart extends Entity implements IInventory {
                 this.locX = d12 + d6 * d11;
                 this.locZ = d13 + d7 * d11;
                 this.setPosition(this.locX, this.locY + (double) this.height, this.locZ);
-                d16 = this.motX;
+                // BTCS start
+                /*d16 = this.motX;
                 d18 = this.motZ;
                 if (this.passenger != null) {
                     d16 *= 0.75D;
@@ -451,7 +513,9 @@ public class EntityMinecart extends Entity implements IInventory {
                     d18 = d4;
                 }
 
-                this.move(d16, 0.0D, d18);
+                this.move(d16, 0.0D, d18);*/
+                moveMinecartOnRail(i, j, k);
+                // BTCS end
                 if (aint[0][1] != 0 && MathHelper.floor(this.locX) - i == aint[0][0] && MathHelper.floor(this.locZ) - k == aint[0][2]) {
                     this.setPosition(this.locX, this.locY + (double) aint[0][1], this.locZ);
                 } else if (aint[1][1] != 0 && MathHelper.floor(this.locX) - i == aint[1][0] && MathHelper.floor(this.locZ) - k == aint[1][2]) {
@@ -459,7 +523,8 @@ public class EntityMinecart extends Entity implements IInventory {
                 }
 
                 // CraftBukkit
-                if (this.passenger != null || !this.slowWhenEmpty) {
+                // BTCS start
+                /*if (this.passenger != null || !this.slowWhenEmpty) {
                     this.motX *= 0.996999979019165D;
                     this.motY *= 0.0D;
                     this.motZ *= 0.996999979019165D;
@@ -486,7 +551,9 @@ public class EntityMinecart extends Entity implements IInventory {
                     this.motX *= 0.9599999785423279D;
                     this.motY *= 0.0D;
                     this.motZ *= 0.9599999785423279D;
-                }
+                }*/
+                applyDragAndPushForces();
+                // BTCS end
 
                 Vec3D vec3d1 = this.h(this.locX, this.locY, this.locZ);
 
@@ -512,9 +579,11 @@ public class EntityMinecart extends Entity implements IInventory {
                 }
 
                 double d21;
+                // BTCS start
+                this.updatePushForces();
 
-                if (this.type == 2) {
-                    d21 = (double) MathHelper.sqrt(this.b * this.b + this.c * this.c);
+                if (this.shouldDoRailFunctions()) { // BTCS: 'this.type == 2' --> shouldDorailFunctions()
+                    /*d21 = (double) MathHelper.sqrt(this.b * this.b + this.c * this.c);
                     if (d21 > 0.01D && this.motX * this.motX + this.motZ * this.motZ > 0.0010D) {
                         this.b /= d21;
                         this.c /= d21;
@@ -525,10 +594,12 @@ public class EntityMinecart extends Entity implements IInventory {
                             this.b = this.motX;
                             this.c = this.motZ;
                         }
-                    }
+                    }*/
+                	((BlockMinecartTrack)Block.byId[l]).onMinecartPass(this.world, this, i, j, k);
+                	// BTCS end
                 }
 
-                if (flag) {
+                if (flag && shouldDoRailFunctions()) { // BTCS; added shouldDoRailFunctions()
                     d21 = Math.sqrt(this.motX * this.motX + this.motZ * this.motZ);
                     if (d21 > 0.01D) {
                         double d22 = 0.06D;
@@ -550,6 +621,8 @@ public class EntityMinecart extends Entity implements IInventory {
                     }
                 }
             } else {
+            	// BTCS start
+            	/*
                 if (this.motX < -d4) {
                     this.motX = -d4;
                 }
@@ -582,6 +655,9 @@ public class EntityMinecart extends Entity implements IInventory {
                     this.motZ *= this.flyingZ;
                     // CraftBukkit end
                 }
+                */
+            	moveMinecartOffRail(i, j, k);
+            	// BTCS end
             }
 
             this.pitch = 0.0F;
@@ -625,7 +701,18 @@ public class EntityMinecart extends Entity implements IInventory {
             }
             // CraftBukkit end
 
-            List list = this.world.getEntities(this, this.boundingBox.grow(0.20000000298023224D, 0.0D, 0.20000000298023224D));
+            // BTCS start
+            //List list = this.world.getEntities(this, this.boundingBox.grow(0.20000000298023224D, 0.0D, 0.20000000298023224D));
+            
+            AxisAlignedBB box = null;
+            if (getCollisionHandler() != null) {
+                box = getCollisionHandler().getMinecartCollisionBox(this);
+            } else {
+                box = boundingBox.grow(0.2D, 0.0D, 0.2D);
+            }
+            
+            List list = this.world.getEntities(this, box);
+            // BTCS end
 
             if (list != null && list.size() > 0) {
                 for (int l1 = 0; l1 < list.size(); ++l1) {
@@ -645,7 +732,8 @@ public class EntityMinecart extends Entity implements IInventory {
                 this.passenger = null;
             }
 
-            if (this.e > 0) {
+            // BTCS start
+            /*if (this.e > 0) {
                 --this.e;
             }
 
@@ -653,7 +741,10 @@ public class EntityMinecart extends Entity implements IInventory {
                 this.b = this.c = 0.0D;
             }
 
-            this.a(this.e > 0);
+            this.a(this.e > 0);*/
+            updateFuel();
+            ForgeHooks.onMinecartUpdate(this, i, j, k);
+            // BTCS end
         }
     }
 
@@ -669,12 +760,15 @@ public class EntityMinecart extends Entity implements IInventory {
         int l = this.world.getTypeId(i, j, k);
 
         if (BlockMinecartTrack.d(l)) {
-            int i1 = this.world.getData(i, j, k);
+        	// BTCS start
+            //int i1 = this.world.getData(i, j, k);
+        	int i1 = ((BlockMinecartTrack)Block.byId[l]).getBasicRailMetadata(this.world, this, i, j, k);
 
             d1 = (double) j;
-            if (((BlockMinecartTrack) Block.byId[l]).i()) {
+            /*if (((BlockMinecartTrack) Block.byId[l]).i()) {
                 i1 &= 7;
-            }
+            }*/
+            // BTCS end
 
             if (i1 >= 2 && i1 <= 5) {
                 d1 = (double) (j + 1);
@@ -725,11 +819,17 @@ public class EntityMinecart extends Entity implements IInventory {
 
     protected void b(NBTTagCompound nbttagcompound) {
         nbttagcompound.setInt("Type", this.type);
-        if (this.type == 2) {
+        
+        // BTCS start
+        //if (this.type == 2) {
+        if (this.isPoweredCart()) {
             nbttagcompound.setDouble("PushX", this.b);
             nbttagcompound.setDouble("PushZ", this.c);
-            nbttagcompound.setShort("Fuel", (short) this.e);
-        } else if (this.type == 1) {
+            //nbttagcompound.setShort("Fuel", (short) this.e);
+            nbttagcompound.setInt("Fuel", this.e);
+        //} else if (this.type == 1) {
+        } else if (getSize() > 0) {
+        // BTCS end
             NBTTagList nbttaglist = new NBTTagList();
 
             for (int i = 0; i < this.items.length; ++i) {
@@ -748,11 +848,24 @@ public class EntityMinecart extends Entity implements IInventory {
 
     protected void a(NBTTagCompound nbttagcompound) {
         this.type = nbttagcompound.getInt("Type");
-        if (this.type == 2) {
+        // BTCS start
+        //if (this.type == 2) {
+        if (this.isPoweredCart()) {
+        // BTCS end
             this.b = nbttagcompound.getDouble("PushX");
             this.c = nbttagcompound.getDouble("PushZ");
-            this.e = nbttagcompound.getShort("Fuel");
-        } else if (this.type == 1) {
+            //this.e = nbttagcompound.getShort("Fuel");
+            try
+            {
+                this.e = nbttagcompound.getInt("Fuel");
+            }
+            catch (ClassCastException e)
+            {
+                this.e = nbttagcompound.getShort("Fuel");
+            }
+        //} else if (this.type == 1) {
+        } else if (getSize() > 0) {
+        // BTCS end
             NBTTagList nbttaglist = nbttagcompound.getList("Items");
 
             this.items = new ItemStack[this.getSize()];
@@ -769,6 +882,13 @@ public class EntityMinecart extends Entity implements IInventory {
     }
 
     public void collide(Entity entity) {
+    	// BTCS star
+    	ForgeHooks.onMinecartEntityCollision(this, entity);
+    	if (getCollisionHandler() != null) {
+    		getCollisionHandler().onEntityCollision(this, entity);
+    		return;
+    	}
+    	// BTCS end
         if (!this.world.isStatic) {
             if (entity != this.passenger) {
                 // CraftBukkit start
@@ -783,8 +903,11 @@ public class EntityMinecart extends Entity implements IInventory {
                 }
                 // CraftBukkit end
 
-                if (entity instanceof EntityLiving && !(entity instanceof EntityHuman) && !(entity instanceof EntityIronGolem) && this.type == 0 && this.motX * this.motX + this.motZ * this.motZ > 0.01D && this.passenger == null && entity.vehicle == null) {
-                    entity.mount(this);
+                // BTCS start
+                //if (entity instanceof EntityLiving && !(entity instanceof EntityHuman) && !(entity instanceof EntityIronGolem) && this.type == 0 && this.motX * this.motX + this.motZ * this.motZ > 0.01D && this.passenger == null && entity.vehicle == null) {
+                if (((entity instanceof EntityLiving)) && (!(entity instanceof EntityHuman)) && (!(entity instanceof EntityIronGolem)) && (canBeRidden()) && (this.motX * this.motX + this.motZ * this.motZ > 0.01D) && (this.passenger == null) && (entity.vehicle == null)) {
+                // BTCS end
+                	entity.mount(this);
                 }
 
                 double d0 = entity.locX - this.locX;
@@ -824,13 +947,17 @@ public class EntityMinecart extends Entity implements IInventory {
                         double d7 = entity.motX + this.motX;
                         double d8 = entity.motZ + this.motZ;
 
-                        if (((EntityMinecart) entity).type == 2 && this.type != 2) {
+                        // BTCS start
+                        //if (((EntityMinecart) entity).type == 2 && this.type != 2) {
+                        if (((EntityMinecart) entity).isPoweredCart() && !isPoweredCart()) {
                             this.motX *= 0.20000000298023224D;
                             this.motZ *= 0.20000000298023224D;
                             this.b_(entity.motX - d0, 0.0D, entity.motZ - d1);
                             entity.motX *= 0.949999988079071D;
                             entity.motZ *= 0.949999988079071D;
-                        } else if (((EntityMinecart) entity).type != 2 && this.type == 2) {
+                        //} else if (((EntityMinecart) entity).type != 2 && this.type == 2) {
+                        } else if (!((EntityMinecart) entity).isPoweredCart() && isPoweredCart()) {
+                        // BTCS end
                             entity.motX *= 0.20000000298023224D;
                             entity.motZ *= 0.20000000298023224D;
                             entity.b_(this.motX + d0, 0.0D, this.motZ + d1);
@@ -856,7 +983,10 @@ public class EntityMinecart extends Entity implements IInventory {
     }
 
     public int getSize() {
-        return 27;
+    	// BTCS start
+        //return 27;
+        return (this.type == 1 && getClass() == EntityMinecart.class ? 27 : 0);
+        // BTCS end
     }
 
     public ItemStack getItem(int i) {
@@ -913,7 +1043,13 @@ public class EntityMinecart extends Entity implements IInventory {
     public void update() {}
 
     public boolean b(EntityHuman entityhuman) {
-        if (this.type == 0) {
+    	// BTCS start
+    	if (!ForgeHooks.onMinecartInteract(this, entityhuman)){
+    	    return true;
+    	}
+    	
+    	if (canBeRidden()) {
+        //if (this.type == 0) {
             if (this.passenger != null && this.passenger instanceof EntityHuman && this.passenger != entityhuman) {
                 return true;
             }
@@ -921,11 +1057,14 @@ public class EntityMinecart extends Entity implements IInventory {
             if (!this.world.isStatic) {
                 entityhuman.mount(this);
             }
-        } else if (this.type == 1) {
+        //} else if (this.type == 1) {
+    	} else if (getSize() > 0) {
             if (!this.world.isStatic) {
                 entityhuman.openContainer(this);
             }
-        } else if (this.type == 2) {
+        //} else if (this.type == 2) {
+    	} else if (this.type == 2 && getClass() ==  EntityMinecart.class) {
+    	// BTCS end
             ItemStack itemstack = entityhuman.inventory.getItemInHand();
 
             if (itemstack != null && itemstack.id == Item.COAL.id) {
@@ -947,7 +1086,8 @@ public class EntityMinecart extends Entity implements IInventory {
         return this.dead ? false : entityhuman.j(this) <= 64.0D;
     }
 
-    protected boolean k() {
+    /** isMinecartPowered() aka fuel > 0 */
+    public boolean k() { // BTCS: prot --> public
         return (this.datawatcher.getByte(16) & 1) != 0;
     }
 

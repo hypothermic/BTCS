@@ -1,1 +1,3 @@
 /target/
+/src/forgeonly/java/
+/hs_err_pid*

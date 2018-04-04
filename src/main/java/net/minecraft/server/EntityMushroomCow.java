@@ -1,8 +1,12 @@
 package net.minecraft.server;
 
+import java.util.ArrayList; // BTCS
+
 import org.bukkit.event.player.PlayerShearEntityEvent; // CraftBukkit
 
-public class EntityMushroomCow extends EntityCow {
+import forge.IShearable; // BTCS
+
+public class EntityMushroomCow extends EntityCow implements IShearable { // BTCS: implemets IShearable
 
     public EntityMushroomCow(World world) {
         super(world);
@@ -25,7 +29,8 @@ public class EntityMushroomCow extends EntityCow {
             }
         }
 
-        if (itemstack != null && itemstack.id == Item.SHEARS.id && this.getAge() >= 0) {
+        // BTCS start
+        /*if (itemstack != null && itemstack.id == Item.SHEARS.id && this.getAge() >= 0) {
             // CraftBukkit start
             PlayerShearEntityEvent event = new PlayerShearEntityEvent((org.bukkit.entity.Player) entityhuman.getBukkitEntity(), this.getBukkitEntity());
             this.world.getServer().getPluginManager().callEvent(event);
@@ -53,10 +58,36 @@ public class EntityMushroomCow extends EntityCow {
             return true;
         } else {
             return super.b(entityhuman);
-        }
+        }*/
+        return super.b(entityhuman);
+        // BTCS end
     }
 
     public EntityAnimal createChild(EntityAnimal entityanimal) {
         return new EntityMushroomCow(this.world);
+    }
+    
+    @Override
+    public boolean isShearable(ItemStack item, World world, int X, int Y, int Z) 
+    {
+        return getAge() >= 0;
+    }
+    
+    @Override
+    public ArrayList<ItemStack> onSheared(ItemStack item, World world, int X, int Y, int Z, int fortune) 
+    {
+        die();
+        EntityCow entitycow = new EntityCow(world);
+        entitycow.setPositionRotation(this.locX, this.locY, this.locZ, this.yaw, this.pitch);
+        entitycow.setHealth(getHealth());
+        entitycow.V = this.V;
+        world.addEntity(entitycow);
+        this.world.a("largeexplode", this.locX, this.locY + (double)(height / 2.0F), this.locZ, 0.0D, 0.0D, 0.0D);
+        
+        ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
+        for (int x = 0; x < 5; x++) {
+        	ret.add(new ItemStack(Block.RED_MUSHROOM));
+        }
+        return ret;
     }
 }

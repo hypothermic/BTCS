@@ -41,6 +41,17 @@ public abstract class Enchantment {
 
         org.bukkit.enchantments.Enchantment.registerEnchantment(new org.bukkit.craftbukkit.enchantments.CraftEnchantment(this)); // CraftBukkit
     }
+    
+    // BTCS start
+    /**
+    * Called to determine if this enchantment can be applied to a ItemStack
+    * @param item The ItemStack that the enchantment might be put on
+    * @return True if the item is valid, false otherwise
+    */
+    public boolean canEnchantItem(ItemStack item) {
+        return slot.canEnchant(item.getItem());
+    }
+    // BTCS end
 
     public int getRandomWeight() {
         return this.weight;

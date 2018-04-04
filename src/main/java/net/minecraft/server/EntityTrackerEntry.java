@@ -238,6 +238,9 @@ public class EntityTrackerEntry {
                     // CraftBukkit end
                     this.trackedPlayers.add(entityplayer);
                     entityplayer.netServerHandler.sendPacket(this.b());
+                    
+                    // BTCS: chose not to apply forge patch here due to missing class PacketEntityTrack.
+                    
                     if (this.isMoving) {
                         entityplayer.netServerHandler.sendPacket(new Packet28EntityVelocity(this.tracker.id, this.tracker.motX, this.tracker.motY, this.tracker.motZ));
                     }
@@ -295,6 +298,13 @@ public class EntityTrackerEntry {
             // CraftBukkit end
         }
 
+        // BTCS start
+        Packet pkt = forge.ForgeHooks.getEntitySpawnPacket(tracker);
+        if (pkt != null) {
+        	return pkt;
+        }
+        // BTCS end
+         
         if (this.tracker instanceof EntityItem) {
             EntityItem entityitem = (EntityItem) this.tracker;
             Packet21PickupSpawn packet21pickupspawn = new Packet21PickupSpawn(entityitem);

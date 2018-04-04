@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+import java.util.ArrayList; // BTCS
 import java.util.List;
 import java.util.Random;
 
@@ -146,6 +147,33 @@ public abstract class Entity implements net.minecraft.src.Entity {
     public boolean ce;
     public UUID uniqueId = UUID.randomUUID(); // CraftBukkit
     public boolean valid = true; // CraftBukkit
+    
+    // BTCS start
+    /** Forge: Used to store custom data for each entity. */
+    private NBTTagCompound customEntityData;
+    protected boolean captureDrops = false;
+    protected ArrayList<EntityItem> capturedDrops = new ArrayList<EntityItem>();
+    
+    /**
+     * Returns a NBTTagCompound that can be used to store custom data for this entity.
+     * It will be written, and read from disc, so it persists over world saves.
+     * @return A NBTTagCompound
+     */
+    public NBTTagCompound getEntityData() {
+    	if (customEntityData == null) {
+    		customEntityData = new NBTTagCompound();
+    	}
+    	return customEntityData;
+    }
+    
+    /**
+     * Used in model rendering to determine if the entity riding this entity should be in the 'sitting' position.
+     * @return false to prevent an entity that is mounted to this entity from displaying the 'sitting' animation.
+     */
+    public boolean shouldRiderSit() {
+        return true;
+    }
+    // BTCS end
 
     public Entity(World world) {
         this.id = entityCount++;
@@ -1054,6 +1082,11 @@ public abstract class Entity implements net.minecraft.src.Entity {
         nbttagcompound.setShort("Fire", (short) this.fireTicks);
         nbttagcompound.setShort("Air", (short) this.getAirTicks());
         nbttagcompound.setBoolean("OnGround", this.onGround);
+        // BTCS start
+        if (customEntityData != null) {
+            nbttagcompound.setCompound("ForgeData", customEntityData);
+        }
+        // BTCS end
         // CraftBukkit start
         nbttagcompound.setLong("WorldUUIDLeast", this.world.getUUID().getLeastSignificantBits());
         nbttagcompound.setLong("WorldUUIDMost", this.world.getUUID().getMostSignificantBits());
@@ -1106,6 +1139,11 @@ public abstract class Entity implements net.minecraft.src.Entity {
         // CraftBukkit end
 
         this.c(this.yaw, this.pitch);
+        // BTCS start
+        if (nbttagcompound.hasKey("ForgeData")) {
+            customEntityData = nbttagcompound.getCompound("ForgeData");
+        }
+        // BTCS end
         this.a(nbttagcompound);
 
         // CraftBukkit start - Exempt Vehicles from notch's sanity check
@@ -1196,7 +1234,14 @@ public abstract class Entity implements net.minecraft.src.Entity {
         EntityItem entityitem = new EntityItem(this.world, this.locX, this.locY + (double) f, this.locZ, itemstack);
 
         entityitem.pickupDelay = 10;
-        this.world.addEntity(entityitem);
+        // BTCS start
+        //this.world.addEntity(entityitem);
+        if (captureDrops) {
+            capturedDrops.add(entityitem);
+        } else {
+            this.world.addEntity(entityitem);
+        }
+        // BTCS end
         return entityitem;
     }
 

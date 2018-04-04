@@ -8,7 +8,7 @@ import org.bukkit.event.entity.EntityTeleportEvent;
 
 public class EntityEnderman extends EntityMonster {
 
-    private static boolean[] b = new boolean[256];
+    private static boolean[] b = new boolean[Block.byId.length]; // BTCS: 256 --> Block.byId.length
     public boolean a = false;
     private int g = 0;
     private int h = 0;

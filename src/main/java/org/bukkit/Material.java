@@ -533,9 +533,7 @@ public enum Material {
     }
     
     public static void addMaterial(int id, String name) {
-    	//System.out.println("DEBUGX20: check if mat in list for " + name + " with id " + id + " (target=" + byId[id].toString() + ")");
       if (byId[id] == null) {
-    	  //System.out.println("DEBUGX21: register " + name + " with id " + id);
         Material material = (Material)addEnum(Material.class, name, new Class[] { Integer.TYPE }, new Object[] { Integer.valueOf(id) });
         
 

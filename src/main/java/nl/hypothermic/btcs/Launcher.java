@@ -1,27 +1,19 @@
 package nl.hypothermic.btcs;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.craftbukkit.CraftServer;
 
+import cpw.mods.fml.common.registry.FMLRegistry;
+import cpw.mods.fml.server.FMLBukkitHandler;
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
-import net.minecraft.server.Achievement;
-import net.minecraft.server.AchievementList;
-import net.minecraft.server.Block;
-import net.minecraft.server.Item;
 import net.minecraft.server.MinecraftServer;
 
 public class Launcher {
@@ -31,10 +23,10 @@ public class Launcher {
     public static String LS;
 	private static double VERSION;
 	private static String VTAG;
-	public static final boolean ENABLE_DEBUG = false;
 	private static String PROPS_HEADER = " BTCS+ Configuration File." + LS + " https://github.com/hypothermic/BTCS";
 	private static final String CFG_NAME = "btcs.cfg";
 	public static final File MC_CFG_FILE = new File("mc.cfg"); /**{@link net.minecraft.server.PropertyManager#PropertyManager(OptionSet)}*/ // TODO: add to config
+	public static final String MC_LOG_PATTERN = "mc.log"; /**{@link net.minecraft.server.ConsoleLogManager#init(MinecraftServer)} ln 40.*/ // TODO: add to config
 	public static final File BUKKIT_CFG_FILE = new File("bukkit.cfg"); /**{@link org.bukkit.craftbukkit.CraftServer#getConfigFile()}*/ // TODO: add to config
 	public static final File BUKKIT_PLUGIN_FOLDER = new File("plugins"); /**{@link org.bukkit.craftbukkit.CraftServer#loadPlugins()}*/ // TODO: add to config
 	// I wish Properties files could store booleans .-.
@@ -43,7 +35,13 @@ public class Launcher {
 	private static HashMap<String, String> DEFOPTIONS = new HashMap() {{ put("force-jline", "false");
 																		 put("deploy-resources", "true");
 																		 put("use-forgeplugin", "true"); 
-																		 put("update-check", "true"); }};
+																		 put("enable-update-check", "true");
+																		 put("enable-servercontroller", "false");
+																		 put("enable-message-login-modlist", "false");
+																		 put("enable-debug", "false"); }};
+	
+	public static boolean FORGE_ANNOUNCE_LOGIN = false; /**{@link forge.PacketHandlerServer#onModListResponse} ln 69.*/
+	public static boolean ENABLE_DEBUG = false;
 																		 
 	private static ConfigurationManager c = new ConfigurationManager(DEFOPTIONS);
 	private static ResourceManager r = new ResourceManager();
@@ -53,18 +51,18 @@ public class Launcher {
 	public static void main(final String[] args) {
 		LS = System.getProperty("line.separator");
 		// TODO: include these in config file. Hardcoded for now since it's not high priority.
-		VERSION = 1.06;
-		VTAG = "ALPHA";
+		VERSION = 1.07;
+		VTAG = "BETA";
 		
 		System.out.println(LS + "  << BTCS++ " + VERSION + "-" + VTAG + " >>" + LS
 							  + "  << Java " + getVersion() + " on " + System.getProperty("os.name") + " >>" + LS + LS
 							  + " <<  Load Configuration >>");
 		final HashMap config = initConfig();
 		System.out.println("           Done." + LS);
-		if ((Boolean) config.get("update-check")) {
+		if ((Boolean) config.get("enable-update-check")) {
 			System.out.println(" << Checking for Update >>");
 			if (new UpdateManager().check()) {
-				System.out.println("   Updates are availible." + LS);
+				System.out.println(" Updates are availible." + LS);
 			} else {
 				System.out.println("           Done." + LS);
 			}
@@ -106,15 +104,34 @@ public class Launcher {
 			        }}
 			    	
 			    	// TODO: move all options.has() checks to a seperate class
-			    	if (options.has("config")) { // Fun fact: Minecraft crashes if config is not specified.
+			    	if (options.has("config")) {
 			    		XLogger.generr("No configuration file specified. Exiting.");
 			    		forcestop();
 			    	}
 			        if (options.has("noconsole")) {
-			          useConsole = false;
+			            useConsole = false;
 			        }
 			        
-			        net.minecraft.server.MinecraftServer.main(options);
+			        MinecraftServer mcs = net.minecraft.server.MinecraftServer.main(options);
+			        
+			        // Prepare ServerController API if enabled
+			        if ((Boolean) config.get("enable-servercontroller")) {
+			        	ServerController.instance().setEnabled(true);
+			        	ServerController.instance().setFMLBukkitHandler(FMLBukkitHandler.instance());
+			        	ServerController.instance().setFMLRegistry(FMLRegistry.instance());
+			        	ServerController.instance().setMinecraftInstance(mcs);
+			        } else {
+			        	ServerController.instance().setEnabled(false);
+			        }
+			        
+			        if ((Boolean) config.get("enable-message-login-modlist")) {
+			        	FORGE_ANNOUNCE_LOGIN = true;
+				    }
+			        
+			        if ((Boolean) config.get("enable-debug")) {
+			        	ENABLE_DEBUG = true;
+				    }
+			        
 			      } catch (Exception x) {
 			        x.printStackTrace();
 			      }

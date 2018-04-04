@@ -13,6 +13,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 // CraftBukkit end
 
+import forge.ForgeHooks;
+
 public abstract class EntityLiving extends Entity implements net.minecraft.src.EntityLiving {
 
     public int maxNoDamageTicks = 20;
@@ -40,7 +42,7 @@ public abstract class EntityLiving extends Entity implements net.minecraft.src.E
     public float ao;
     protected int health = this.getMaxHealth();
     public int aq;
-    protected int ar;
+    public int ar; // BTCS: carryoverDamage, prot --> pub
     private int a;
     public int hurtTicks;
     public int at;
@@ -182,6 +184,7 @@ public abstract class EntityLiving extends Entity implements net.minecraft.src.E
 
     public void b(EntityLiving entityliving) {
         this.l = entityliving;
+        ForgeHooks.onEntityLivingSetAttackTarget(this, entityliving); // BTCS
     }
 
     public boolean a(Class oclass) {
@@ -222,6 +225,7 @@ public abstract class EntityLiving extends Entity implements net.minecraft.src.E
     public void a(EntityLiving entityliving) {
         this.lastDamager = entityliving;
         this.c = this.lastDamager != null ? 60 : 0;
+        ForgeHooks.onEntityLivingSetAttackTarget(this, entityliving); // BTCS
     }
 
     protected void b() {
@@ -430,7 +434,13 @@ public abstract class EntityLiving extends Entity implements net.minecraft.src.E
         this.fallDistance = 0.0F;
     }
 
+    // onUpdate()
     public void F_() {
+    	// BTCS start
+    	if (ForgeHooks.onEntityLivingUpdate(this)) {
+    	    return;
+    	}
+    	// BTCS end
         super.F_();
         if (this.aI > 0) {
             if (this.aJ <= 0) {
@@ -590,6 +600,11 @@ public abstract class EntityLiving extends Entity implements net.minecraft.src.E
     }
 
     public boolean damageEntity(DamageSource damagesource, int i) {
+    	// BTCS start
+    	if (ForgeHooks.onEntityLivingAttacked(this, damagesource, i)) {
+    	    return false;
+    	}
+    	// BTCS end
         if (this.world.isStatic) {
             return false;
         } else {
@@ -720,6 +735,12 @@ public abstract class EntityLiving extends Entity implements net.minecraft.src.E
     }
 
     protected void c(DamageSource damagesource, int i) {
+    	// BTCS start
+    	i = ForgeHooks.onEntityLivingHurt(this, damagesource, i);
+    	if (i == 0) {
+    		return;
+    	}
+    	// BTCS end
         i = this.d(damagesource, i);
         i = this.b(damagesource, i);
         this.health -= i;
@@ -758,6 +779,11 @@ public abstract class EntityLiving extends Entity implements net.minecraft.src.E
     }
 
     public void die(DamageSource damagesource) {
+    	// BTCS start
+    	if (ForgeHooks.onEntityLivingDeath(this, damagesource)) {
+    	    return;
+    	}
+    	// BTCS end
         Entity entity = damagesource.getEntity();
 
         if (this.aj >= 0 && entity != null) {
@@ -775,19 +801,36 @@ public abstract class EntityLiving extends Entity implements net.minecraft.src.E
             if (entity instanceof EntityHuman) {
                 i = EnchantmentManager.getBonusMonsterLootEnchantmentLevel(((EntityHuman) entity).inventory);
             }
+            
+            // BTCS start
+            captureDrops = true;
+            capturedDrops.clear();
+            int var4 = 0;
+            // BTCS end
 
             if (!this.isBaby()) {
                 this.dropDeathLoot(this.lastDamageByPlayerTime > 0, i);
                 if (false && this.lastDamageByPlayerTime > 0) { // CraftBukkit - move rare item drop call to dropDeathLoot
-                    int j = this.random.nextInt(200) - i;
+                	// BTCS start
+                    //int j = this.random.nextInt(200) - i;
+                	var4 = this.random.nextInt(200) - i;
 
-                    if (j < 5) {
-                        this.b(j <= 0 ? 1 : 0);
+                    if (var4 < 5) {
+                        this.b(var4 <= 0 ? 1 : 0);
                     }
+                    // BTCS end
                 }
             } else { // CraftBukkit
                 CraftEventFactory.callEntityDeathEvent(this); // CraftBukkit
             }
+            
+            // BTCS start
+            captureDrops = false;
+            ForgeHooks.onEntityLivingDrops(this, damagesource, capturedDrops, i, this.lastDamageByPlayerTime > 0, var4);
+            for (EntityItem item : capturedDrops) {
+            	world.addEntity(item);
+            }
+            // BTCS end
         }
 
         this.world.broadcastEntityEffect(this, (byte) 3);
@@ -838,6 +881,11 @@ public abstract class EntityLiving extends Entity implements net.minecraft.src.E
     }
 
     protected void a(float f) {
+    	// BTCS start
+    	if (ForgeHooks.onEntityLivingFall(this, f)) {
+    	    return;
+    	}
+    	// BTCS end
         super.a(f);
         int i = (int) Math.ceil((double) (f - 3.0F));
 
@@ -992,7 +1040,10 @@ public abstract class EntityLiving extends Entity implements net.minecraft.src.E
         int k = MathHelper.floor(this.locZ);
         int l = this.world.getTypeId(i, j, k);
 
-        return l == Block.LADDER.id || l == Block.VINE.id;
+        // BTCS start
+        //return l == Block.LADDER.id || l == Block.VINE.id;
+        return (Block.byId[l] != null && Block.byId[l].isLadder(world, i, j, k));
+        // BTCS end
     }
 
     public void b(NBTTagCompound nbttagcompound) {
@@ -1200,6 +1251,8 @@ public abstract class EntityLiving extends Entity implements net.minecraft.src.E
         }
 
         this.ce = true;
+        
+        ForgeHooks.onEntityLivingJump(this); // BTCS
     }
 
     protected boolean n() {

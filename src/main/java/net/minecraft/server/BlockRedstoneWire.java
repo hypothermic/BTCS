@@ -38,7 +38,10 @@ public class BlockRedstoneWire extends Block {
     }
 
     public boolean canPlace(World world, int i, int j, int k) {
-        return world.e(i, j - 1, k) || world.getTypeId(i, j - 1, k) == Block.GLOWSTONE.id;
+    	// BTCS start
+        //return world.e(i, j - 1, k) || world.getTypeId(i, j - 1, k) == Block.GLOWSTONE.id;
+    	return world.isBlockSolidOnSide(i, j - 1, k, 1) || world.getTypeId(i, j - 1, k) == Block.GLOWSTONE.id;
+        // BTCS end
     }
 
     private void g(World world, int i, int j, int k) {
@@ -354,6 +357,11 @@ public class BlockRedstoneWire extends Block {
         } else if (i1 == 0) {
             return false;
         } else if (i1 != Block.DIODE_OFF.id && i1 != Block.DIODE_ON.id) {
+        	// BTCS start
+        	if (Block.byId[i1] instanceof forge.IConnectRedstone) {
+        	    return ((forge.IConnectRedstone)Block.byId[i1]).canConnectRedstone(iblockaccess, i, j, k, l);
+        	}
+        	// BTCS end
             return Block.byId[i1].isPowerSource() && l != -1;
         } else {
             int j1 = iblockaccess.getData(i, j, k);

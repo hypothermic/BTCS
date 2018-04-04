@@ -32,9 +32,12 @@ public class BlockSnow extends Block {
     }
 
     public boolean canPlace(World world, int i, int j, int k) {
+    	// BTCS start
         int l = world.getTypeId(i, j - 1, k);
-
-        return l != 0 && (l == Block.LEAVES.id || Block.byId[l].a()) ? world.getMaterial(i, j - 1, k).isSolid() : false;
+        /*return l != 0 && (l == Block.LEAVES.id || Block.byId[l].a()) ? world.getMaterial(i, j - 1, k).isSolid() : false;*/
+    	Block block = Block.byId[l];
+    	return l != 0 && ((block != null && block.isLeaves(world, i, j - 1, k)) || Block.byId[l].a()) ? world.getMaterial(i, j - 1, k).isSolid() : false;
+        // BTCS end
     }
 
     public void doPhysics(World world, int i, int j, int k, int l) {
@@ -53,7 +56,8 @@ public class BlockSnow extends Block {
     }
 
     public void a(World world, EntityHuman entityhuman, int i, int j, int k, int l) {
-        int i1 = Item.SNOW_BALL.id;
+    	// BTCS start
+        /*int i1 = Item.SNOW_BALL.id;
         float f = 0.7F;
         double d0 = (double) (world.random.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
         double d1 = (double) (world.random.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
@@ -62,7 +66,9 @@ public class BlockSnow extends Block {
 
         entityitem.pickupDelay = 10;
         world.addEntity(entityitem);
-        world.setTypeId(i, j, k, 0);
+        world.setTypeId(i, j, k, 0);*/
+        b(world, i, j, k, l, 0);
+        // BTCS end
         entityhuman.a(StatisticList.C[this.id], 1);
     }
 
@@ -71,7 +77,10 @@ public class BlockSnow extends Block {
     }
 
     public int a(Random random) {
-        return 0;
+    	// BTCS start
+        //return 0;
+    	return 1;
+        // BTCS end
     }
 
     public void a(World world, int i, int j, int k, Random random) {

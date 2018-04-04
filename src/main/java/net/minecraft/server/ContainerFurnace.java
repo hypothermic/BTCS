@@ -97,7 +97,10 @@ public class ContainerFurnace extends Container {
 
                 slot.a(itemstack1, itemstack);
             } else if (i != 1 && i != 0) {
-                if (FurnaceRecipes.getInstance().getResult(itemstack1.getItem().id) != null) {
+            	// BTCS start
+            	// if if (FurnaceRecipes.getInstance().getResult(itemstack1.item.id) != null) {
+                if (FurnaceRecipes.getInstance().getSmeltingResult(itemstack1) != null) {
+                // BTCS end
                     if (!this.a(itemstack1, 0, 1, false)) {
                         return null;
                     }

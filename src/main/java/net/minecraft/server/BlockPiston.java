@@ -8,6 +8,8 @@ import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 // CraftBukkit end
 
+// BTCS: this class is the same as BlockPistonBase in forge patches.
+
 public class BlockPiston extends Block {
 
     private boolean a;
@@ -269,7 +271,10 @@ public class BlockPiston extends Block {
                 return false;
             }
 
-            return !(Block.byId[i] instanceof BlockContainer);
+            // BTCS start
+            //return !(Block.byId[i] instanceof BlockContainer);
+            return !(Block.byId[i] != null && Block.byId[i].hasTileEntity(world.getData(j, k, l)));
+            // BTCS end
         }
     }
 

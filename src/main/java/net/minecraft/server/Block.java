@@ -169,6 +169,13 @@ public class Block implements net.minecraft.src.Block, forge.ITextureProvider { 
     public final Material material;
     public float frictionFactor;
     private String name;
+    
+    // BTCS start
+    protected static int[] blockFireSpreadSpeed = new int[byId.length];
+    protected static int[] blockFlammability = new int[byId.length];
+    protected String currentTexture = "/terrain.png";
+    public boolean isDefaultTexture = true;
+    // BTCS end
 
     protected Block(int i, Material material) {
         this.bR = true;
@@ -355,9 +362,9 @@ public class Block implements net.minecraft.src.Block, forge.ITextureProvider { 
             }*/
             ArrayList<ItemStack> items = getBlockDropped(world, i, j, k, l, i1);
             for (ItemStack item : items) {
-              if (world.random.nextFloat() < f) {
-                a(world, i, j, k, item);
-              }
+                if (world.random.nextFloat() < f) {
+                    a(world, i, j, k, item);
+                }
             }
             // BTCS end
         }
@@ -673,64 +680,21 @@ public class Block implements net.minecraft.src.Block, forge.ITextureProvider { 
     public void addCreativeItems(ArrayList itemList) {}
     
     public void beginLeavesDecay(World world, int x, int y, int z) {}
-    
-    protected static int[] blockFireSpreadSpeed = new int[byId.length];
-    protected static int[] blockFlammability = new int[byId.length];
-    protected String currentTexture = "/terrain.png";
-    public boolean isDefaultTexture = true;
-    
-
-
-
-
-
-
-
 
     public int getLightValue(IBlockAccess world, int x, int y, int z)
     {
       return lightEmission[this.id];
     }
-    
-
-
-
-
-
-
-
-
 
     public boolean isLadder(World world, int x, int y, int z)
     {
       return false;
     }
-    
-
-
-
-
-
-
-
-
-
-
 
     public boolean isBlockNormalCube(World world, int x, int y, int z)
     {
       return (this.material.j()) && (b());
     }
-    
-
-
-
-
-
-
-
-
-
 
     public boolean isBlockSolidOnSide(World world, int x, int y, int z, int side)
     {
@@ -750,121 +714,41 @@ public class Block implements net.minecraft.src.Block, forge.ITextureProvider { 
       }
       return isBlockNormalCube(world, x, y, z);
     }
-    
-
-
-
-
-
-
-
-
-
 
     public boolean isBlockReplaceable(World world, int x, int y, int z)
     {
       return false;
     }
-    
-
-
-
-
-
-
-
-
-
 
     public boolean isBlockBurning(World world, int x, int y, int z)
     {
       return false;
     }
-    
-
-
-
-
-
-
-
-
-
-
-
 
     public boolean isAirBlock(World world, int x, int y, int z)
     {
       return false;
     }
-    
-
-
-
-
-
 
     public float getHardness(int meta)
     {
       return this.strength;
     }
-    
-
-
-
-
-
-
-
-
-
 
     public float blockStrength(World world, EntityHuman player, int x, int y, int z)
     {
       return blockStrength(player, world.getData(x, y, z));
     }
-    
-
-
-
-
-
-
 
     public float blockStrength(EntityHuman player, int meta)
     {
       return ForgeHooks.blockStrength(this, player, meta);
     }
-    
-
-
-
-
-
-
 
     public boolean canHarvestBlock(EntityHuman player, int meta)
     {
       return ForgeHooks.canHarvestBlock(this, player, meta);
     }
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public boolean removeBlockByPlayer(World world, EntityHuman player, int x, int y, int z)
     {
@@ -901,8 +785,17 @@ public class Block implements net.minecraft.src.Block, forge.ITextureProvider { 
 
     public static void setBurnProperties(int id, int encouragement, int flammability)
     {
-      blockFireSpreadSpeed[id] = encouragement;
-      blockFlammability[id] = flammability;
+    	// BTCS: debug NPE here
+    	//System.out.println("Len byId: " + byId.length);
+    	//System.out.println("Len bFSS: " + blockFireSpreadSpeed.length);
+      blockFireSpreadSpeed
+      [id]
+    		  = 
+    		  encouragement;
+      blockFlammability
+      [id]
+    		  = 
+    		  flammability;
     }
 
     public boolean hasTileEntity(int metadata)

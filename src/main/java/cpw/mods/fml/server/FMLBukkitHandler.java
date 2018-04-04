@@ -84,19 +84,15 @@ public class FMLBukkitHandler implements IFMLSidedHandler {
 
   public void onLoadComplete()
   {
-	System.out.println("DEBUGX10 - Load complete");
     Loader.instance().initializeMods();
-    System.out.println("DEBUGX10 - Load+init complete, removing frontal X's");
     for (Item i : Item.byId) {
         if ((i != null) && (Material.getMaterial(i.id).name().startsWith("X"))) {
             Material.setMaterialName(i.id, i.l());
         }
     }
-    System.out.println("--- Worlds: ");
     for (World x : DimensionManager.getWorlds()) {
     	System.out.println(x.getTime() + " in world " );
     }
-    System.out.println("--- Worlds done ");
   }
   
   public void onWorldLoadTick()

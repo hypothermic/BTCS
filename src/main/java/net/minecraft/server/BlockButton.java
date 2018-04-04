@@ -27,26 +27,38 @@ public class BlockButton extends Block {
         return false;
     }
 
-    public boolean canPlace(World world, int i, int j, int k, int l) {
+    // BTCS start
+    /*public boolean canPlace(World world, int i, int j, int k, int l) {
         return l == 2 && world.e(i, j, k + 1) ? true : (l == 3 && world.e(i, j, k - 1) ? true : (l == 4 && world.e(i + 1, j, k) ? true : l == 5 && world.e(i - 1, j, k)));
     }
 
     public boolean canPlace(World world, int i, int j, int k) {
         return world.e(i - 1, j, k) ? true : (world.e(i + 1, j, k) ? true : (world.e(i, j, k - 1) ? true : world.e(i, j, k + 1)));
+    }*/
+    
+    public boolean canPlace(World world, int i, int j, int k, int l) {
+        return ((l == 2) && (world.isBlockSolidOnSide(i, j, k + 1, 2))) || ((l == 3) && (world.isBlockSolidOnSide(i, j, k - 1, 3))) || ((l == 4) && (world.isBlockSolidOnSide(i + 1, j, k, 4))) || ((l == 5) && (world.isBlockSolidOnSide(i - 1, j, k, 5)));
+      }
+
+    public boolean canPlace(World world, int i, int j, int k) {
+        return (world.isBlockSolidOnSide(i - 1, j, k, 5)) || (world.isBlockSolidOnSide(i + 1, j, k, 4)) || (world.isBlockSolidOnSide(i, j, k - 1, 3)) || (world.isBlockSolidOnSide(i, j, k + 1, 2));
     }
+    // BTCS end
 
     public void postPlace(World world, int i, int j, int k, int l) {
         int i1 = world.getData(i, j, k);
         int j1 = i1 & 8;
 
         i1 &= 7;
-        if (l == 2 && world.e(i, j, k + 1)) {
+        // BTCS start
+        if ((l == 2) && (world.isBlockSolidOnSide(i, j, k + 1, 2))) {
             i1 = 4;
-        } else if (l == 3 && world.e(i, j, k - 1)) {
+        } else if ((l == 3) && (world.isBlockSolidOnSide(i, j, k - 1, 3))) {
             i1 = 3;
-        } else if (l == 4 && world.e(i + 1, j, k)) {
+        } else if ((l == 4) && (world.isBlockSolidOnSide(i + 1, j, k, 4))) {
             i1 = 2;
-        } else if (l == 5 && world.e(i - 1, j, k)) {
+        } else if ((l == 5) && (world.isBlockSolidOnSide(i - 1, j, k, 5))) {
+        // BTCS end
             i1 = 1;
         } else {
             i1 = this.g(world, i, j, k);
@@ -55,30 +67,41 @@ public class BlockButton extends Block {
         world.setData(i, j, k, i1 + j1);
     }
 
-    private int g(World world, int i, int j, int k) {
+    // BTCS start
+    /*private int g(World world, int i, int j, int k) {
         return world.e(i - 1, j, k) ? 1 : (world.e(i + 1, j, k) ? 2 : (world.e(i, j, k - 1) ? 3 : (world.e(i, j, k + 1) ? 4 : 1)));
+    }*/
+    private int g(World world, int i, int j, int k) {
+        if (world.isBlockSolidOnSide(i - 1, j, k, 5)) return 1;
+        if (world.isBlockSolidOnSide(i + 1, j, k, 4)) return 2;
+        if (world.isBlockSolidOnSide(i, j, k - 1, 3)) return 3;
+        if (world.isBlockSolidOnSide(i, j, k + 1, 2)) return 4;
+        return 1;
     }
+    // BTCS end
 
     public void doPhysics(World world, int i, int j, int k, int l) {
         if (this.h(world, i, j, k)) {
             int i1 = world.getData(i, j, k) & 7;
             boolean flag = false;
 
-            if (!world.e(i - 1, j, k) && i1 == 1) {
+            // BTCS start
+            if ((!world.isBlockSolidOnSide(i - 1, j, k, 5)) && (i1 == 1)) {
                 flag = true;
             }
-
-            if (!world.e(i + 1, j, k) && i1 == 2) {
+              
+            if ((!world.isBlockSolidOnSide(i + 1, j, k, 4)) && (i1 == 2)) {
                 flag = true;
             }
-
-            if (!world.e(i, j, k - 1) && i1 == 3) {
+              
+            if ((!world.isBlockSolidOnSide(i, j, k - 1, 3)) && (i1 == 3)) {
                 flag = true;
             }
-
-            if (!world.e(i, j, k + 1) && i1 == 4) {
+              
+            if ((!world.isBlockSolidOnSide(i, j, k + 1, 2)) && (i1 == 4)) {
                 flag = true;
             }
+            // BTCS end
 
             if (flag) {
                 this.b(world, i, j, k, world.getData(i, j, k), 0);

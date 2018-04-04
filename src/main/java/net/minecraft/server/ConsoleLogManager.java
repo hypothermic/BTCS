@@ -34,7 +34,11 @@ public class ConsoleLogManager {
 
         try {
             // CraftBukkit start
-            String pattern = (String) server.options.valueOf("log-pattern");
+            
+        	// BTCS start
+        	//String pattern = (String) server.options.valueOf("log-pattern");
+        	String pattern = nl.hypothermic.btcs.Launcher.MC_LOG_PATTERN;
+        	// BTCS end
 
             // We have to parse the pattern ourself so we can create directories as needed (java #6244047)
             String tmpDir = System.getProperty("java.io.tmpdir");

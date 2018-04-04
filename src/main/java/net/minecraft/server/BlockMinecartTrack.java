@@ -2,6 +2,8 @@ package net.minecraft.server;
 
 import java.util.Random;
 
+// BTCS: this class is called BlockRail in forge patches.
+
 public class BlockMinecartTrack extends Block {
 
     private final boolean a;
@@ -33,7 +35,7 @@ public class BlockMinecartTrack extends Block {
     {
       int meta = world.getData(x, y, z);
       if (this.a) {
-        meta &= 0x7;
+        meta &= 7;
       }
       return meta;
     }

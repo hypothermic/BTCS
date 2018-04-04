@@ -840,7 +840,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
         this.C.add(iupdateplayerlistbox);
     }
 
-    public static void main(final OptionSet options) { // CraftBukkit - replaces main(String args[])
+    public static MinecraftServer main(final OptionSet options) { // CraftBukkit - replaces main(String args[]) // BTCS: void --> MinecraftServer
         StatisticList.a();
 
         try {
@@ -849,8 +849,10 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
             // CraftBukkit - remove gui
 
             minecraftserver.primaryThread.start(); // CraftBukkit - let MinecraftServer construct the thread
+            return minecraftserver; // BTCS
         } catch (Exception exception) {
             log.log(Level.SEVERE, "Failed to start the minecraft server", exception);
+            return null; // BTCS
         }
     }
 

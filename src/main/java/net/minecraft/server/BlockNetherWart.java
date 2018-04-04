@@ -2,6 +2,8 @@ package net.minecraft.server;
 
 import java.util.Random;
 
+// BTCS: this class is the same as BlockNetherStalk in forge patches.
+
 public class BlockNetherWart extends BlockFlower {
 
     protected BlockNetherWart(int i) {
@@ -42,7 +44,8 @@ public class BlockNetherWart extends BlockFlower {
         return 6;
     }
 
-    public void dropNaturally(World world, int i, int j, int k, int l, float f, int i1) {
+    // BTCS start
+    /*public void dropNaturally(World world, int i, int j, int k, int l, float f, int i1) {
         if (!world.isStatic) {
             int j1 = 1;
 
@@ -57,7 +60,20 @@ public class BlockNetherWart extends BlockFlower {
                 this.a(world, i, j, k, new ItemStack(Item.NETHER_STALK));
             }
         }
+    }*/
+    public java.util.ArrayList<ItemStack> getBlockDropped(World world, int i, int j, int k, int metadata, int fortune) {
+        java.util.ArrayList<ItemStack> ret = new java.util.ArrayList();
+        int n = 1;
+        if (metadata >= 3) {
+          n = 2 + world.random.nextInt(3) + (fortune > 0 ? world.random.nextInt(fortune + 1) : 0);
+        }
+        
+        for (int m = 0; m < n; m++) {
+          ret.add(new ItemStack(Item.NETHER_STALK));
+        }
+        return ret;
     }
+    // BTCS end
 
     public int getDropType(int i, Random random, int j) {
         return 0;

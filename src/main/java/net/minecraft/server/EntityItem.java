@@ -2,6 +2,9 @@ package net.minecraft.server;
 
 import org.bukkit.event.player.PlayerPickupItemEvent; // CraftBukkit
 
+import cpw.mods.fml.server.FMLBukkitHandler;
+import forge.ForgeHooks;
+
 public class EntityItem extends Entity {
 
     public ItemStack itemStack;
@@ -138,6 +141,20 @@ public class EntityItem extends Entity {
         if ((!this.world.isStatic) && (this.itemStack != null)) { // CraftBukkit - nullcheck
             int i = this.itemStack.count;
 
+            // BTCS start
+            if (pickupDelay == 0 && !ForgeHooks.onItemPickup(entityhuman, this)) {
+            	FMLBukkitHandler.instance().notifyItemPickup(this,entityhuman); // BTCS: FMLServerHandler --> FMLBukkitHandler
+            	this.world.makeSound(this, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+            	entityhuman.b(this, i); // BTCS: not sure if b(...) is the right method.
+            	if (itemStack.count <= 0) {
+            	    this.die();
+            	}
+            	return;
+            }
+                
+            i = itemStack.count;
+            // BTCS end
+            
             // CraftBukkit start
             int canHold = entityhuman.inventory.canHold(this.itemStack);
             int remaining = this.itemStack.count - canHold;

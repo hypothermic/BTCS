@@ -45,19 +45,16 @@ public class BukkitRegistry implements IMinecraftRegistry
     @Override 
     public void registerBlock(net.minecraft.src.Block block, Class <? extends net.minecraft.src.ItemBlock > itemclass) 
     { 
-    	System.out.println("BTCS DEBUGX40: register block to Bukkit: " + itemclass.getName());
         try 
         { 
             assert block != null : "registerBlock: block cannot be null"; 
             assert itemclass != null : "registerBlock: itemclass cannot be null"; 
             int blockItemId = ((Block)block).id - 256; 
             itemclass.getConstructor(int.class).newInstance(blockItemId); 
-            System.out.println("BTCS DEBUGX41: Success register block" + itemclass.getName());
         } 
         catch (Exception e) 
         { 
-        	System.out.println("BTCS DEBUGX42: Fail register block" + itemclass.getName());
-            //HMMM 
+        	nl.hypothermic.btcs.XLogger.gencrit("BukkitRegistry: Fail register block " + itemclass.getName());
         } 
     } 
  

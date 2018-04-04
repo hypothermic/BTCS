@@ -66,16 +66,21 @@ public class PacketHandlerServer extends forge.packets.PacketHandlerBase
       net.disconnect("Must have Forge build #136+ (4096 fix) to connect to this server");
       return;
     }
-    if (pkt.Mods.length == 0)
+    // BTCS start
+    /*if (pkt.Mods.length == 0)
     {
-      ModLoader.getLogger().log(Level.INFO, net.getName() + " joined with no mods");
+    	ModLoader.getLogger().log(Level.INFO, net.getName() + " joined with no mods");
     }
     else
     {
-      ModLoader.getLogger().log(Level.INFO, net.getName() + " joined with: " + java.util.Arrays.toString(pkt.Mods).replaceAll("mod_", ""));
+    	ModLoader.getLogger().log(Level.INFO, net.getName() + " joined with: " + java.util.Arrays.toString(pkt.Mods).replaceAll("mod_", ""));
+    }*/
+    if (pkt.Mods.length != 0 && nl.hypothermic.btcs.Launcher.FORGE_ANNOUNCE_LOGIN) {
+    	ModLoader.getLogger().log(Level.INFO, net.getName() + " joined with: " + java.util.Arrays.toString(pkt.Mods).replaceAll("mod_", ""));
+    } else {
+    	ModLoader.getLogger().log(Level.INFO, net.getName() + " joined");
     }
-    
-
+    // BTCS end
 
     NetworkMod[] serverMods = MinecraftForge.getNetworkMods();
     ArrayList<NetworkMod> missing = new ArrayList();

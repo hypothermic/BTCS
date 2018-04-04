@@ -116,4 +116,19 @@ public class BlockCrops extends BlockFlower {
     public int a(Random random) {
         return 1;
     }
+    
+    public java.util.ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int metadata, int fortune)
+    {
+      java.util.ArrayList<ItemStack> ret = new java.util.ArrayList();
+      if (metadata == 7) {
+        ret.add(new ItemStack(Item.WHEAT));
+      }
+      
+      for (int n = 0; n < 3 + fortune; n++) {
+        if (world.random.nextInt(15) < metadata) {
+          ret.add(new ItemStack(Item.SEEDS));
+        }
+      }
+      return ret;
+    }
 }

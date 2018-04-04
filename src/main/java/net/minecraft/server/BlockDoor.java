@@ -103,7 +103,7 @@ public class BlockDoor extends Block {
 
     public boolean interact(World world, int i, int j, int k, EntityHuman entityhuman) {
         if (this.material == Material.ORE) {
-            return true;
+            return false; // BTCS: true --> false
         } else {
             int l = this.e((IBlockAccess) world, i, j, k);
             int i1 = l & 7;
@@ -159,8 +159,11 @@ public class BlockDoor extends Block {
                 world.setTypeId(i, j, k, 0);
                 flag = true;
             }
-
-            if (!world.e(i, j - 1, k)) {
+            
+            // BTCS start
+            //if (!world.e(i, j - 1, k)) {
+            if (!world.isBlockSolidOnSide(i, j - 1, k, 1)) {
+            // BTCS end
                 world.setTypeId(i, j, k, 0);
                 flag = true;
                 if (world.getTypeId(i, j + 1, k) == this.id) {
@@ -204,7 +207,10 @@ public class BlockDoor extends Block {
     }
 
     public boolean canPlace(World world, int i, int j, int k) {
-        return j >= 255 ? false : world.e(i, j - 1, k) && super.canPlace(world, i, j, k) && super.canPlace(world, i, j + 1, k);
+        // BTCS start
+    	//return j >= 255 ? false : world.e(i, j - 1, k) && super.canPlace(world, i, j, k) && super.canPlace(world, i, j + 1, k);
+    	return j >= 255 ? false : world.isBlockSolidOnSide(i, j - 1, k, 1) && super.canPlace(world, i, j, k) && super.canPlace(world, i, j + 1, k);
+    	// BTCS end
     }
 
     public int g() {
