@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public class ConfigurationManager {
 	
-	private static Boolean FIRSTRUN = true;
+	private Boolean FIRSTRUN = true;
 	private static String PROPS_HEADER = " BTCS Configuration File." + Launcher.LS + " https://github.com/hypothermic/BTCS";
 	private static String CFG_NAME = "btcs.cfg";
 	private static HashMap<String, String> DEFOPTIONS;
@@ -76,5 +76,15 @@ public class ConfigurationManager {
 		} catch (Exception x) {
 			x.printStackTrace();
 		}
+	}
+	
+	protected String getEnvVariable(String name) {
+		Properties envresources = new Properties();
+		try {
+			envresources.load(this.getClass().getResourceAsStream("btcs.info"));
+		} catch (IOException e) {
+			throw new RuntimeException("BTCS info file not found.");
+		}
+		return envresources.getProperty(name);
 	}
 }

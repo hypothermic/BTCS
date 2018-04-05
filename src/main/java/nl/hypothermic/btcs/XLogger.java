@@ -2,29 +2,26 @@ package nl.hypothermic.btcs;
 
 import java.io.IOException;
 
-public class XLogger {
+/** Class to centralize BTCS's logging, so it's easy to disable it. */
 
-	/** Simple method to log exception with code to console, to centralize BTCS's logging.
-	 * We need to centralize everything so we can switch it off if needed.
-	 * Still need to implement this in the java src.
-	 */
-	public static void x(int xnum, String place) {
-		System.err.println("BTCS: Exception " + xnum + " happened in " + place);
-	}
-	
+public final class XLogger {
+
+	/** Log to System.out */
 	public static void generic(String message) {
 		System.out.println("BTCS: " + message);
 	}
 	
+	/** Log to System.err */
 	public static void generr(String message) {
 		System.err.println("BTCS: " + message);
 	}
 	
+	/** Log critical to System.err */
 	public static void gencrit(String message) {
 		System.err.println("[CRITICAL] BTCS: " + message);
-		Launcher.forcestop();
 	}
 	
+	/** Debug message */
 	public static void debug(String message) {
 		if (Launcher.ENABLE_DEBUG == true) System.out.println(message);
 	}
@@ -54,7 +51,7 @@ public class XLogger {
 		return object;
 	}
 	
-	public static String getCallerClassName() { 
+	/*public static String getCallerClassName() { 
         StackTraceElement[] stElements = Thread.currentThread().getStackTrace();
         for (int i=1; i<stElements.length; i++) {
             StackTraceElement ste = stElements[i];
@@ -63,5 +60,5 @@ public class XLogger {
             }
         }
         return null;
-     }
+     }*/
 }

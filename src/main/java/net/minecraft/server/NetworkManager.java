@@ -15,29 +15,50 @@ import forge.MessageManager;
 
 public class NetworkManager {
 
+	/** threadSyncObject - Synchronization object used for read and write threads. */
     public static final Object a = new Object();
+    /** numReadThreads - The number of read threads spawned. Not really used on client side. */
     public static int b;
+    /** numWriteThreads - The number of write threads spawned. Not really used on client side. */
     public static int c;
+    /** The object used for synchronization on the send queue. */
     private Object g = new Object();
+    /** The socket used by this network manager. */
     public Socket socket; // CraftBukkit - private -> public
+    /** The address of the socket used by this network manager. */
     private final SocketAddress i;
+    /** The input stream connected to the socket. */
     private DataInputStream input;
+    /** The output stream connected to the socket. */
     private DataOutputStream output;
+    /** isRunning - Whether the network is currently operational. */
     private boolean l = true;
+    /** readPackets - Linked list of packets that have been read and are awaiting processing. */
     private java.util.Queue m = new java.util.concurrent.ConcurrentLinkedQueue(); // CraftBukkit - Concurrent linked queue
+    /** dataPackets - Linked list of packets awaiting sending. */
     private List highPriorityQueue = Collections.synchronizedList(new ArrayList());
+    /** chunkDataPackets - Linked list of packets with chunk data that are awaiting sending. */
     private List lowPriorityQueue = Collections.synchronizedList(new ArrayList());
+    /** A reference to the NetHandler object. */
     private NetHandler packetListener;
+    /** Whether this server is currently terminating. If this is a client, this is always false. */
     private boolean q = false;
+    /** writeThread - The thread used for writing. */
     private Thread r;
+    /** readThread - The thread used for reading. */
     private Thread s;
+    /** isTerminating - Whether this network manager is currently terminating (and should ignore further errors).*/
     private boolean t = false;
+    /** terminationReason - A String indicating why the network has shutdown. */
     private String u = "";
     private Object[] v;
+    /** timeSinceLastRead - Counter used to detect read timeouts after 1200 failed attempts to read a packet. */
     private int w = 0;
+    /** sendQueueByteLength - The length in bytes of the packets in both send queues (data and chunkData). */
     private int x = 0;
     public static int[] d = new int[256];
     public static int[] e = new int[256];
+    /** chunkDataSendCounter - Counter used to prevent us from sending too many chunk data packets one after another. The delay appears to be set to 50.*/
     public int f = 0;
     private int lowPriorityQueueDelay = 50;
 
@@ -72,10 +93,12 @@ public class NetworkManager {
         this.r.start();
     }
 
+    /** setNetHandler(...) - Sets the NetHandler for this NetworkManager. Server-only. */
     public void a(NetHandler nethandler) {
         this.packetListener = nethandler;
     }
 
+    /** addToSendQueue(...) - Adds the packet to the correct send queue (chunk data packets go to a separate queue). */
     public void queue(Packet packet) {
         if (!this.q) {
             Object object = this.g;
@@ -91,6 +114,8 @@ public class NetworkManager {
         }
     }
 
+    /** sendPacket() - Sends a data packet if there is one to send, or sends a chunk data packet if there is one and the counter is up,
+     * or does nothing. If it sends a packet, it sleeps for 10ms. */
     private boolean g() {
         boolean flag = false;
 
@@ -140,11 +165,15 @@ public class NetworkManager {
         }
     }
 
+    /** wakeThreads() - Wakes reader and writer threads */
     public void a() {
         this.s.interrupt();
         this.r.interrupt();
     }
 
+    /** readPacket() - Reads a single packet from the input stream and adds it to the read queue.
+     *  If no packet is read, it shuts down the network. */
+    // BTCS: needs optimization. Please send pull requests with optimizations.
     private boolean h() {
         boolean flag = false;
 
@@ -192,11 +221,14 @@ public class NetworkManager {
         }
     }
 
+    /** onNetworkError(...) - Used to report network errors and causes a network shutdown */
     private void a(Exception exception) {
         // exception.printStackTrace(); // CraftBukkit - Remove console spam
-        this.a("disconnect.genericReason", new Object[] { "Internal exception: " + exception.toString()});
+        this.a("disconnect.genericReason", new Object[] { "Internal exception: " + exception.toString() + " - Please notify administrator"});
     }
 
+    /** networkShutdown(...) - Shuts down the network with the specified reason. 
+     * Closes all streams and sockets, spawns NetworkMasterThread to stop reading and writing threads.*/
     public void a(String s, Object... aobject) {
         if (this.l) {
             this.t = true;
@@ -233,6 +265,7 @@ public class NetworkManager {
         }
     }
 
+    /** processReadPackets() - Checks timeouts and processes all pending read packets */
     public void b() {
         if (this.x > 1048576) {
             this.a("disconnect.overflow", new Object[0]);
@@ -260,10 +293,12 @@ public class NetworkManager {
         }
     }
 
+    /** getRemoteAddress() - Returns the socket address of the remote side. Server-only.*/
     public SocketAddress getSocketAddress() {
         return this.i;
     }
 
+    /** serverShutdown() - Server-only method to shut down the network. */
     public void d() {
         if (!this.q) {
             this.a();
@@ -273,6 +308,7 @@ public class NetworkManager {
         }
     }
 
+    /** getNumChunkDataPackets() - Returns the number of chunk data packets waiting to be sent.*/
     public int e() {
         return this.lowPriorityQueue.size();
     }
@@ -281,18 +317,22 @@ public class NetworkManager {
         return this.socket;
     }
 
+    /** isRunning(...) - Whether the network is operational.*/
     static boolean a(NetworkManager networkmanager) {
         return networkmanager.l;
     }
 
+    /** isServerTerminating(...) - Is the server terminating? Client side aways returns false. */
     static boolean b(NetworkManager networkmanager) {
         return networkmanager.q;
     }
 
+    /** readNetworkPacket(...) - Static accessor to readPacket. */
     static boolean c(NetworkManager networkmanager) {
         return networkmanager.h();
     }
 
+    /** sendNetworkPacket(...) - Static accessor to sendPacket. */
     static boolean d(NetworkManager networkmanager) {
         return networkmanager.g();
     }
@@ -301,18 +341,22 @@ public class NetworkManager {
         return networkmanager.output;
     }
 
+    /** isTerminating(...) - Gets whether the Network manager is terminating. */
     static boolean f(NetworkManager networkmanager) {
         return networkmanager.t;
     }
 
+    /** sendError(...) - Sends the network manager an error. */
     static void a(NetworkManager networkmanager, Exception exception) {
         networkmanager.a(exception);
     }
 
+    /** getReadThread(...) - Returns the read thread. */
     static Thread g(NetworkManager networkmanager) {
         return networkmanager.s;
     }
 
+    /** getWriteThread(...) - Returns the write thread.*/
     static Thread h(NetworkManager networkmanager) {
         return networkmanager.r;
     }

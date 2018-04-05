@@ -16,14 +16,14 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import net.minecraft.server.MinecraftServer;
 
-public class Launcher {
+public final class Launcher {
 	
 	public static boolean useJline = true;
     public static boolean useConsole = true;
     public static String LS;
 	private static double VERSION;
 	private static String VTAG;
-	private static String PROPS_HEADER = " BTCS+ Configuration File." + LS + " https://github.com/hypothermic/BTCS";
+	private static final String PROPS_HEADER = " BTCS+ Configuration File." + LS + " https://github.com/hypothermic/BTCS";
 	private static final String CFG_NAME = "btcs.cfg";
 	public static final File MC_CFG_FILE = new File("mc.cfg"); /**{@link net.minecraft.server.PropertyManager#PropertyManager(OptionSet)}*/ // TODO: add to config
 	public static final String MC_LOG_PATTERN = "mc.log"; /**{@link net.minecraft.server.ConsoleLogManager#init(MinecraftServer)} ln 40.*/ // TODO: add to config
@@ -43,18 +43,18 @@ public class Launcher {
 	public static boolean FORGE_ANNOUNCE_LOGIN = false; /**{@link forge.PacketHandlerServer#onModListResponse} ln 69.*/
 	public static boolean ENABLE_DEBUG = false;
 																		 
-	private static ConfigurationManager c = new ConfigurationManager(DEFOPTIONS);
-	private static ResourceManager r = new ResourceManager();
+	private static final ConfigurationManager c = new ConfigurationManager(DEFOPTIONS);
+	private static final ResourceManager r = new ResourceManager();
 
-	private static ConcurrencyManager cc = new ConcurrencyManager();
+	private static final ConcurrencyManager cc = new ConcurrencyManager();
 																		 
-	public static void main(final String[] args) {
+	public static final void main(final String[] args) {
 		LS = System.getProperty("line.separator");
 		// TODO: include these in config file. Hardcoded for now since it's not high priority.
-		VERSION = 1.08;
+		VERSION = 1.09;
 		VTAG = "BETA";
 		
-		System.out.println(LS + "  << BTCS++ " + VERSION + "-" + VTAG + " >>" + LS
+		System.out.println(LS + "  << BTCS++ v" + VERSION + "-" + VTAG + " >>" + LS
 							  + "  << Java " + getVersion() + " on " + System.getProperty("os.name") + " >>" + LS + LS
 							  + " <<  Load Configuration >>");
 		final HashMap config = initConfig();
@@ -105,8 +105,7 @@ public class Launcher {
 			    	
 			    	// TODO: move all options.has() checks to a seperate class
 			    	if (options.has("config")) {
-			    		XLogger.generr("No configuration file specified. Exiting.");
-			    		forcestop();
+			    		throw new RuntimeException("No configuration file specified. Exiting.");
 			    	}
 			        if (options.has("noconsole")) {
 			            useConsole = false;
@@ -140,11 +139,11 @@ public class Launcher {
 		}.start();
 	}
 	
-	private static java.util.List<String> asList(String... params) {
+	private static final java.util.List<String> asList(String... params) {
 		return java.util.Arrays.asList(params);
 	}
 	
-	private static void initRsc(boolean fp) {
+	private static final void initRsc(boolean fp) {
 		File destination = new File("resources.dat");
 		// bool if use forgeplugin or not
 		if (fp) {
@@ -164,29 +163,24 @@ public class Launcher {
 		destination.delete();
 	}
 	
-	private static HashMap<String, Object> initConfig(){
+	private static final HashMap<String, Object> initConfig(){
     	return c.execute();
     }
 	
 	// getVersion() method is grabbed from StackOverflow: 
 	// https://stackoverflow.com/questions/2591083/getting-java-version-at-runtime
-	static double getVersion() {
+	static final double getVersion() {
 	    String version = System.getProperty("java.version");
 	    int pos = version.indexOf('.');
 	    pos = version.indexOf('.', pos+1);
 	    return Double.parseDouble (version.substring (0, pos));
 	}
 	
-	public static void forcestop() { // public for now ??
-		XLogger.generr("Force stop got initiated.");
-		System.exit(1);
-	}
-	
-	public static double getBTCSVersion() {
+	public static final double getBTCSVersion() {
 		return VERSION;
 	}
 	
-	public static String getBTCSVersionTag() {
+	public static final String getBTCSVersionTag() {
 		return VTAG;
 	}
 }

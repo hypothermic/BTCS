@@ -26,6 +26,8 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import com.avaje.ebean.config.ServerConfig;
 
+import nl.hypothermic.btcs.Launcher;
+
 /**
  * Represents the Bukkit core, for version and Server singleton handling
  */
@@ -63,15 +65,18 @@ public final class Bukkit {
     }
 
     public static String getName() {
-        return server.getName();
+    	return "BTCS++";
+        //return server.getName();
     }
 
     public static String getVersion() {
-        return server.getVersion();
+        //return server.getVersion();
+    	return nl.hypothermic.btcs.Launcher.class.getPackage().getImplementationVersion();
     }
 
     public static String getBukkitVersion() {
-        return server.getBukkitVersion();
+    	return nl.hypothermic.btcs.Launcher.getBTCSVersion() + "";
+        //return server.getBukkitVersion();
     }
 
     public static Player[] getOnlinePlayers() {

@@ -154,7 +154,13 @@ public final class CraftServer implements Server {
     public CraftServer(MinecraftServer console, ServerConfigurationManager server) {
         this.console = console;
         this.server = server;
-        this.serverVersion = CraftServer.class.getPackage().getImplementationVersion();
+        // BTCS start
+        if (System.getProperty("btcs.gitsha") != null) {
+        	serverVersion = System.getProperty("btcs.gitsha");
+        } else {
+        	serverVersion = "<unknown>";
+        }
+        // BTCS end
 
         Bukkit.setServer(this);
 

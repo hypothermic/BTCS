@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-public class UpdateManager {
+public final class UpdateManager {
 	
 	/**
 	 * BTCS's update manager.
@@ -21,7 +21,7 @@ public class UpdateManager {
 	 * anyone can edit it if the hypothermic servers go down.
 	 */
 	
-	public boolean check() {
+	public final boolean check() {
 		BufferedReader in = null;
 		try {
 			URL url = new URL("https://hypothermic.nl/btcs/latest.htm");

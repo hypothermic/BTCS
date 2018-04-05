@@ -17,15 +17,34 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
-public abstract class CraftEntity implements org.bukkit.entity.Entity {
+public class CraftEntity implements org.bukkit.entity.Entity { // BTCS: abstract --> normal
     protected final CraftServer server;
     protected Entity entity;
     private EntityDamageEvent lastDamageEvent;
+    
+    public final boolean isModEntity; // BTCS: utility to detect if the craftentity has been added by a mod
 
     public CraftEntity(final CraftServer server, final Entity entity) {
         this.server = server;
         this.entity = entity;
+        isModEntity = false; // BTCS
     }
+    
+    // BTCS start
+    public CraftEntity(final CraftServer server, final Entity entity, final boolean isModdedEntity) {
+        this.server = server;
+        this.entity = entity;
+        this.isModEntity = isModdedEntity;
+    }
+
+    /*public org.bukkit.entity.EntityType getType() {
+      return org.bukkit.entity.EntityType.UNKNOWN;
+    }*/
+    
+    public org.bukkit.entity.EntityType getType() {
+        return org.bukkit.entity.EntityType.UNKNOWN;
+    }
+    // BTCS end
 
     public static CraftEntity getEntity(CraftServer server, Entity entity) {
         /**
@@ -136,7 +155,10 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
         else if (entity instanceof EntityPainting) { return new CraftPainting(server, (EntityPainting) entity); }
         else if (entity instanceof EntityTNTPrimed) { return new CraftTNTPrimed(server, (EntityTNTPrimed) entity); }
 
-        throw new IllegalArgumentException("Unknown entity");
+        // BTCS start
+        //throw new IllegalArgumentException("Unknown entity");
+        return new CraftEntity(server, entity, true);
+        // BTCS end
     }
 
     public Location getLocation() {

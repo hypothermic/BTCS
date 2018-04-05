@@ -15,18 +15,24 @@ __Current status:__ BTCS++ is currently in beta. Please report any issues. If yo
         * After: `// BTCS end`
 
 ### TODO:
-- Solve issue `"class net.minecraft.server.NetServerHandler wasn't prepared to deal with a class net.minecraft.server.Packet132TileEntityData"` when opening Sensor Controller.
-- Solve WM bullet entities not registered error
-- BlockVine forge patch (failed last time)
-- ConsoleCommandHandler forge patch
-- Remove Mojang Statistics
-- Remove Bukkit's Updater
+Sorted by priority: high to low
+- Solve the bug with custom explosives where no primed entity shows up
 - Limit NBT depth
 - Implement NBTReadLimiter into NBTTagList
+- Remove Bukkit's Updater
 - Better error reporting
 - Split every world on it's own thread
+- BlockVine forge patch (failed last time)
+- ConsoleCommandHandler forge patch
 
 ### Changelog
+- v1.09
+    - Fixed issue where NetServerHandler wasn't prepared to deal with Packet132 coming from specific mods.
+    - Fixed issue "Unknown entity" when creating new CraftBukkit entity and player would get kicked. (with for example WeaponMod and custom explosives)
+    - Improved `/give` command to support optional data within the first argument.
+    - Added javadoc for NetworkManager and NetServerHandler.
+    - Implemented Maven git-commit-id-plugin for future use.
+    - Removed some deprecated functions from XLogger.
 - v1.08
     - All FML and forge patches are now implemented.
     - Disabled ForgePlugin by default, it is highly unstable and causes many issues. Not recommended to use.

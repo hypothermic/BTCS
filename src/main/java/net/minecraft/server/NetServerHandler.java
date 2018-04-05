@@ -43,25 +43,36 @@ import cpw.mods.fml.server.FMLBukkitHandler;
 import forge.ForgeHooks;
 import forge.MessageManager;
 
-public class NetServerHandler extends NetHandler implements ICommandListener {
+public final class NetServerHandler extends NetHandler implements ICommandListener {
 
+	/** logger - The logging system. */
     public static Logger logger = Logger.getLogger("Minecraft");
+    /** netManager - The underlying network manager for this server handler. */
     public NetworkManager networkManager;
+    /** connectionClosed - This is set to true whenever a player disconnects from the server */
     public boolean disconnected = false;
+    /** mcServer - Reference to the MinecraftServer object. */
     public MinecraftServer minecraftServer;
+    /** playerEntity Reference to the EntityPlayerMP object. */
     public EntityPlayer player; // CraftBukkit - private -> public
     private int f;
+    /** playerInAirTime - Holds the amount of tick the player is floating */
     private int g;
     private boolean h;
     private int i;
     private long j;
+    /** rndmObj - The Java Random object. */
     private static Random k = new Random();
     private long l;
     private int m = 0;
     private int x = 0;
+    /** last known x position for this connection */
     private double y;
+    /** last known y position for this connection */
     private double z;
+    /** last known z position for this connection */
     private double q;
+    /** hasMoved - is true when the player has moved since his last movement packet */
     private boolean checkMovement = true;
     private IntHashMap s = new IntHashMap();
 
@@ -102,6 +113,7 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
     private final static HashSet<Integer> invalidItems = new HashSet<Integer>(java.util.Arrays.asList(8, 9, 10, 11, 26, 34, 36, 51, 52, 55, 59, 60, 63, 64, 68, 71, 75, 78, 83, 90, 92, 93, 94, 95));
     // CraftBukkit end
 
+    /** handlePackets() - handle all the packets for the connection */
     public void a() {
         this.h = false;
         ++this.f;
@@ -122,6 +134,7 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
         }
     }
 
+    /** kickPlayer(...) - Kick the offending player and give a reason why */
     public void disconnect(String s) {
         if (!this.disconnected) {
             // CraftBukkit start
@@ -155,6 +168,7 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
         }
     }
 
+    /** handleFlying(...) */
     public void a(Packet10Flying packet10flying) {
         WorldServer worldserver = this.minecraftServer.getWorldServer(this.player.dimension);
 
@@ -411,6 +425,7 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
         }
     }
 
+    /** teleportTo(...) - Teleports the player to the specified destination and rotation */
     public void a(double d0, double d1, double d2, float f, float f1) {
         // CraftBukkit start - Delegate to teleport(Location)
         Player player = this.getPlayer();
@@ -710,6 +725,7 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
         this.disconnect("Protocol error, unexpected packet");
     }
 
+    /** Adds the packet to the underlying network manager's send queue. */
     public void sendPacket(Packet packet) {
         // CraftBukkit start
     	if (packet instanceof Packet250CustomPayload && ((Packet250CustomPayload) packet).tag.contains("Forge")) {
@@ -914,6 +930,7 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
         }
     }
 
+    /** runs registerPacket on the given Packet19EntityAction */
     public void a(Packet19EntityAction packet19entityaction) {
         // CraftBukkit start
         if (this.player.dead) return;
@@ -952,6 +969,7 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
         }
     }
 
+    /** handleKickDisconnect(...) */
     public void a(Packet255KickDisconnect packet255kickdisconnect) {
         // CraftBukkit start
         getPlayer().disconnect("disconnect.quitting");
@@ -959,14 +977,17 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
         this.networkManager.a("disconnect.quitting", new Object[0]);
     }
 
+    /** getNumChunkDataPackets() - return the number of chuckDataPackets from the netManager */
     public int lowPriorityCount() {
         return this.networkManager.e();
     }
 
+    /** Logs the message with a level of INFO. */
     public void sendMessage(String s) {
         this.sendPacket(new Packet3Chat("\u00A77" + s));
     }
 
+    /** Gets the players username. */
     public String getName() {
         return this.player.name;
     }
@@ -1020,6 +1041,7 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
         }
     }
 
+    /** respawns the player */
     public void a(Packet9Respawn packet9respawn) {
     	int dim = (this.minecraftServer.getWorldManager(this.player.dimension).worldProvider.c() ? this.player.dimension : 0); // BTCS
         if (this.player.viewingCredits) {
@@ -1383,6 +1405,26 @@ public class NetServerHandler extends NetHandler implements ICommandListener {
             }
         }
     }
+    
+    // BTCS start: fix for onUnhandledPacket Packet132 (ln 709)
+    public void a(Packet132TileEntityData pkt) {
+        /*World world = this.getPlayerEntity().world;
+        // BTCS: not sure about the pkt.* , see class Packet132TileEntityData for comments.
+        if (world.blockExists(pkt.a, pkt.b, pkt.c)) {
+            TileEntity te = world.getTileEntity(pkt.a, pkt.b, pkt.c);
+            if (te != null) {
+                te.onDataPacket(networkManager, pkt);
+            } else {
+                ModLoader.getLogger().log(Level.WARNING, String.format(
+                        "Received a TileEntityData packet for a location that did not have a TileEntity: (%d, %d, %d) %d: %d, %d, %d", 
+                        pkt.a, pkt.b, pkt.c,
+                        pkt.d, 
+                        pkt.e, pkt.f, pkt.g));
+            }
+        }*/
+    	this.handleTileEntityData(pkt);
+    }
+    // BTCS end
     
     public void a(Packet250CustomPayload pkt) {
         FMLBukkitHandler.instance().handlePacket250(pkt, player); // FMLServerHandler --> FMLBukkitHandler

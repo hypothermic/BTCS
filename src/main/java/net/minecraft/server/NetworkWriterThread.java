@@ -4,6 +4,7 @@ import java.io.IOException;
 
 class NetworkWriterThread extends Thread {
 
+	/** netManager - Reference to the NetworkManager object. */
     final NetworkManager a;
 
     NetworkWriterThread(NetworkManager networkmanager, String s) {

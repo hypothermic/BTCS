@@ -46,7 +46,8 @@ public class BukkitRegistry implements IMinecraftRegistry
     public void registerBlock(net.minecraft.src.Block block, Class <? extends net.minecraft.src.ItemBlock > itemclass) 
     { 
         try 
-        { 
+        {
+        	// Assert should never be used in production code, WTF forge devs??
             assert block != null : "registerBlock: block cannot be null"; 
             assert itemclass != null : "registerBlock: itemclass cannot be null"; 
             int blockItemId = ((Block)block).id - 256; 
@@ -82,7 +83,7 @@ public class BukkitRegistry implements IMinecraftRegistry
     @Override 
     public void addBiome(BiomeGenBase biome) 
     { 
-     FMLBukkitHandler.instance().addBiomeToDefaultWorldGenerator((BiomeBase) biome); 
+    	FMLBukkitHandler.instance().addBiomeToDefaultWorldGenerator((BiomeBase) biome); 
     } 
  
     @Override 
@@ -125,7 +126,7 @@ public class BukkitRegistry implements IMinecraftRegistry
     @Override 
     public void removeBiome(BiomeGenBase biome) 
     { 
-     FMLBukkitHandler.instance().removeBiomeFromDefaultWorldGenerator((BiomeBase)biome); 
+    	FMLBukkitHandler.instance().removeBiomeFromDefaultWorldGenerator((BiomeBase)biome); 
     } 
  
     @Override 
@@ -142,9 +143,9 @@ public class BukkitRegistry implements IMinecraftRegistry
             { 
              BiomeMeta entry = entries.next(); 
                 if (entry.a == entityClass) 
-                { 
+                {
                     entries.remove(); 
-                } 
+                }
             } 
         } 
     } 
@@ -156,9 +157,8 @@ public class BukkitRegistry implements IMinecraftRegistry
         Class <? extends Entity > entityClazz = EntityTypes.getEntityToClassMapping().get(entityName); 
  
         if (EntityLiving.class.isAssignableFrom(entityClazz)) 
-        { 
+        {
             removeSpawn((Class <? extends net.minecraft.src.EntityLiving >) entityClazz, spawnList, biomes); 
-        } 
-    } 
- 
+        }
+    }
 }

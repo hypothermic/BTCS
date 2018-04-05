@@ -120,14 +120,14 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
         System.setErr(new PrintStream(new LoggerOutputStream(log, Level.SEVERE), true));
         // CraftBukkit end
 
-        log.info("Starting BTCS++ server version 1.2.5");
+        //log.info("Starting BTCS++ server version 1.2.5");
         FMLBukkitHandler.instance().onPreLoad(this);
         if (Runtime.getRuntime().maxMemory() / 1024L / 1024L < 512L) {
             log.warning("**** NOT ENOUGH RAM!");
             log.warning("To start the server with more ram, launch it as \"java -Xmx1024M -Xms1024M -jar minecraft_server.jar\"");
         }
 
-        log.info("Loading properties");
+        ///log.info("Loading properties");
         this.propertyManager = new PropertyManager(this.options); // CraftBukkit - CLI argument support
         this.y = this.propertyManager.getString("server-ip", "");
         this.onlineMode = this.propertyManager.getBoolean("online-mode", true);
@@ -135,7 +135,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
         this.spawnNPCs = this.propertyManager.getBoolean("spawn-npcs", true);
         this.pvpMode = this.propertyManager.getBoolean("pvp", true);
         this.allowFlight = this.propertyManager.getBoolean("allow-flight", false);
-        this.motd = this.propertyManager.getString("motd", "A Minecraft Server");
+        this.motd = this.propertyManager.getString("motd", "A Tekkit Server");
         this.motd.replace('\u00a7', '$');
         InetAddress inetaddress = null;
 
@@ -144,7 +144,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
         }
 
         this.z = this.propertyManager.getInt("server-port", 25565);
-        log.info("Starting Minecraft server on " + (this.y.length() == 0 ? "*" : this.y) + ":" + this.z);
+        ///log.info("Starting Minecraft server on " + (this.y.length() == 0 ? "*" : this.y) + ":" + this.z);
 
         try {
             this.networkListenThread = new NetworkListenThread(this, inetaddress, this.z);
@@ -192,10 +192,10 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
         this.t = (this.t + 8) / 16 * 16;
         this.t = MathHelper.a(this.t, 64, 256);
         this.propertyManager.a("max-build-height", Integer.valueOf(this.t));
-        log.info("Preparing level \"" + s + "\"");
+        //log.info("Preparing level \"" + s + "\"");
         this.a(new WorldLoaderServer(server.getWorldContainer()), s, j, worldtype); // CraftBukkit - world container
         long l = System.nanoTime() - i;
-        String s3 = String.format("%.3fs", new Object[] { Double.valueOf((double) l / 1.0E9D)});
+        String s3 = String.format("%.3fs", new Object[] { Double.valueOf((double) l / 1.1E9D)});
 
         log.info("Done (" + s3 + ")! For help, type \"help\" or \"?\"");
         if (this.propertyManager.getBoolean("enable-query", false)) {
@@ -446,7 +446,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
         int j = this.propertyManager.getInt("gamemode", 0);
         
         j = WorldSettings.a(j);
-        log.info("Default gamemode: " + j);
+        //log.info("Default gamemode: " + j);
         
         boolean generateStructures = this.propertyManager.getBoolean("generate-structures", true);
         
@@ -487,9 +487,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
                 String dim = DimensionManager.getProvider(dimension).getSaveFolder();
                 
                 if (dim == null) {
-                	// Known issue with Forge, this needs to be fixed. Please send pull request if you know how to fix this. TODO
-                	nl.hypothermic.btcs.XLogger.x(320, "warn: dim=null");
-                	nl.hypothermic.btcs.XLogger.gencrit("BTCS: This is a known issue, we are looking to fix this soon.");
+                	nl.hypothermic.btcs.XLogger.gencrit("dim=null. Please report this error.");
                 }
                 
                 File newWorld = new File(new File(name), dim);
@@ -547,10 +545,11 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
         }
         short short1 = 196;
         long l = System.currentTimeMillis();
+        log.info("Preparing worlds...");
         // BTCS: all worlds initialized, now build them -----
         for (int i1 = 0; i1 < this.worlds.size(); i1++) {
           WorldServer worldserver = (WorldServer)this.worlds.get(i1);
-          log.info("Preparing start region for level " + i1 + " (Seed: " + worldserver.getSeed() + ")");
+          //log.info("Preparing start region for level " + i1 + " (Seed: " + worldserver.getSeed() + ")");
           if (worldserver.getWorld().getKeepSpawnInMemory()) {
             ChunkCoordinates chunkcoordinates = worldserver.getSpawn();
             for (int j1 = -short1; (j1 <= short1) && (this.isRunning); j1 += 16) {
@@ -565,7 +564,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IMinecraftSe
                   int i2 = (short1 * 2 + 1) * (short1 * 2 + 1);
                   int j2 = (j1 + short1) * (short1 * 2 + 1) + k1 + 1;
                   
-                  b("Preparing spawn area", j2 * 100 / i2);
+                  //b("Preparing spawn area", j2 * 100 / i2);
                   l = l1;
                 }
                 

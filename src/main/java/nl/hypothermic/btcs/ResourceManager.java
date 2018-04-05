@@ -17,14 +17,14 @@ import java.util.function.BiConsumer;
  * @author hypothermic
  */
 
-public class ResourceManager {
+public final class ResourceManager {
 	
 	/**
 	 * Extract a file from the JAR into the user's filesystem.
 	 * @param origin
 	 * @param destination
 	 */
-	public void extract(String origin, File destination) {
+	public final void extract(String origin, File destination) {
 		if (!destination.exists()) {
 			InputStream link = (getClass().getResourceAsStream(origin));
 			try {
@@ -46,7 +46,7 @@ public class ResourceManager {
 	 * @param origin
 	 * @param destination
 	 */
-	public void unzip(String origin, String destination) throws Exception {
+	public final void unzip(String origin, String destination) throws Exception {
 	    try {
 	         ZipFile x = new ZipFile(origin);
 	         if (x.isEncrypted()) {
@@ -63,7 +63,7 @@ public class ResourceManager {
 	 * Unzip a file within the user's filesystem to the parent folder.
 	 * @param file
 	 */
-	public void unzip(File file) throws Exception {
+	public final void unzip(File file) throws Exception {
 	    try {
 	         ZipFile x = new ZipFile(file.getAbsolutePath());
 	         if (x.isEncrypted()) {

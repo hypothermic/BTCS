@@ -10,6 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 
+import nl.hypothermic.btcs.Launcher;
+
 public class VersionCommand extends BukkitCommand {
     public VersionCommand(String name) {
         super(name);
