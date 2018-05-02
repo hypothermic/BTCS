@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.minecraft.server.*;
+import nl.hypothermic.btcs.Launcher;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.NotImplementedException;
@@ -57,6 +58,24 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     private Set<String> channels = new HashSet<String>();
     private Map<String, Player> hiddenPlayers = new MapMaker().softValues().makeMap();
     private int hash = 0;
+    public Integer customViewDistance;
+    
+    /* BTCS start */
+    public void setViewDistance(final int distance) {
+    	if (distance >= 2 && distance <= 30) {
+    		this.customViewDistance = distance;
+    		Launcher.cc.viewdist.put(this.getName(), distance);
+    	}
+    }
+    
+    public int getViewDistance() {
+    	if (this.customViewDistance != null) {
+    		return this.customViewDistance;
+    	} else {
+    		return Bukkit.getServer().getViewDistance();
+    	}
+    }
+    /* BTCS end */
 
     public CraftPlayer(CraftServer server, EntityPlayer entity) {
         super(server, entity);

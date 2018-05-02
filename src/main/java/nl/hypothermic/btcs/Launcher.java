@@ -46,7 +46,7 @@ public final class Launcher {
 	private static final ConfigurationManager c = new ConfigurationManager(DEFOPTIONS);
 	private static final ResourceManager r = new ResourceManager();
 
-	private static final ConcurrencyManager cc = new ConcurrencyManager();
+	public static final ConcurrencyManager cc = new ConcurrencyManager();
 																		 
 	public static final void main(final String[] args) {
 		LS = System.getProperty("line.separator");

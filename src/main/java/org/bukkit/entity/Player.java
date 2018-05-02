@@ -20,6 +20,20 @@ import org.bukkit.plugin.messaging.PluginMessageRecipient;
  * Represents a player, connected or not
  */
 public interface Player extends HumanEntity, Conversable, CommandSender, OfflinePlayer, PluginMessageRecipient {
+	
+	/**
+	 * BTCS: Set player view distance.
+	 * Must be between 2 and 30.
+	 * @param distance The new view distance
+	 */
+	public void setViewDistance(final int distance);
+	
+	/**
+	 * BTCS: Get player view distance.
+	 * @return the player's view distance
+	 */
+	public int getViewDistance();
+	
     /**
      * Gets the "friendly" name to display of this player. This may include color.
      * <p />

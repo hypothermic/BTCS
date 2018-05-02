@@ -3,6 +3,8 @@ package net.minecraft.server;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.hypothermic.btcs.Launcher;
+
 public class PlayerManager {
 
     public List managedPlayers = new ArrayList();
@@ -10,7 +12,7 @@ public class PlayerManager {
     private List c = new ArrayList();
     private MinecraftServer server;
     private int e;
-    private int f;
+    private int f; // raw view distance
     private final int[][] g = new int[][] { { 1, 0}, { 0, 1}, { -1, 0}, { 0, -1}};
     private boolean wasNotEmpty; // CraftBukkit
 
@@ -82,6 +84,11 @@ public class PlayerManager {
         entityplayer.e = entityplayer.locZ;
         int k = 0;
         int l = this.f;
+        // BTCS start
+        if (Launcher.cc.viewdist.containsKey(entityplayer.getLocalizedName())) {
+        	l = Launcher.cc.viewdist.get(entityplayer.getLocalizedName());
+        }
+        // BTCS end
         int i1 = 0;
         int j1 = 0;
 
@@ -116,8 +123,16 @@ public class PlayerManager {
         int i = (int) entityplayer.d >> 4;
         int j = (int) entityplayer.e >> 4;
 
-        for (int k = i - this.f; k <= i + this.f; ++k) {
-            for (int l = j - this.f; l <= j + this.f; ++l) {
+        // BTCS start
+        int vd = this.f;
+        if (Launcher.cc.viewdist.containsKey(entityplayer.getLocalizedName())) {
+        	vd = Launcher.cc.viewdist.get(entityplayer.getLocalizedName());
+        }
+            
+        // BTCS: this.f --> vd
+        for (int k = i - vd; k <= i + vd; ++k) {
+            for (int l = j - vd; l <= j + vd; ++l) {
+        // BTCS end
                 PlayerInstance playerinstance = this.a(k, l, false);
 
                 if (playerinstance != null) {
@@ -142,6 +157,13 @@ public class PlayerManager {
         double d0 = entityplayer.d - entityplayer.locX;
         double d1 = entityplayer.e - entityplayer.locZ;
         double d2 = d0 * d0 + d1 * d1;
+        
+        // BTCS start
+        int vd = this.f;
+        if (Launcher.cc.viewdist.containsKey(entityplayer.getLocalizedName())) {
+        	vd = Launcher.cc.viewdist.get(entityplayer.getLocalizedName());
+        }
+        // BTCS end
 
         if (d2 >= 64.0D) {
             int k = (int) entityplayer.d >> 4;
@@ -150,8 +172,10 @@ public class PlayerManager {
             int j1 = j - l;
 
             if (i1 != 0 || j1 != 0) {
-                for (int k1 = i - this.f; k1 <= i + this.f; ++k1) {
-                    for (int l1 = j - this.f; l1 <= j + this.f; ++l1) {
+            	// BTCS start: this.f --> vd
+                for (int k1 = i - vd; k1 <= i + vd; ++k1) {
+                    for (int l1 = j - vd; l1 <= j + vd; ++l1) {
+                // BTCS end
                         if (!this.a(k1, l1, k, l)) {
                             this.a(k1, l1, true).a(entityplayer);
                         }
