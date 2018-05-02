@@ -62,7 +62,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     
     /* BTCS start */
     public void setViewDistance(final int distance) {
-    	if (distance >= 2 && distance <= 30) {
+    	if (distance >= 2 && distance <= 128) {
     		this.customViewDistance = distance;
     		Launcher.cc.viewdist.put(this.getName(), distance);
     	}

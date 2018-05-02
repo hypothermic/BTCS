@@ -17,7 +17,7 @@ public class PlayerManager {
     private boolean wasNotEmpty; // CraftBukkit
 
     public PlayerManager(MinecraftServer minecraftserver, int i, int j) {
-        if (j > 15) {
+        if (j > 128) {
             throw new IllegalArgumentException("Too big view radius!");
         } else if (j < 3) {
             throw new IllegalArgumentException("Too small view radius!");
