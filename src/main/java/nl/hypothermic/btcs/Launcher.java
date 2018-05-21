@@ -15,6 +15,8 @@ import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import net.minecraft.server.MinecraftServer;
+import nl.hypothermic.btcs.packetapi.PacketAPI;
+import nl.hypothermic.btcs.packetapi.ServerInfoEventListener;
 
 public final class Launcher {
 	

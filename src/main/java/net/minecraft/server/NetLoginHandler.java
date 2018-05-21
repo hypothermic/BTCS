@@ -1,13 +1,14 @@
 package net.minecraft.server;
 
 import java.net.Socket;
-import java.util.Iterator;
 import java.util.Random;
 import java.util.logging.Logger;
 
 import cpw.mods.fml.server.FMLBukkitHandler;
 import forge.ForgeHooks;
 import forge.ForgeHooksServer;
+import nl.hypothermic.btcs.packetapi.PacketAPI;
+import nl.hypothermic.btcs.packetapi.ServerInfoEventListener.ServerInfoData;
 
 public class NetLoginHandler extends NetHandler {
 
@@ -165,8 +166,9 @@ public class NetLoginHandler extends NetHandler {
         if (this.networkManager.getSocket() == null) return; // CraftBukkit - fix NPE when a client queries a server that is unable to handle it.
         try {
             // CraftBukkit start
-            org.bukkit.event.server.ServerListPingEvent pingEvent = org.bukkit.craftbukkit.event.CraftEventFactory.callServerListPingEvent(this.server.server, getSocket().getInetAddress(), this.server.motd, this.server.serverConfigurationManager.getPlayerCount(), this.server.serverConfigurationManager.getMaxPlayers());
-            String s = pingEvent.getMotd() + "\u00A7" + this.server.serverConfigurationManager.getPlayerCount() + "\u00A7" + pingEvent.getMaxPlayers();
+        	ServerInfoData dat = PacketAPI.Announcer.onServerInfoEvent(this.server.motd, this.server.serverConfigurationManager.getPlayerCount(), this.server.serverConfigurationManager.getMaxPlayers());
+            org.bukkit.event.server.ServerListPingEvent pingEvent = org.bukkit.craftbukkit.event.CraftEventFactory.callServerListPingEvent(this.server.server, getSocket().getInetAddress(), dat.motd, dat.playerCount, dat.maxPlayers);
+            String s = pingEvent.getMotd() + "\u00A7" + dat.playerCount + "\u00A7" + pingEvent.getMaxPlayers();
             // CraftBukkit end
 
             this.server.networkListenThread.a(this.networkManager.getSocket()); // CraftBukkit - cleanup before killing connection
