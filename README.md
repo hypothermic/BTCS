@@ -26,6 +26,9 @@ Sorted by priority: high to low
 - ConsoleCommandHandler forge patch
 
 ### Changelog
+- v1.10
+    - Added PacketAPI
+        - Added server info manipulation
 - v1.09
     - Fixed issue where NetServerHandler wasn't prepared to deal with Packet132 coming from specific mods.
     - Fixed issue "Unknown entity" when creating new CraftBukkit entity and player would get kicked. (with for example WeaponMod and custom explosives)

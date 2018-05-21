@@ -4,7 +4,7 @@
   <groupId>nl.hypothermic</groupId>
   <artifactId>btcspp</artifactId>
   <packaging>jar</packaging>
-  <version>1.09-${git.branch}-${git.commit.id.abbrev}-1.2.5-B5.1</version>
+  <version>1.10-${git.branch}-${git.commit.id.abbrev}-1.2.5-B5.1</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
