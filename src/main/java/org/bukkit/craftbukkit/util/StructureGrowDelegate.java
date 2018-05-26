@@ -3,12 +3,13 @@ package org.bukkit.craftbukkit.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.server.World;
-
 import org.bukkit.BlockChangeDelegate;
 import org.bukkit.block.BlockState;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.material.MaterialData;
+import org.bukkit.metadata.MetadataValue;
+
+import net.minecraft.server.World;
 
 public class StructureGrowDelegate implements BlockChangeDelegate {
     private final CraftWorld world;
@@ -52,5 +53,11 @@ public class StructureGrowDelegate implements BlockChangeDelegate {
 
     public boolean isEmpty(int x, int y, int z) {
         return world.getBlockAt(x, y, z).isEmpty();
+    }
+
+    // BTCS++ method
+    @Override
+    public void setMetadata(int x, int y, int z, String metadata, MetadataValue val) {
+	world.getBlockAt(x, y, z).getState().setMetadata("nat", val);
     }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.craftbukkit.CraftWorld;
 // CraftBukkit start
 import org.bukkit.event.weather.LightningStrikeEvent;
+import org.bukkit.metadata.MetadataValue;
 
 public class WorldServer extends World implements /*org.bukkit.BlockChangeDelegate,*/ forge.bukkit.BukkitForgeHooks.ForgeBlockChangeDelegate {
     // CraftBukkit end
@@ -284,5 +285,11 @@ public class WorldServer extends World implements /*org.bukkit.BlockChangeDelega
             }
             // CraftBukkit end
         }
+    }
+
+    // BTCS++ experimental method
+    @Override
+    public void setMetadata(int x, int y, int z, String metadata, MetadataValue val) {
+	world.getBlockAt(x, y, z).getState().setMetadata("nat", val);
     }
 }

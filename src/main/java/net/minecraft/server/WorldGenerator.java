@@ -23,6 +23,7 @@ public abstract class WorldGenerator {
     // CraftBukkit - change signature
     protected void setType(BlockChangeDelegate world, int i, int j, int k, int l) {
         this.setTypeAndData(world, i, j, k, l, 0);
+        world.setMetadata(i, j, k, "nat", null); // BTCS
     }
 
     // CraftBukkit - change signature
@@ -36,5 +37,6 @@ public abstract class WorldGenerator {
         } else {
             world.setRawTypeIdAndData(i, j, k, l, i1);
         }
+        world.setMetadata(i, j, k, "nat", null); // BTCS
     }
 }

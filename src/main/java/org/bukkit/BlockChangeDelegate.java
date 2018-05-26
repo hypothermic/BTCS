@@ -1,5 +1,7 @@
 package org.bukkit;
 
+import org.bukkit.metadata.MetadataValue;
+
 /**
  * A delegate for handling block changes. This serves as a direct interface
  * between generation algorithms in the server implementation and utilizing
@@ -83,4 +85,16 @@ public interface BlockChangeDelegate {
      * @return True if the block is considered empty.
      */
     public boolean isEmpty(int x, int y, int z);
+    
+    /**
+     * Set metadata for block. <br>
+     * <b>Experimental BTCS++ feature.</b>
+     * 
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @param z Z coordinate
+     * @param metadata Metadata Key
+     * @param val Metadata Value
+     */
+    public void setMetadata(int x, int y, int z, String metadata, MetadataValue val);
 }

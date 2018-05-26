@@ -155,7 +155,7 @@ public class World implements IBlockAccess {
     }
 
     // CraftBukkit start
-    private final CraftWorld world;
+    protected final CraftWorld world;
     public boolean pvpMode;
     public boolean keepSpawnInMemory = true;
     public ChunkGenerator generator;

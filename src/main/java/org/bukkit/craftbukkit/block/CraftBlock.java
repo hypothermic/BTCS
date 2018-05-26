@@ -441,4 +441,10 @@ public class CraftBlock implements Block {
     public void removeMetadata(String metadataKey, Plugin owningPlugin) {
         chunk.getCraftWorld().getBlockMetadata().removeMetadata(this, metadataKey, owningPlugin);
     }
+
+    // BTCS++ method.
+    @Override
+    public boolean isNatural() {
+	return this.getMetadata("nat") != null;
+    }
 }
